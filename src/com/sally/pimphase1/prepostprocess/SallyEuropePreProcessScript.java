@@ -33,59 +33,60 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 		logger.info("Inside item preprocess");
 
 		Item item = arg0.getItem();
-		
-		Collection<Category> itemCategories = item.getCategories();
-		for (Category category : itemCategories) {
 
-			String hierName = category.getHierarchy().getName();
-			logger.info("hierName >> " + hierName);
+		if (item != null) {
+			Collection<Category> itemCategories = item.getCategories();
+			for (Category category : itemCategories) {
 
-			if (hierName.equals("Product Hierarchy")) {
-				Object catCode = category.getAttributeValue("Product_h/category_code");
-				Object catName = category.getAttributeValue("Product_h/category_name");
+				String hierName = category.getHierarchy().getName();
+				logger.info("hierName >> " + hierName);
 
-				logger.info("catCode >> " + catCode);
-				logger.info("catName >> " + catName);
+				if (hierName.equals("Product Hierarchy")) {
+					Object catCode = category.getAttributeValue("Product_h/category_code");
+					Object catName = category.getAttributeValue("Product_h/category_name");
 
-				if (catCode != null) {
+					logger.info("catCode >> " + catCode);
+					logger.info("catName >> " + catName);
 
-					AttributeInstance ERPOperationalInst = item
-							.getAttributeInstance("Product_c/ERP Operational");
+					if (catCode != null) {
 
-					if (ERPOperationalInst != null){
-						
-						item.setAttributeValue("Product_c/ERP Operational/Category_code",catCode.toString());
-						item.setAttributeValue("Product_c/ERP Operational/Category_name",catName.toString());
-						
-						logger.info("Product Category values set");
+						AttributeInstance ERPOperationalInst = item.getAttributeInstance("Product_c/ERP Operational");
 
-					}
+						if (ERPOperationalInst != null) {
 
-				}
-			}
-			
-			if (hierName.equals("Brand Hierarchy")) {
-				Object catCode = category.getAttributeValue("Product_h/category_code");
-				Object catName = category.getAttributeValue("Product_h/category_name");
+							item.setAttributeValue("Product_c/ERP Operational/Category_code", catCode.toString());
+							item.setAttributeValue("Product_c/ERP Operational/Category_name", catName.toString());
 
-				logger.info("catCode >> " + catCode);
-				logger.info("catName >> " + catName);
+							logger.info("Product Category values set");
 
-				if (catCode != null) {
-
-					AttributeInstance ERPOperationalInst = item
-							.getAttributeInstance("Product_c/ERP Operational");
-
-					if (ERPOperationalInst != null){
-						
-						item.setAttributeValue("Product_c/ERP Operational/Brand_code",catCode.toString());
-						item.setAttributeValue("Product_c/ERP Operational/Brand_name",catName.toString());
-						
-						logger.info("Brand Category values set");
+						}
 
 					}
-
 				}
+
+				if (hierName.equals("Brand Hierarchy")) {
+					Object catCode = category.getAttributeValue("Product_h/category_code");
+					Object catName = category.getAttributeValue("Product_h/category_name");
+
+					logger.info("catCode >> " + catCode);
+					logger.info("catName >> " + catName);
+
+					if (catCode != null) {
+
+						AttributeInstance ERPOperationalInst = item.getAttributeInstance("Product_c/ERP Operational");
+
+						if (ERPOperationalInst != null) {
+
+							item.setAttributeValue("Product_c/ERP Operational/Brand_code", catCode.toString());
+							item.setAttributeValue("Product_c/ERP Operational/Brand_name", catName.toString());
+
+							logger.info("Brand Category values set");
+
+						}
+
+					}
+				}
+
 			}
 
 		}
@@ -104,7 +105,64 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 	public void prePostProcessing(CollaborationItemPrePostProcessingFunctionArguments arg0) {
 		CollaborationItem item = arg0.getCollaborationItem();
 
-		validationsCollabItem(arg0, item);
+		if (item != null) {
+			Collection<Category> itemCategories = item.getCategories();
+			for (Category category : itemCategories) {
+
+				String hierName = category.getHierarchy().getName();
+				logger.info("hierName >> " + hierName);
+
+				if (hierName.equals("Product Hierarchy")) {
+					Object catCode = category.getAttributeValue("Product_h/category_code");
+					Object catName = category.getAttributeValue("Product_h/category_name");
+
+					logger.info("catCode >> " + catCode);
+					logger.info("catName >> " + catName);
+
+					if (catCode != null) {
+
+						AttributeInstance ERPOperationalInst = item.getAttributeInstance("Product_c/ERP Operational");
+
+						if (ERPOperationalInst != null) {
+
+							item.setAttributeValue("Product_c/ERP Operational/Category_code", catCode.toString());
+							item.setAttributeValue("Product_c/ERP Operational/Category_name", catName.toString());
+
+							logger.info("Product Category values set");
+
+						}
+
+					}
+				}
+
+				if (hierName.equals("Brand Hierarchy")) {
+					Object catCode = category.getAttributeValue("Product_h/category_code");
+					Object catName = category.getAttributeValue("Product_h/category_name");
+
+					logger.info("catCode >> " + catCode);
+					logger.info("catName >> " + catName);
+
+					if (catCode != null) {
+
+						AttributeInstance ERPOperationalInst = item.getAttributeInstance("Product_c/ERP Operational");
+
+						if (ERPOperationalInst != null) {
+
+							item.setAttributeValue("Product_c/ERP Operational/Brand_code", catCode.toString());
+							item.setAttributeValue("Product_c/ERP Operational/Brand_name", catName.toString());
+
+							logger.info("Brand Category values set");
+
+						}
+
+					}
+				}
+
+			}
+
+		}
+
+		// validationsCollabItem(arg0, item);
 
 	}
 
@@ -216,11 +274,11 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 //					}
 //				}
 
-				if (legalClassificationValue.equals("Cosmetics leave on")
+				if (legalClassificationValue != null && (legalClassificationValue.equals("Cosmetics leave on")
 						|| legalClassificationValue.equals("Cosmetics wash off")
 						|| legalClassificationValue.equals("Aerosols") || legalClassificationValue.equals("Biocide")
 						|| legalClassificationValue.equals("Food supplements")
-						|| legalClassificationValue.equals("Detergents")) {
+						|| legalClassificationValue.equals("Detergents"))) {
 
 					String ingredientPath = legalAttributeInstance.getParent().getPath() + "/Ingredients/Ingredient";
 					if (item.getAttributeInstance(ingredientPath) != null
@@ -233,12 +291,12 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 					}
 				}
 
-				if (legalClassificationValue.equals("Cosmetics leave on")
+				if (legalClassificationValue != null && (legalClassificationValue.equals("Cosmetics leave on")
 						|| legalClassificationValue.equals("Cosmetics wash off")
 						|| legalClassificationValue.equals("Aerosols") || legalClassificationValue.equals("Biocide")
 						|| legalClassificationValue.equals("Food supplements")
 						|| legalClassificationValue.equals("Medical device")
-						|| legalClassificationValue.equals("PPE")) {
+						|| legalClassificationValue.equals("PPE"))) {
 
 					String expiryDatePAOAttrPath = legalAttributeInstance.getParent().getPath() + "/Expiry_type";
 					if (item.getAttributeInstance(expiryDatePAOAttrPath) != null
@@ -275,7 +333,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
 			// Packaging material validation
 
-			//Inner Packaging
+			// Inner Packaging
 			AttributeInstance innerPackInstance = item
 					.getAttributeInstance("Product_c/Packaging/Pack_inner_packaging_material");
 
@@ -307,8 +365,8 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
 				}
 			}
-			
-			//Outer Packaging
+
+			// Outer Packaging
 			AttributeInstance outerPackInstance = item
 					.getAttributeInstance("Product_c/Packaging/Pack_outer_packaging_material");
 
@@ -451,11 +509,11 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 //					}
 //				}
 
-				if (legalClassificationValue.equals("Cosmetics leave on")
+				if (legalClassificationValue != null && (legalClassificationValue.equals("Cosmetics leave on")
 						|| legalClassificationValue.equals("Cosmetics wash off")
 						|| legalClassificationValue.equals("Aerosols") || legalClassificationValue.equals("Biocide")
 						|| legalClassificationValue.equals("Food supplements")
-						|| legalClassificationValue.equals("Detergents")) {
+						|| legalClassificationValue.equals("Detergents"))) {
 
 					String ingredientPath = legalAttributeInstance.getParent().getPath() + "/Ingredients/Ingredient";
 					if (item.getAttributeInstance(ingredientPath) != null
@@ -468,12 +526,12 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 					}
 				}
 
-				if (legalClassificationValue.equals("Cosmetics leave on")
+				if (legalClassificationValue != null && (legalClassificationValue.equals("Cosmetics leave on")
 						|| legalClassificationValue.equals("Cosmetics wash off")
 						|| legalClassificationValue.equals("Aerosols") || legalClassificationValue.equals("Biocide")
 						|| legalClassificationValue.equals("Food supplements")
 						|| legalClassificationValue.equals("Medical device")
-						|| legalClassificationValue.equals("PPE")) {
+						|| legalClassificationValue.equals("PPE"))) {
 
 					String expiryDatePAOAttrPath = legalAttributeInstance.getParent().getPath() + "/Expiry_type";
 					if (item.getAttributeInstance(expiryDatePAOAttrPath) != null
@@ -510,7 +568,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
 			// Packaging material validation
 
-			//Inner Packaging
+			// Inner Packaging
 			AttributeInstance innerPackInstance = item
 					.getAttributeInstance("Product_c/Packaging/Pack_inner_packaging_material");
 
@@ -542,8 +600,8 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
 				}
 			}
-			
-			//Outer Packaging
+
+			// Outer Packaging
 			AttributeInstance outerPackInstance = item
 					.getAttributeInstance("Product_c/Packaging/Pack_outer_packaging_material");
 
