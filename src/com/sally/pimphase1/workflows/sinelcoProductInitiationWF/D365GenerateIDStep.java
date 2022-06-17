@@ -1,6 +1,6 @@
 package com.sally.pimphase1.workflows.sinelcoProductInitiationWF;
 
-//script_execution_mode=java_api="japi:///uploaded_java_classes/:com.sally.pimphase1.workflows.sinelcoProductInitiationWF.ValidateProductsStep.class"
+//script_execution_mode=java_api="japi:///uploaded_java_classes/:com.sally.pimphase1.workflows.sinelcoProductInitiationWF.D365GenerateIDStep.class"
 
 import java.util.Iterator;
 
@@ -14,9 +14,8 @@ import com.ibm.pim.context.Context;
 import com.ibm.pim.context.PIMContextFactory;
 import com.ibm.pim.extensionpoints.WorkflowStepFunction;
 import com.ibm.pim.extensionpoints.WorkflowStepFunctionArguments;
-import com.sally.pim.workflows.sinelcoProductInitiationWorkflow.SinelcoCreateStep;
 
-public class ValidateProductsStep implements WorkflowStepFunction {
+public class D365GenerateIDStep implements WorkflowStepFunction {
 
 	@Override
 	public void in(WorkflowStepFunctionArguments arg0) {
@@ -26,8 +25,8 @@ public class ValidateProductsStep implements WorkflowStepFunction {
 
 	@Override
 	public void out(WorkflowStepFunctionArguments arg0) {
-		Logger logger = Logger.getLogger(ValidateProductsStep.class);
-		logger.info("*** Start of OUT function of Validate Products Step ***");
+		Logger logger = Logger.getLogger(D365GenerateIDStep.class);
+		logger.info("*** Start of OUT function of D365 Generate ID Step ***");
 		Context ctx = PIMContextFactory.getCurrentContext();
 		
 		PIMCollection<CollaborationItem> items = arg0.getItems();
@@ -42,7 +41,7 @@ public class ValidateProductsStep implements WorkflowStepFunction {
 			sourceColArea.moveItemToOtherCollaborationArea(collaborationItem, destinationColArea);
 			
 		}
-		logger.info("*** End of OUT function of Create Step ***");
+		logger.info("*** End of OUT function of D365 Generate ID Step ***");
 
 	}
 
