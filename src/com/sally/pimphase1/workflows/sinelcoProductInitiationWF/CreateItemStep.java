@@ -96,7 +96,7 @@ public class CreateItemStep implements WorkflowStepFunction {
 				Document doc = null;
 				
 					logger.info("Save the XML for Items");
-				doc = ctx.getDocstoreManager().createAndPersistDocument("/PIMOutboundXml/GenerateIDInput/Output_Xml_" + item.getPrimaryKey() + ".xml");
+				doc = ctx.getDocstoreManager().createAndPersistDocument("/PIM_D365_Integration/OutBound/" + item.getPrimaryKey() + ".xml");
 				
 				if (doc != null) {
 					doc.setContent(xmlString);
