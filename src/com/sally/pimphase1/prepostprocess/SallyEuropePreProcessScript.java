@@ -106,6 +106,21 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 		CollaborationItem item = arg0.getCollaborationItem();
 
 		if (item != null) {
+
+			if (arg0.getCollaborationStep() != null) {
+
+				if (arg0.getCollaborationStep().getName().equalsIgnoreCase("01 Categorize Item")) {
+
+					Collection<Category> categories = item.getCategories();
+
+					if (categories.isEmpty()) {
+						arg0.addValidationError(item.getAttributeInstance("Product_c/Sys_PIM_item_ID"),
+								ValidationError.Type.VALIDATION_RULE, "Items should be categorized in this step");
+					}
+
+				}
+
+			}
 			Collection<Category> itemCategories = item.getCategories();
 			for (Category category : itemCategories) {
 
@@ -162,7 +177,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
 		}
 
-		// validationsCollabItem(arg0, item);
+		validationsCollabItem(arg0, item);
 
 	}
 
@@ -203,21 +218,27 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 			if (itemTypeValue != null) {
 				if (itemTypeValue.toString().equals("Item")) {
 
-					for (String attrPath : attrPaths) {
+					if (arg0.getCollaborationStep() != null) {
 
-						AttributeInstance attrInst = item.getAttributeInstance(attrPath);
+						if (arg0.getCollaborationStep().getName().equalsIgnoreCase("02 Enrich Item Data")) {
 
-						if (attrInst != null) {
-							if (item.getAttributeValue(attrPath) == null) {
-								logger.info("Throw error");
+							for (String attrPath : attrPaths) {
 
-								arg0.addValidationError(item.getAttributeInstance(attrPath),
-										ValidationError.Type.VALIDATION_RULE,
-										"This field is mandatory when item type is Item");
+								AttributeInstance attrInst = item.getAttributeInstance(attrPath);
+
+								if (attrInst != null) {
+									if (item.getAttributeValue(attrPath) == null) {
+										logger.info("Throw error");
+
+										arg0.addValidationError(item.getAttributeInstance(attrPath),
+												ValidationError.Type.VALIDATION_RULE,
+												"This field is mandatory when item type is Item");
+
+									}
+								}
 
 							}
 						}
-
 					}
 				}
 			}
@@ -250,29 +271,27 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 					}
 				}
 
-//				if (legalClassificationValue != null && legalClassificationValue.equals("Electrical")) {
-//					
-//					AttributeInstance attributeInstance = item.getAttributeInstance("Secondary Spec/Type_battery");
-//					if (attributeInstance != null)
-//					{
-//						Object typeBatteryValue = item.getAttributeValue("Secondary Spec/Type_battery");
-//						
-//						if (typeBatteryValue!= null && typeBatteryValue != "")
-//						{
-//							String safetyDateSheetAttrPath = legalAttributeInstance.getParent().getPath()
-//									+ "/Safety_data_sheet";
-//
-//							if (item.getAttributeValue(safetyDateSheetAttrPath) == null) {
-//
-//								arg0.addValidationError(item.getAttributeInstance(safetyDateSheetAttrPath),
-//										ValidationError.Type.VALIDATION_RULE,
-//										"Safety Data Sheet is mandatory for the legal classification value and Type Battery selected");
-//								logger.info("Safety Data sheet error");
-//
-//							}
-//						}
-//					}
-//				}
+				if (legalClassificationValue != null && legalClassificationValue.equals("Electrical")) {
+
+					AttributeInstance attributeInstance = item.getAttributeInstance("Electrical_ss/Type/Type_battery");
+					if (attributeInstance != null) {
+						Object typeBatteryValue = item.getAttributeValue("Secondary Spec/Type_battery");
+
+						if (typeBatteryValue != null && typeBatteryValue != "") {
+							String safetyDateSheetAttrPath = legalAttributeInstance.getParent().getPath()
+									+ "/Safety_data_sheet";
+
+							if (item.getAttributeValue(safetyDateSheetAttrPath) == null) {
+
+								arg0.addValidationError(item.getAttributeInstance(safetyDateSheetAttrPath),
+										ValidationError.Type.VALIDATION_RULE,
+										"Safety Data Sheet is mandatory for the legal classification value and Type Battery selected");
+								logger.info("Safety Data sheet error");
+
+							}
+						}
+					}
+				}
 
 				if (legalClassificationValue != null && (legalClassificationValue.equals("Cosmetics leave on")
 						|| legalClassificationValue.equals("Cosmetics wash off")
@@ -485,29 +504,28 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 					}
 				}
 
-//				if (legalClassificationValue != null && legalClassificationValue.equals("Electrical")) {
-//					
-//					AttributeInstance attributeInstance = item.getAttributeInstance("Secondary Spec/Type_battery");
-//					if (attributeInstance != null)
-//					{
-//						Object typeBatteryValue = item.getAttributeValue("Secondary Spec/Type_battery");
-//						
-//						if (typeBatteryValue!= null && typeBatteryValue != "")
-//						{
-//							String safetyDateSheetAttrPath = legalAttributeInstance.getParent().getPath()
-//									+ "/Safety_data_sheet";
-//
-//							if (item.getAttributeValue(safetyDateSheetAttrPath) == null) {
-//
-//								arg0.addValidationError(item.getAttributeInstance(safetyDateSheetAttrPath),
-//										ValidationError.Type.VALIDATION_RULE,
-//										"Safety Data Sheet is mandatory for the legal classification value and Type Battery selected");
-//								logger.info("Safety Data sheet error");
-//
-//							}
-//						}
-//					}
-//				}
+				if (legalClassificationValue != null && legalClassificationValue.equals("Electrical")) {
+
+					AttributeInstance attributeInstance = item.getAttributeInstance("Electrical_ss/Type/Type_battery");
+
+					if (attributeInstance != null) {
+						Object typeBatteryValue = item.getAttributeValue("Secondary Spec/Type_battery");
+
+						if (typeBatteryValue != null && typeBatteryValue != "") {
+							String safetyDateSheetAttrPath = legalAttributeInstance.getParent().getPath()
+									+ "/Safety_data_sheet";
+
+							if (item.getAttributeValue(safetyDateSheetAttrPath) == null) {
+
+								arg0.addValidationError(item.getAttributeInstance(safetyDateSheetAttrPath),
+										ValidationError.Type.VALIDATION_RULE,
+										"Safety Data Sheet is mandatory for the legal classification value and Type Battery selected");
+								logger.info("Safety Data sheet error");
+
+							}
+						}
+					}
+				}
 
 				if (legalClassificationValue != null && (legalClassificationValue.equals("Cosmetics leave on")
 						|| legalClassificationValue.equals("Cosmetics wash off")

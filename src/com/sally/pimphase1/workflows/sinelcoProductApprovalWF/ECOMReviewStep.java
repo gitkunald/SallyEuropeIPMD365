@@ -1,5 +1,7 @@
 package com.sally.pimphase1.workflows.sinelcoProductApprovalWF;
 
+import java.util.Date;
+
 //script_execution_mode=java_api="japi:///uploaded_java_classes/:com.sally.pimphase1.workflows.sinelcoProductApprovalWF.ECOMReviewStep.class"
 
 import org.apache.log4j.Logger;
@@ -38,8 +40,21 @@ public class ECOMReviewStep implements WorkflowStepFunction {
 				if (isECOMApproved == null || (isECOMApproved != null && isECOMApproved.equals(Boolean.FALSE))) {
 
 					item.setAttributeValue("Product_c/is_ECOM_Approved", Boolean.TRUE);
-					item.save();
 					logger.info("Set ECOM Approve flag attribute to true");
+
+				}
+				
+				item.setAttributeValue("Product_c/Status Attributes/Approval_date_ECOM", new Date());
+				item.save();
+			}
+			
+			if (exitValue.toString() != null && exitValue.toString().equalsIgnoreCase("Reject")) {
+				Object isECOMApproved = item.getAttributeValue("Product_c/is_ECOM_Approved");
+				if (isECOMApproved == null || (isECOMApproved != null && isECOMApproved.equals(Boolean.TRUE))) {
+
+					item.setAttributeValue("Product_c/is_ECOM_Approved", Boolean.FALSE);
+					item.save();
+					logger.info("Set ECOM Approve flag attribute to false");
 
 				}
 			}
