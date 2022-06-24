@@ -63,7 +63,39 @@ public class AutomatedStep implements WorkflowStepFunction {
 
 	@Override
 	public void out(WorkflowStepFunctionArguments arg0) {
-		// TODO Auto-generated method stub
+		logger.info("Entered out function of Automated Step");
+
+		PIMCollection<CollaborationItem> objPIMCollection = arg0.getItems();
+
+		for (CollaborationItem item : objPIMCollection) {
+
+			Object isECOMApproved = item.getAttributeValue("Product_c/is_ECOM_Approved");
+			Object isSCApproved = item.getAttributeValue("Product_c/is_SC_Approved");
+			Object isLegalApproved = item.getAttributeValue("Product_c/is_Legal_Approved");
+			if (isECOMApproved != null && isECOMApproved.equals(Boolean.TRUE)) {
+
+				item.setAttributeValue("Product_c/is_ECOM_Approved", "");
+				logger.info("clear ECOM flag attribute");
+
+			}
+			
+			if (isSCApproved != null && isSCApproved.equals(Boolean.TRUE)) {
+
+				item.setAttributeValue("Product_c/is_SC_Approved", "");
+				logger.info("clear SC flag attribute");
+
+			}
+			
+			if (isLegalApproved != null && isLegalApproved.equals(Boolean.TRUE)) {
+
+				item.setAttributeValue("Product_c/is_Legal_Approved", "");
+				logger.info("clear Legal flag attribute");
+
+			}
+
+			
+			item.save();
+		}
 
 	}
 
