@@ -275,7 +275,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
 					AttributeInstance attributeInstance = item.getAttributeInstance("Electrical_ss/Type/Type_battery");
 					if (attributeInstance != null) {
-						Object typeBatteryValue = item.getAttributeValue("Secondary Spec/Type_battery");
+						Object typeBatteryValue = item.getAttributeValue("Electrical_ss/Type_battery");
 
 						if (typeBatteryValue != null && typeBatteryValue != "") {
 							String safetyDateSheetAttrPath = legalAttributeInstance.getParent().getPath()
@@ -509,7 +509,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 					AttributeInstance attributeInstance = item.getAttributeInstance("Electrical_ss/Type/Type_battery");
 
 					if (attributeInstance != null) {
-						Object typeBatteryValue = item.getAttributeValue("Secondary Spec/Type_battery");
+						Object typeBatteryValue = item.getAttributeValue("Electrical_ss/Type_battery");
 
 						if (typeBatteryValue != null && typeBatteryValue != "") {
 							String safetyDateSheetAttrPath = legalAttributeInstance.getParent().getPath()

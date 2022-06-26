@@ -26,9 +26,6 @@ public class TranslationtoSinelcoLangStep implements WorkflowStepFunction {
 		ItemCollaborationArea currentCollaborationArea = (ItemCollaborationArea) arg0.getCollaborationStep()
 				.getCollaborationArea();
 
-		// 03 Translation to Sinelco Languages
-		// 04 Packaging And Art Work
-		//CollaborationStep packagingStep = currentCollaborationArea.getStep("04 Packaging And Art Work");
 		CollaborationStep translationStep = currentCollaborationArea.getStep("03 Translation to Sinelco Languages");
 
 		Collection<ExitValue> objCollExitValue = arg0.getCollaborationStep().getWorkflowStep().getExitValues();

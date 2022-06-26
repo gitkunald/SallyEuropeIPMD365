@@ -36,7 +36,7 @@ public class D365GenerateIDStep implements WorkflowStepFunction {
 		for (Iterator<CollaborationItem> iterator = items.iterator(); iterator.hasNext();) {
 			CollaborationItem collaborationItem = (CollaborationItem) iterator.next();
 			logger.info("Collab Item Name : " + collaborationItem.getDisplayName());
-			CollaborationArea destinationColArea = ctx.getCollaborationAreaManager().getCollaborationArea("Sinelco Products Approval Collaboration Area");
+			CollaborationArea destinationColArea = ctx.getCollaborationAreaManager().getCollaborationArea("Products Approval Collaboration Area");
 			logger.info("Destination Collab Area : " + destinationColArea.getName());
 			sourceColArea.moveItemToOtherCollaborationArea(collaborationItem, destinationColArea);
 			
