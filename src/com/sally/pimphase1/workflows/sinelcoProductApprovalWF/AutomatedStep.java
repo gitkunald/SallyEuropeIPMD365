@@ -72,24 +72,33 @@ public class AutomatedStep implements WorkflowStepFunction {
 			Object isECOMApproved = item.getAttributeValue("Product_c/is_ECOM_Approved");
 			Object isSCApproved = item.getAttributeValue("Product_c/is_SC_Approved");
 			Object isLegalApproved = item.getAttributeValue("Product_c/is_Legal_Approved");
-			if (isECOMApproved != null && isECOMApproved.equals(Boolean.TRUE)) {
+			Object funcReject = item.getAttributeValue("Product_c/Functional/Func_reject_on_create");
+			
+			if (isECOMApproved != null) {
 
 				item.setAttributeValue("Product_c/is_ECOM_Approved", "");
 				logger.info("clear ECOM flag attribute");
 
 			}
 			
-			if (isSCApproved != null && isSCApproved.equals(Boolean.TRUE)) {
+			if (isSCApproved != null) {
 
 				item.setAttributeValue("Product_c/is_SC_Approved", "");
 				logger.info("clear SC flag attribute");
 
 			}
 			
-			if (isLegalApproved != null && isLegalApproved.equals(Boolean.TRUE)) {
+			if (isLegalApproved != null) {
 
 				item.setAttributeValue("Product_c/is_Legal_Approved", "");
 				logger.info("clear Legal flag attribute");
+
+			}
+			
+			if (funcReject != null) {
+
+				item.setAttributeValue("Product_c/Functional/Func_reject_on_create", "");
+				logger.info("clear Reject flag attribute");
 
 			}
 

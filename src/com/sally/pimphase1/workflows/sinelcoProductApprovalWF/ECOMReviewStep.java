@@ -6,6 +6,7 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 
+import com.ibm.pim.attribute.AttributeInstance;
 import com.ibm.pim.collaboration.CollaborationItem;
 import com.ibm.pim.collaboration.CollaborationStepTransitionConfiguration;
 import com.ibm.pim.collection.PIMCollection;
@@ -53,6 +54,14 @@ public class ECOMReviewStep implements WorkflowStepFunction {
 				if (isECOMApproved == null || (isECOMApproved != null && isECOMApproved.equals(Boolean.TRUE))) {
 
 					item.setAttributeValue("Product_c/is_ECOM_Approved", Boolean.FALSE);
+					
+					AttributeInstance functionalAttrInst = item.getAttributeInstance("Product_c/Functional");
+					
+					if(functionalAttrInst != null && !(functionalAttrInst.getChildren().isEmpty()))
+					{
+						item.setAttributeValue("Product_c/Functional/Func_reject_on_create","Y");
+					}
+					
 					item.save();
 					logger.info("Set ECOM Approve flag attribute to false");
 
