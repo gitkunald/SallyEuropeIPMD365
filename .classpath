@@ -15,21 +15,11 @@
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/axis-wsdl4j-1.5.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/bdlayout-1.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/bigindex-3.2.6.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/ccd_common_logger.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/ccd_data_explorer.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/ccd_javaapi2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/ccd_sso.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/ccd_svr.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/ccd_trace_aspects.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/ccd_webapp.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/ccd_webapp_framework.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/ccd-axis-1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/cgd_svr.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/com.ibm.ccd.logging.parsers-1.0.3.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/commons-beanutils-1.9.4.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/commons-codec-1.12.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/commons-collections-3.2.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/commons-collections4-4.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/commons-compress-1.19.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/commons-configuration-1.9.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/commons-dbcp2-2.1.1.jar"/>
@@ -51,19 +41,9 @@
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/entity-model-2.1.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/FTPProtocol-2.01q.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/FTPUI-2.01q.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/gds-1worldsync_request.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/gds-1worldsync_response.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/gds-data-mapping.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/gds-datapool-properties.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/gds-gdsn_inbound.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/gds-gdsn_outbound.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/gds-message-registry.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/gds-migrationexpimp.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/gds-object-mapping.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/gson-2.8.5.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/guava-16.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/hamcrest-core-1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/hazelcast-3.12.5.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/hazelcast-client-3.12.5.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/icu4j-55.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/istack-commons-runtime-2.24.jar"/>
@@ -75,16 +55,13 @@
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/jaxb1-impl-2.2.5.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/jaxb-api-2.2.11.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/jaxb-core-2.2.11.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/jaxb-impl-2.2.11.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/jaxb-xjc-2.2.11.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/jcommander-1.30.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/joda-time-2.3.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/JSON4J-1.0.0.2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/jsonrpc-cvs-1.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/jsoup-1.11.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/machine-2.1.11.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/mdm_cache.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/mockito-core-1.9.5.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/namematcher-0.1.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/objenesis-1.0.jar"/>
@@ -93,18 +70,62 @@
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/Owasp.CsrfGuard-1.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/persistence-1.4.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/poi-4.0.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/poi-ooxml-4.0.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/poi-ooxml-schemas-4.0.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/poi-scratchpad-4.0.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/slf4j-api-1.7.5.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/slf4j-log4j12-1.7.5.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/struts-1.2.9.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/unboundid-ldapsdk-4.0.7.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/velocity-api-1.5.7.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/xalan-2.7.5.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/xercesImpl-4.4.6.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/xml-apis-1.0.b3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/xmlbeans-3.0.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/zookeeper-3.5.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/ant-1.10.9.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/axis-1.4-patched.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/ccd_common_logger.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/ccd_data_explorer.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/ccd_javaapi2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/ccd_svr.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/ccd_trace_aspects.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/ccd_webapp.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/ccd_webapp_framework.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/cgd_svr.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/commons-codec-1.13.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/commons-collections4-4.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/commons-compress-1.21.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/commons-io-2.11.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/commons-math3-3.6.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/dom4j-2.1.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/gds.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/gds-1worldsync_request.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/gds-1worldsync_response.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/gds-data-mapping.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/gds-datapool-properties.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/gds-ext.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/gds-gdsn_inbound.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/gds-gdsn_outbound.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/gds-message-registry.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/gds-migrationexpimp.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/gds-object-mapping.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/guava-30.0-jre.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/hazelcast-4.2.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/jackson-annotations-2.13.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/jackson-core-2.13.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/jackson-databind-2.13.2.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/jaxb-core-2.3.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/jaxb-impl-2.3.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/jcommander-1.75.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/joda-time-2.10.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/jsoup-1.14.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/log4j-api-2.17.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/log4j-core-2.17.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/log4j-slf4j-impl-2.17.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/log4j-web-2.17.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/mdm_cache.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/poi-4.1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/poi-ooxml-4.1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/poi-ooxml-schemas-4.1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/poi-scratchpad-4.1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/slf4j-api-1.7.32.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/struts-1.2.9-sp3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/xmlbeans-3.1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/slf4j-log4j12-1.7.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -109,13 +109,13 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
 			if (arg0.getCollaborationStep() != null) {
 
-				if (arg0.getCollaborationStep().getName().equalsIgnoreCase("01 Categorize Item")) {
+				if (arg0.getCollaborationStep().getName().equalsIgnoreCase("01 Categorise Item")) {
 
 					Collection<Category> categories = item.getCategories();
 
 					if (categories.isEmpty()) {
 						arg0.addValidationError(item.getAttributeInstance("Product_c/Sys_PIM_item_ID"),
-								ValidationError.Type.VALIDATION_RULE, "Items should be categorized in this step");
+								ValidationError.Type.VALIDATION_RULE, "Items should be categorised in this step");
 					}
 
 				}
