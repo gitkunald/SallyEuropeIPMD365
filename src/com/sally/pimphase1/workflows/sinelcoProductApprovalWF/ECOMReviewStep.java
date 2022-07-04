@@ -1,11 +1,9 @@
 package com.sally.pimphase1.workflows.sinelcoProductApprovalWF;
 
-import java.util.Date;
-
 //script_execution_mode=java_api="japi:///uploaded_java_classes/:com.sally.pimphase1.workflows.sinelcoProductApprovalWF.ECOMReviewStep.class"
 
-import org.apache.log4j.Logger;
-
+import java.util.Date;
+import org.apache.logging.log4j.*;
 import com.ibm.pim.attribute.AttributeInstance;
 import com.ibm.pim.collaboration.CollaborationItem;
 import com.ibm.pim.collaboration.CollaborationStepTransitionConfiguration;
@@ -16,7 +14,7 @@ import com.ibm.pim.workflow.ExitValue;
 
 public class ECOMReviewStep implements WorkflowStepFunction {
 	
-	private static Logger logger = Logger.getLogger(ECOMReviewStep.class);
+	private static Logger logger = LogManager.getLogger(ECOMReviewStep.class);
 
 	@Override
 	public void in(WorkflowStepFunctionArguments arg0) {

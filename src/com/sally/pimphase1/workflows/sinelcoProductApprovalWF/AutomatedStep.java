@@ -4,7 +4,7 @@ package com.sally.pimphase1.workflows.sinelcoProductApprovalWF;
 
 import java.util.Collection;
 import java.util.HashMap;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import com.ibm.pim.collaboration.CollaborationItem;
 import com.ibm.pim.collaboration.CollaborationStep;
 import com.ibm.pim.collaboration.ItemCollaborationArea;
@@ -15,7 +15,7 @@ import com.ibm.pim.workflow.ExitValue;
 
 public class AutomatedStep implements WorkflowStepFunction {
 	
-	Logger logger = Logger.getLogger(AutomatedStep.class);
+	Logger logger = LogManager.getLogger(AutomatedStep.class);
 
 	@Override
 	public void in(WorkflowStepFunctionArguments arg0) {

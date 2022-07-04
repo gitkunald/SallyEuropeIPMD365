@@ -2,8 +2,7 @@ package com.sally.pimphase1.workflows.sinelcoProductApprovalWF;
 
 //script_execution_mode=java_api="japi:///uploaded_java_classes/:com.sally.pimphase1.workflows.sinelcoProductApprovalWF.ValidateAndReviewStep.class"
 
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.*;
 import com.ibm.pim.collaboration.CollaborationItem;
 import com.ibm.pim.collaboration.CollaborationStep;
 import com.ibm.pim.collaboration.CollaborationStepTransitionConfiguration;
@@ -25,7 +24,7 @@ public class ValidateAndReviewStep implements WorkflowStepFunction {
 	public void out(WorkflowStepFunctionArguments arg0) {
 		// TODO Auto-generated method stub
 		
-		Logger logger = Logger.getLogger(ValidateAndReviewStep.class);
+		Logger logger = LogManager.getLogger(ValidateAndReviewStep.class);
 		logger.info("Entered out function of ValidateAndReviewStep");
 		
 		PIMCollection<CollaborationItem> objPIMCollection = arg0.getItems();

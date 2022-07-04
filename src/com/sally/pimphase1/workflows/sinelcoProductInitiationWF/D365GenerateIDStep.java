@@ -3,9 +3,7 @@ package com.sally.pimphase1.workflows.sinelcoProductInitiationWF;
 //script_execution_mode=java_api="japi:///uploaded_java_classes/:com.sally.pimphase1.workflows.sinelcoProductInitiationWF.D365GenerateIDStep.class"
 
 import java.util.Iterator;
-
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.*;
 import com.ibm.pim.collaboration.CollaborationArea;
 import com.ibm.pim.collaboration.CollaborationItem;
 import com.ibm.pim.collaboration.ItemCollaborationArea;
@@ -25,7 +23,7 @@ public class D365GenerateIDStep implements WorkflowStepFunction {
 
 	@Override
 	public void out(WorkflowStepFunctionArguments arg0) {
-		Logger logger = Logger.getLogger(D365GenerateIDStep.class);
+		Logger logger = LogManager.getLogger(D365GenerateIDStep.class);
 		logger.info("*** Start of OUT function of D365 Generate ID Step ***");
 		Context ctx = PIMContextFactory.getCurrentContext();
 		

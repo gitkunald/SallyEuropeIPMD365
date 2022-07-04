@@ -1,13 +1,12 @@
 package com.sally.pimphase1.prepostprocess;
 
+//script_execution_mode=java_api="japi:///uploaded_java_classes/:com.sally.pimphase1.prepostprocess.SallyEuropePreProcessScript.class"
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-
-//script_execution_mode=java_api="japi:///uploaded_java_classes/:com.sally.pimphase1.prepostprocess.SallyEuropePreProcessScript.class"
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 import com.ibm.pim.attribute.AttributeInstance;
 import com.ibm.pim.catalog.item.BaseItem;
@@ -25,7 +24,7 @@ import com.ibm.pim.hierarchy.category.Category;
 
 public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
-	private static Logger logger = Logger.getLogger(SallyEuropePreProcessScript.class);
+	private static Logger logger = LogManager.getLogger(SallyEuropePreProcessScript.class);
 	Context ctx = PIMContextFactory.getCurrentContext();
 
 	@Override

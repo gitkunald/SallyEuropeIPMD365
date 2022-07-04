@@ -1,11 +1,9 @@
 package com.sally.pimphase1.workflows.sinelcoProductApprovalWF;
 
-import java.util.Date;
-
 //script_execution_mode=java_api="japi:///uploaded_java_classes/:com.sally.pimphase1.workflows.sinelcoProductApprovalWF.LegalReviewStep.class"
 
-import org.apache.log4j.Logger;
-
+import java.util.Date;
+import org.apache.logging.log4j.*;
 import com.ibm.pim.attribute.AttributeInstance;
 import com.ibm.pim.collaboration.CollaborationItem;
 import com.ibm.pim.collaboration.CollaborationStepTransitionConfiguration;
@@ -13,11 +11,10 @@ import com.ibm.pim.collection.PIMCollection;
 import com.ibm.pim.extensionpoints.WorkflowStepFunction;
 import com.ibm.pim.extensionpoints.WorkflowStepFunctionArguments;
 import com.ibm.pim.workflow.ExitValue;
-import com.sally.pim.workflows.sinelcoStandaloneCreationWF.SinelcoLegalReviewStep;
 
 public class LegalReviewStep implements WorkflowStepFunction {
 	
-	private static Logger logger = Logger.getLogger(LegalReviewStep.class);
+	private static Logger logger = LogManager.getLogger(LegalReviewStep.class);
 
 	@Override
 	public void in(WorkflowStepFunctionArguments arg0) {

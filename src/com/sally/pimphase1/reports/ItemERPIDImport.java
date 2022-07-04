@@ -11,7 +11,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -39,7 +39,7 @@ import com.ibm.pim.search.SearchResultSet;
 
 public class ItemERPIDImport implements ReportGenerateFunction {
 
-	private static Logger logger = Logger.getLogger(ItemERPIDImport.class);
+	private static Logger logger = LogManager.getLogger(ItemERPIDImport.class);
 	Context ctx = PIMContextFactory.getCurrentContext();
 	Catalog sallyCatalog = ctx.getCatalogManager().getCatalog("Sally Europe");
 	HashMap<String, HashMap<String, String>> xmlValuesHashMap = new HashMap<>();
