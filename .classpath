@@ -127,5 +127,10 @@
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/struts-1.2.9-sp3.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/ipm_12.0.6_202205091804_update_from_12.0.0_202005050151/jars/xmlbeans-3.1.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/slf4j-log4j12-1.7.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/mitadmin1/Desktop/jar_files/azure-keyvault-core-1.0.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/mitadmin1/Desktop/jar_files/azure-storage-8.6.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/mitadmin1/Desktop/jar_files/commons-lang3-3.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/mitadmin1/Desktop/jar_files/guava-20.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/mitadmin1/Desktop/jar_files/jackson-core-2.9.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -60,9 +60,9 @@ public class CreateItemStep implements WorkflowStepFunction {
 		xmlStreamWriter.writeStartDocument();
 		xmlStreamWriter.writeStartElement("Product_Attributes_XML");
 
-		xmlStreamWriter.writeStartElement("Product_c");
+		xmlStreamWriter.writeStartElement("Product");
 		
-		xmlStreamWriter.writeStartElement("PIM_item_id");
+		xmlStreamWriter.writeStartElement("Sys_PIM_MDM_ID");
 		xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.PIM_MDM_ID) == null) ? ""
 				: item.getAttributeValue(Constants.PIM_MDM_ID).toString()));
 		xmlStreamWriter.writeEndElement();
@@ -72,7 +72,7 @@ public class CreateItemStep implements WorkflowStepFunction {
 				: item.getAttributeValue(Constants.PRODUCT_NAME).toString()));
 		xmlStreamWriter.writeEndElement();
 		
-		xmlStreamWriter.writeStartElement("Item_type");
+		xmlStreamWriter.writeStartElement("Type_item_type");
 		xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.ITEM_TYPE) == null) ? ""
 				: item.getAttributeValue(Constants.ITEM_TYPE).toString()));
 		xmlStreamWriter.writeEndElement();

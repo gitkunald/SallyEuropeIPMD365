@@ -79,7 +79,7 @@ public class ItemERPIDImport implements ReportGenerateFunction {
 
 					if (isERPIDUpdated) {
 
-						PIMCollection<CollaborationObject> contentsByAttributeValue = productInitiationCollabArea.getStep("02 D365 GenerateItemID").getContentsByAttributeValue("Product_c/Sys_PIM_item_ID", item.getPrimaryKey());
+						PIMCollection<CollaborationObject> contentsByAttributeValue = productInitiationCollabArea.getStep("02 D365 GenerateItemID").getContentsByAttributeValue("Product_c/Sys_PIM_MDM_ID", item.getPrimaryKey());
 
 						for (CollaborationObject collaborationObject : contentsByAttributeValue) {
 
