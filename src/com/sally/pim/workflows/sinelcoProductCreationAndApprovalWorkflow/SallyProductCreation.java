@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 import com.ibm.pim.attribute.AttributeInstance;
 import com.ibm.pim.collaboration.CollaborationArea;
@@ -36,7 +36,7 @@ public class SallyProductCreation implements WorkflowStepFunction {
 	@Override
 	public void out(WorkflowStepFunctionArguments inArgs) {
 
-		Logger logger = Logger.getLogger(SallyProductCreation.class);
+		Logger logger = LogManager.getLogger(SallyProductCreation.class);
 		logger.info("*** Start of OUT function of Create Step ***");
 		Context ctx = PIMContextFactory.getCurrentContext();
 		logger.info("Item Come in");

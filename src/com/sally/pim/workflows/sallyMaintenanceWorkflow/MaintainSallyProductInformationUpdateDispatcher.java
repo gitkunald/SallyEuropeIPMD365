@@ -12,11 +12,11 @@ import com.ibm.pim.organization.Role;
 import com.ibm.pim.workflow.ExitValue;
 import java.util.Collection;
 import java.util.HashMap;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 public class MaintainSallyProductInformationUpdateDispatcher implements WorkflowStepFunction{
 
-	private static Logger logger = Logger.getLogger(MaintainSallyProductInformationUpdateDispatcher.class);
+	private static Logger logger = LogManager.getLogger(MaintainSallyProductInformationUpdateDispatcher.class);
 	  
 	  Context objContext = null;
 	  

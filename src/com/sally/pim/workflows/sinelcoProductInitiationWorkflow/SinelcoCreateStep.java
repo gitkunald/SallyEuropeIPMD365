@@ -3,8 +3,8 @@ package com.sally.pim.workflows.sinelcoProductInitiationWorkflow;
 //script_execution_mode=java_api="japi:///uploaded_java_classes/:com.sally.pim.workflows.sinelcoProductInitiationWorkflow.SinelcoCreateStep.class"
 
 import java.util.Iterator;
+import org.apache.logging.log4j.*;
 
-import org.apache.log4j.Logger;
 import com.ibm.pim.attribute.AttributeInstance;
 import com.ibm.pim.collaboration.CollaborationArea;
 import com.ibm.pim.collaboration.CollaborationItem;
@@ -27,7 +27,7 @@ public class SinelcoCreateStep implements WorkflowStepFunction {
 	@Override
 	public void out(WorkflowStepFunctionArguments inArgs) {
 
-		Logger logger = Logger.getLogger(SinelcoCreateStep.class);
+		Logger logger = LogManager.getLogger(SinelcoCreateStep.class);
 		logger.info("*** Start of OUT function of Create Step ***");
 		Context ctx = PIMContextFactory.getCurrentContext();
 		

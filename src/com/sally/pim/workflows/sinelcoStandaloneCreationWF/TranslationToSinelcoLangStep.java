@@ -2,7 +2,7 @@ package com.sally.pim.workflows.sinelcoStandaloneCreationWF;
 
 //script_execution_mode=java_api="japi:///uploaded_java_classes/:com.sally.pim.workflows.sinelcoStandaloneCreationWF.TranslationToSinelcoLangStep.class"
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 import com.ibm.pim.collaboration.CollaborationItem;
 import com.ibm.pim.collaboration.CollaborationStep;
@@ -15,7 +15,7 @@ import com.ibm.pim.workflow.ExitValue;
 
 public class TranslationToSinelcoLangStep implements WorkflowStepFunction {
 	
-	Logger logger = Logger.getLogger(TranslationToSinelcoLangStep.class);
+	Logger logger = LogManager.getLogger(TranslationToSinelcoLangStep.class);
 
 	@Override
 	public void in(WorkflowStepFunctionArguments inArgs) {

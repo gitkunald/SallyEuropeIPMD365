@@ -21,12 +21,11 @@ import com.ibm.pim.organization.User;
 import com.ibm.pim.workflow.Workflow;
 import java.util.Collection;
 import java.util.Iterator;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 public class VendorOrgHierarchyPostSave implements PostSaveFunction {
 	  
-	  private static Logger logger = Logger.getLogger(VendorOrgHierarchyPostSave.class);
+	  private static Logger logger = LogManager.getLogger(VendorOrgHierarchyPostSave.class);
 	  
 	  @Override
 	  public void postsave(PostCategorySaveFunctionArguments inArgs) {

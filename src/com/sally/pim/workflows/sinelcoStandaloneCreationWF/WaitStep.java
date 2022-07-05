@@ -5,7 +5,7 @@ package com.sally.pim.workflows.sinelcoStandaloneCreationWF;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 import com.ibm.pim.collaboration.CollaborationItem;
 import com.ibm.pim.collaboration.CollaborationStep;
@@ -17,7 +17,7 @@ import com.ibm.pim.extensionpoints.WorkflowStepFunctionArguments;
 import com.ibm.pim.workflow.ExitValue;
 
 public class WaitStep implements WorkflowStepFunction {
-	Logger logger = Logger.getLogger(WaitStep.class);
+	Logger logger = LogManager.getLogger(WaitStep.class);
 
 	@Override
 	public void in(WorkflowStepFunctionArguments inArgs) {

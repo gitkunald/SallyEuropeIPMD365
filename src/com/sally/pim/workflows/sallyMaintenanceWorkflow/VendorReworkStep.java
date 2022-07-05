@@ -10,11 +10,11 @@ import com.ibm.pim.context.Context;
 import com.ibm.pim.context.PIMContextFactory;
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 public class VendorReworkStep implements WorkflowStepFunction{
 
-private static Logger logger = Logger.getLogger(VendorReworkStep.class);
+private static Logger logger = LogManager.getLogger(VendorReworkStep.class);
 	
 	@Override
 	public void in(WorkflowStepFunctionArguments arg0) {

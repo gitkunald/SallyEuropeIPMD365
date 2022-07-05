@@ -2,7 +2,7 @@ package com.sally.pim.validationRules;
 
 //script_execution_mode=java_api="japi:///uploaded_java_classes/:com.sally.pim.validationRules.BarcodeEachLevelValidation.class"
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 import com.ibm.pim.attribute.AttributeInstance;
 import com.ibm.pim.collaboration.CollaborationItem;
@@ -19,7 +19,7 @@ import com.ibm.pim.search.SearchResultSet;
 
 public class BarcodeEachLevelValidation implements ValidationRuleFunction {
 
-	private static Logger logger = Logger.getLogger(BarcodeEachLevelValidation.class);
+	private static Logger logger = LogManager.getLogger(BarcodeEachLevelValidation.class);
 
 	@Override
 	public boolean rule(ItemValidationRuleFunctionArguments inArgs) {

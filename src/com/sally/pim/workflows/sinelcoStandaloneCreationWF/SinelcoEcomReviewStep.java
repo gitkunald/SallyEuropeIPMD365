@@ -2,7 +2,7 @@ package com.sally.pim.workflows.sinelcoStandaloneCreationWF;
 
 //script_execution_mode=java_api="japi:///uploaded_java_classes/:com.sally.pim.workflows.sinelcoStandaloneCreationWF.SinelcoEcomReviewStep.class"
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 import com.ibm.pim.collaboration.CollaborationItem;
 import com.ibm.pim.collaboration.CollaborationStepTransitionConfiguration;
@@ -13,7 +13,7 @@ import com.ibm.pim.workflow.ExitValue;
 
 public class SinelcoEcomReviewStep implements WorkflowStepFunction {
 
-	private static Logger logger = Logger.getLogger(SinelcoEcomReviewStep.class);
+	private static Logger logger = LogManager.getLogger(SinelcoEcomReviewStep.class);
 
 	@Override
 	public void in(WorkflowStepFunctionArguments inArgs) {

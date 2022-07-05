@@ -1,7 +1,7 @@
 package com.sally.pim.workflows.sallyProductPublishWorkflow;
 
 //script_execution_mode=java_api="japi:///uploaded_java_classes/:com.sally.pim.workflows.sallyProductPublishWorkflow.SallyPublishWorkflowSuccessStep.class"
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 import com.ibm.pim.extensionpoints.WorkflowStepFunction;
 import com.ibm.pim.extensionpoints.WorkflowStepFunctionArguments;
@@ -29,7 +29,7 @@ import com.ibm.pim.docstore.Document;
 
 public class SallyPublishWorkflowSuccessStep implements WorkflowStepFunction {
 
-	private static Logger logger = Logger.getLogger(SallyPublishWorkflowSuccessStep.class);
+	private static Logger logger = LogManager.getLogger(SallyPublishWorkflowSuccessStep.class);
 
 	@Override
 	public void in(WorkflowStepFunctionArguments arg0) {

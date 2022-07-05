@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 import com.ibm.pim.attribute.AttributeInstance;
 import com.ibm.pim.collaboration.CollaborationItem;
@@ -23,7 +23,7 @@ import com.ibm.pim.workflow.ExitValue;
 
 public class ManageContentStep implements WorkflowStepFunction {
 
-	private static Logger logger = Logger.getLogger(ManageContentStep.class);
+	private static Logger logger = LogManager.getLogger(ManageContentStep.class);
 
 	@Override
 	public void in(WorkflowStepFunctionArguments arg0) {

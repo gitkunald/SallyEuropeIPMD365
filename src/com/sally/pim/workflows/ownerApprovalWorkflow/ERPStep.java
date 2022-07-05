@@ -17,17 +17,17 @@ import com.ibm.pim.workflow.ExitValue;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 public class ERPStep implements WorkflowStepFunction {
-	Logger logger = Logger.getLogger(ERPStep.class);
+	Logger logger = LogManager.getLogger(ERPStep.class);
 	Context ctx = PIMContextFactory.getCurrentContext();
 
 	public void in(WorkflowStepFunctionArguments inArgs) {
 	}
 
 	public void out(WorkflowStepFunctionArguments inArgs) {
-		Logger logger = Logger.getLogger(ERPStep.class);
+		Logger logger = LogManager.getLogger(ERPStep.class);
 		logger.info("*** Start of OUT function of Create Step ***");
 		Context ctx = PIMContextFactory.getCurrentContext();
 		PIMCollection<CollaborationItem> items = inArgs.getItems();

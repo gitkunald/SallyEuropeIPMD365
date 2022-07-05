@@ -12,7 +12,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 import com.ibm.pim.attribute.AttributeChanges;
 import com.ibm.pim.attribute.AttributeInstance;
@@ -32,7 +32,7 @@ import com.ibm.pim.search.SearchResultSet;
 
 public class SallyMaintenanceSuccessStep implements WorkflowStepFunction {
 
-	private static Logger logger = Logger.getLogger(SallyMaintenanceSuccessStep.class);
+	private static Logger logger = LogManager.getLogger(SallyMaintenanceSuccessStep.class);
 
 	@Override
 	public void in(WorkflowStepFunctionArguments arg0) {

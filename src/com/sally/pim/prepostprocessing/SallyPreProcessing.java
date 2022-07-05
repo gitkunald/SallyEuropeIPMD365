@@ -7,12 +7,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.*;
 
 import com.ibm.pim.search.SearchQuery;
 import com.ibm.pim.search.SearchResultSet;
-import com.vivisimo.gelato.stubs.ForEach;
 import com.ibm.pim.attribute.AttributeInstance;
 import com.ibm.pim.attribute.ExtendedAttributeChanges;
 import com.ibm.pim.catalog.Catalog;
@@ -41,7 +40,7 @@ import com.ibm.pim.organization.OrganizationHierarchy;
 
 public class SallyPreProcessing implements PrePostProcessingFunction {
 
-	private static Logger logger = Logger.getLogger(SallyPreProcessing.class);
+	private static Logger logger = LogManager.getLogger(SallyPreProcessing.class);
 	public static HashMap<String, CollaborationItem> hmBaseItemDetails = new HashMap<String, CollaborationItem>();
 	Context ctx = PIMContextFactory.getCurrentContext();
 	Catalog sallyCatalog = ctx.getCatalogManager().getCatalog("Sally_Products_Catalog");

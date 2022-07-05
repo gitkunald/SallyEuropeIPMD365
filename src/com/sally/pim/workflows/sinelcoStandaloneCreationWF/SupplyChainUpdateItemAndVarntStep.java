@@ -2,7 +2,7 @@ package com.sally.pim.workflows.sinelcoStandaloneCreationWF;
 
 //script_execution_mode=java_api="japi:///uploaded_java_classes/:com.sally.pim.workflows.sinelcoStandaloneCreationWF.SupplyChainUpdateItemAndVarntStep.class"
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 import com.ibm.pim.collaboration.CollaborationItem;
 import com.ibm.pim.collaboration.CollaborationStepTransitionConfiguration;
@@ -22,7 +22,7 @@ public class SupplyChainUpdateItemAndVarntStep implements WorkflowStepFunction {
 	@Override
 	public void out(WorkflowStepFunctionArguments inArgs) {
 
-		Logger logger = Logger.getLogger(SupplyChainUpdateItemAndVarntStep.class);
+		Logger logger = LogManager.getLogger(SupplyChainUpdateItemAndVarntStep.class);
 		logger.info("Entered out function of SupplyChainUpdateItemAndVarntStep");
 		
 		PIMCollection<CollaborationItem> objPIMCollection = inArgs.getItems();

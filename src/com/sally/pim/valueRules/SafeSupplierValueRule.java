@@ -1,7 +1,7 @@
 package com.sally.pim.valueRules;
 
 //script_execution_mode=java_api="japi:///uploaded_java_classes/:com.sally.pim.valueRules.SafeSupplierValueRule.class"
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 import com.ibm.pim.collaboration.CollaborationItem;
 import com.ibm.pim.context.Context;
@@ -17,7 +17,7 @@ import com.sally.pim.validationRules.BarcodeEachLevelValidation;
 
 public class SafeSupplierValueRule implements RunValueRuleFunction {
 
-	private static Logger logger = Logger.getLogger(SafeSupplierValueRule.class);
+	private static Logger logger = LogManager.getLogger(SafeSupplierValueRule.class);
 	Context context = PIMContextFactory.getCurrentContext();
 	@Override
 	public Object rule(ItemRunValueRuleFunctionArguments inArgs) {

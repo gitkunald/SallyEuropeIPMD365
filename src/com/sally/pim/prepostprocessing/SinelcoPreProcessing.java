@@ -5,7 +5,7 @@ package com.sally.pim.prepostprocessing;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import com.ibm.pim.attribute.AttributeInstance;
 import com.ibm.pim.collaboration.CollaborationItem;
 import com.ibm.pim.context.Context;
@@ -21,7 +21,7 @@ import com.ibm.pim.hierarchy.category.Category;
 
 public class SinelcoPreProcessing implements PrePostProcessingFunction {
 
-	private static Logger logger = Logger.getLogger(SinelcoPreProcessing.class);
+	private static Logger logger = LogManager.getLogger(SinelcoPreProcessing.class);
 	public static HashMap<String, CollaborationItem> hmBaseItemDetails = new HashMap<String, CollaborationItem>();
 
 	@Override

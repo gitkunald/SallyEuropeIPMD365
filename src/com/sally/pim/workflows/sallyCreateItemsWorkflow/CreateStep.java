@@ -2,7 +2,7 @@ package com.sally.pim.workflows.sallyCreateItemsWorkflow;
 
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 import com.ibm.pim.collaboration.CollaborationArea;
 import com.ibm.pim.collaboration.CollaborationItem;
@@ -27,7 +27,7 @@ public class CreateStep implements WorkflowStepFunction {
 	@Override
 	public void out(WorkflowStepFunctionArguments inArgs) {
 
-		Logger logger = Logger.getLogger(CreateStep.class);
+		Logger logger = LogManager.getLogger(CreateStep.class);
 		logger.info("*** Start of OUT function of Create Step ***");
 		Context ctx = PIMContextFactory.getCurrentContext();
 		

@@ -27,8 +27,8 @@ import java.util.Iterator;
 import java.text.SimpleDateFormat;
 import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.*;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -53,7 +53,7 @@ import com.ibm.pim.search.SearchResultSet;
 
 public class SallyCtgInitialImport implements ImportFunction {
 
-	private static Logger logger = Logger.getLogger(SallyCtgInitialImport.class);
+	private static Logger logger = LogManager.getLogger(SallyCtgInitialImport.class);
 	public static HashMap<String, Item> hmBaseItemDetails = new HashMap<String, Item>();
 	public static List<String> barcodeList = new ArrayList<>();
 	static Context ctx = PIMContextFactory.getCurrentContext();

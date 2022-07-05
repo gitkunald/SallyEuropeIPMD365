@@ -3,7 +3,7 @@ package com.sally.pim.workflows.sinelcoProductCreationAndApprovalWorkflow;
 import java.util.Collection;
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import com.ibm.pim.collaboration.CollaborationItem;
 import com.ibm.pim.collaboration.CollaborationObject;
 import com.ibm.pim.collaboration.CollaborationStepTransitionConfiguration;
@@ -16,7 +16,7 @@ public class SinelcoAutomation  implements WorkflowStepFunction {
 
 	@Override
 	public void in(WorkflowStepFunctionArguments arg0) {
-		Logger logger = Logger.getLogger(SinelcoAutomation.class);
+		Logger logger = LogManager.getLogger(SinelcoAutomation.class);
 		logger.info("AS400 Automation Starts");
 
 		HashMap<String, ExitValue> objHashMap = new HashMap<>();

@@ -10,7 +10,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 import com.ibm.pim.attribute.AttributeInstance;
 import com.ibm.pim.catalog.Catalog;
@@ -29,7 +29,7 @@ import com.sally.pim.workflows.sallyProductPublishWorkflow.SallyPublishWorkflowS
 
 public class SallyITAndVRPublish implements WorkflowStepFunction {
 
-	private static Logger logger = Logger.getLogger(SallyITAndVRPublish.class);
+	private static Logger logger = LogManager.getLogger(SallyITAndVRPublish.class);
 
 	@Override
 	public void in(WorkflowStepFunctionArguments arg0) {

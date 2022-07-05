@@ -1,7 +1,7 @@
 package com.sally.pim.workflows.sallyMaintenanceWorkflow;
 
 import com.ibm.pim.extensionpoints.WorkflowStepFunction;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 import com.ibm.pim.collaboration.CollaborationArea;
 import com.ibm.pim.collaboration.CollaborationItem;
@@ -15,7 +15,7 @@ import com.ibm.pim.lookuptable.LookupTableEntry;
 import com.ibm.pim.workflow.ExitValue;
 public class SallyOrVendorChange implements WorkflowStepFunction{
 
-	private static Logger logger = Logger.getLogger(SallyOrVendorChange.class);
+	private static Logger logger = LogManager.getLogger(SallyOrVendorChange.class);
 
 	Context objContext = null;
 	@Override

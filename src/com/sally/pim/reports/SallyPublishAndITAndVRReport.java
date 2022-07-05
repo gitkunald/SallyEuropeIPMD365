@@ -17,7 +17,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.xml.sax.SAXException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -48,7 +48,7 @@ import com.ibm.pim.search.SearchResultSet;
 
 public class SallyPublishAndITAndVRReport implements ReportGenerateFunction {
 
-	private static Logger logger = Logger.getLogger(SallyPublishAndITAndVRReport.class);
+	private static Logger logger = LogManager.getLogger(SallyPublishAndITAndVRReport.class);
 	Context ctx = PIMContextFactory.getCurrentContext();
 	Catalog sallyCatalog = ctx.getCatalogManager().getCatalog("Sally_Products_Catalog");
 	HashMap<String, HashMap<String, String>> xmlValuesHashMapAX2009 = new HashMap<>();

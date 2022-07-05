@@ -1,6 +1,6 @@
 package com.sally.pim.workflows.sinelcoStandaloneCreationWF;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 
 import com.ibm.pim.collaboration.CollaborationItem;
 import com.ibm.pim.collaboration.CollaborationStepTransitionConfiguration;
@@ -14,7 +14,7 @@ import com.ibm.pim.workflow.ExitValue;
 
 public class SinelcoLegalReviewStep implements WorkflowStepFunction {
 
-	private static Logger logger = Logger.getLogger(SinelcoLegalReviewStep.class);
+	private static Logger logger = LogManager.getLogger(SinelcoLegalReviewStep.class);
 
 	@Override
 	public void in(WorkflowStepFunctionArguments inArgs) {

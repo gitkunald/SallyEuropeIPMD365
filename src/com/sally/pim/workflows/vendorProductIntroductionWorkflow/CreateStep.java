@@ -18,7 +18,8 @@ import com.sally.pim.workflows.vendorProductIntroductionWorkflow.CreateStep;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.LogManager;
 
 public class CreateStep implements WorkflowStepFunction {
 
@@ -30,7 +31,7 @@ public class CreateStep implements WorkflowStepFunction {
 
 	@Override
 	public void out(WorkflowStepFunctionArguments inArgs) {
-		Logger logger = Logger.getLogger(CreateStep.class);
+		Logger logger = LogManager.getLogger(CreateStep.class);
 		logger.info("*** Start of OUT function of Vendor Product Introduction Workflow Create Step ***");
 		Context ctx = PIMContextFactory.getCurrentContext();
 	    PIMCollection<CollaborationItem> items = inArgs.getItems();

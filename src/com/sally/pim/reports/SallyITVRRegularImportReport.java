@@ -9,7 +9,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.*;
 import org.xml.sax.SAXException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -35,7 +35,7 @@ import com.ibm.pim.search.SearchResultSet;
 
 public class SallyITVRRegularImportReport implements ReportGenerateFunction {
 
-	private static Logger logger = Logger.getLogger(SallyPublishAndITAndVRReport.class);
+	private static Logger logger = LogManager.getLogger(SallyPublishAndITAndVRReport.class);
 	Context ctx = PIMContextFactory.getCurrentContext();
 	Catalog sallyCatalog = ctx.getCatalogManager().getCatalog("Sally_Products_Catalog");
 	HashMap<String, HashMap<String, String>> xmlValuesHashMap = new HashMap<>();
