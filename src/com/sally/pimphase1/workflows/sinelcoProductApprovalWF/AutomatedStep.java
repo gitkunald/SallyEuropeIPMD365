@@ -51,7 +51,7 @@ public class AutomatedStep implements WorkflowStepFunction {
 				
 				currentCollaborationArea.moveToNextStep(item, automatedStep, "Approve");
 				
-				logger.info("set exitValue to Done");
+				logger.info("set exitValue to Approve");
 			}
 			else
 			{
