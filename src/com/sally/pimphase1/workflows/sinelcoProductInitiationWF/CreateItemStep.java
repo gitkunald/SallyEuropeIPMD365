@@ -4,7 +4,7 @@ package com.sally.pimphase1.workflows.sinelcoProductInitiationWF;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.List;
+import java.util.Iterator;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -22,6 +22,13 @@ import com.ibm.pim.context.PIMContextFactory;
 import com.ibm.pim.docstore.Document;
 import com.ibm.pim.extensionpoints.WorkflowStepFunction;
 import com.ibm.pim.extensionpoints.WorkflowStepFunctionArguments;
+import com.ibm.pim.lookuptable.LookupTable;
+import com.ibm.pim.lookuptable.LookupTableEntry;
+import com.microsoft.azure.storage.CloudStorageAccount;
+import com.microsoft.azure.storage.file.CloudFile;
+import com.microsoft.azure.storage.file.CloudFileClient;
+import com.microsoft.azure.storage.file.CloudFileDirectory;
+import com.microsoft.azure.storage.file.CloudFileShare;
 
 public class CreateItemStep implements WorkflowStepFunction {
 	
@@ -55,7 +62,29 @@ public class CreateItemStep implements WorkflowStepFunction {
 	private void publishXML(Context ctx, Catalog sallyCatalog, StringWriter stringWriter,
 			XMLOutputFactory xmlOutputFactory, CollaborationItem item)
 			throws XMLStreamException, PIMSearchException, IOException {
+		LookupTable itmTypeLkpTable = ctx.getLookupTableManager().getLookupTable("AzureConstantsLookup");
+		PIMCollection<LookupTableEntry> lkpEntries = itmTypeLkpTable.getLookupTableEntries();
+		String storageConnectionString = "";
+		String localFilePath = "";
+		String fileShare = "";
+		String outboundWorkingDirectory = "";
 		
+		for (Iterator<LookupTableEntry> iterator = lkpEntries.iterator(); iterator.hasNext();) {
+			LookupTableEntry lookupTableEntry = (LookupTableEntry) iterator.next();
+			if(lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/key").toString().equalsIgnoreCase("storageConnectionString")) {
+				storageConnectionString = lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/value").toString();
+			}
+			if(lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/key").toString().equalsIgnoreCase("OutboundLocalFilePath")) {
+				localFilePath = lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/value").toString();
+			}
+			if(lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/key").toString().equalsIgnoreCase("fileShare")) {
+				fileShare = lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/value").toString();
+			}
+			if(lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/key").toString().equalsIgnoreCase("OutboundWorkingDirectory")) {
+				outboundWorkingDirectory = lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/value").toString();
+			}
+		}
+		logger.info("Connection Str : "+storageConnectionString+" localfilepath : "+localFilePath);
 		XMLStreamWriter xmlStreamWriter = xmlOutputFactory.createXMLStreamWriter(stringWriter);
 		xmlStreamWriter.writeStartDocument();
 		xmlStreamWriter.writeStartElement("Product_Attributes_XML");
@@ -88,24 +117,56 @@ public class CreateItemStep implements WorkflowStepFunction {
 		// Ending the Product Attributes XML Tag
 		xmlStreamWriter.writeEndElement();
 				
-				xmlStreamWriter.writeEndDocument();
-				xmlStreamWriter.flush();
-				xmlStreamWriter.close();
+		xmlStreamWriter.writeEndDocument();
+		xmlStreamWriter.flush();
+		xmlStreamWriter.close();
 
-				String xmlString = stringWriter.getBuffer().toString();
-				logger.info("XML is : " + xmlString);
-				logger.info("Executed .........");
-				logger.info("To Xml : " + item.toXml().toString());
-				Document doc = null;
-				
-					logger.info("Save the XML for Items");
-				doc = ctx.getDocstoreManager().createAndPersistDocument("/PIM_D365_Integration/OutBound/" + item.getPrimaryKey() + ".xml");
-				
-				if (doc != null) {
-					doc.setContent(xmlString);
-				}
-				stringWriter.close();
+		String xmlString = stringWriter.getBuffer().toString();
+		logger.info("XML is : " + xmlString);
+		logger.info("Executed .........");
+		logger.info("To Xml : " + item.toXml().toString());
+		Document doc = null;
 		
+		logger.info("Save the XML for Items");
+		doc = ctx.getDocstoreManager().createAndPersistDocument("/outbound/ItemCreation/Working/" + item.getPrimaryKey() + ".xml");
+		logger.info("XML Saved");
+		if (doc != null) {
+			doc.setContent(xmlString);
+		}
+		stringWriter.close();
+	
+		try {
+			logger.info("Executing the cloud code ..");
+            // Use the CloudStorageAccount object to connect to your storage account
+            CloudStorageAccount storageAccount = CloudStorageAccount.parse(storageConnectionString);
+
+            // Create the Azure Files client.
+            CloudFileClient fileClient = storageAccount.createCloudFileClient();
+
+            logger.info("End Point URI "+fileClient.getEndpoint());
+            logger.info("Path : "+(fileClient.getStorageUri().getPrimaryUri().toString()));
+
+            // Get a reference to the file share
+            CloudFileShare share = fileClient.getShareReference(fileShare);
+
+            logger.info("Share Name : "+share.getName());
+
+            // Get a reference to the root directory for the share.
+            CloudFileDirectory rootDir = share.getRootDirectoryReference();
+
+            // Get a reference to the working directory from root directory
+            CloudFileDirectory workingDir = rootDir.getDirectoryReference(outboundWorkingDirectory);
+
+            CloudFile cloudFile = workingDir.getFileReference(item.getPrimaryKey()+".xml");
+            logger.info("File : "+cloudFile);
+            //logger.info("Cloud File Text : "+cloudFile.downloadText());
+            cloudFile.uploadFromFile(localFilePath+item.getPrimaryKey()+".xml");
+            logger.info("Files uploaded successfully");  
+        }
+        catch(Exception e) {
+        	logger.info("Exception : "+e.getMessage());
+            e.printStackTrace();
+        }
 	}
 
 	@Override
