@@ -161,7 +161,9 @@ public class CreateItemStep implements WorkflowStepFunction {
             logger.info("File : "+cloudFile);
             //logger.info("Cloud File Text : "+cloudFile.downloadText());
             cloudFile.uploadFromFile(localFilePath+item.getPrimaryKey()+".xml");
-            logger.info("Files uploaded successfully");  
+            logger.info("File uploaded successfully");  
+            doc.moveTo("/outbound/ItemCreation/Archive/" + item.getPrimaryKey() + ".xml");
+            logger.info("File archived successfully"); 
         }
         catch(Exception e) {
         	logger.info("Exception : "+e.getMessage());

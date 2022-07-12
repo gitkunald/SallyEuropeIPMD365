@@ -267,12 +267,13 @@ public class ItemERPIDImport implements ReportGenerateFunction {
         						xmlValuesHashMap.put(pimId, hmValues);
 
         						logger.info("xmlValuesHashMap: " + xmlValuesHashMap);        						
-        						logger.info("Inbound archieve dir : "+inboundArchiveDirectory+"/"+fileName.substring(fileName.lastIndexOf("/") + 1));        						
-        						
-        						CloudFileDirectory archiveDirectory = rootDir.getDirectoryReference(inboundArchiveDirectory);
-        						CloudFile archiveFile = archiveDirectory.getFileReference(fileName.substring(fileName.lastIndexOf("/") + 1));
-        						archiveFile.startCopy(cloudFile);
+        						logger.info("Inbound archive dir : "+inboundArchiveDirectory+"/"+fileName.substring(fileName.lastIndexOf("/") + 1));
         					}
+        					CloudFileDirectory archiveDirectory = rootDir.getDirectoryReference(inboundArchiveDirectory);
+    						CloudFile archiveFile = archiveDirectory.getFileReference(fileName.substring(fileName.lastIndexOf("/") + 1));
+    						archiveFile.startCopy(cloudFile);
+    						logger.info("File archived successfully"); 
+    						cloudFile.delete();
         				}
             	    } catch (SAXException e) {
             	        // handle SAXException
