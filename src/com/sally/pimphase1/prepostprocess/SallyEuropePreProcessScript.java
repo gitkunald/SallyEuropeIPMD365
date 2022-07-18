@@ -676,28 +676,38 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
 				}
 
-//				AttributeInstance barcodeInst = item.getAttributeInstance("Product_c/Barcodes");
-//
-//				if (barcodeInst != null) {
-//					int barcodeSize = item.getAttributeInstance("Product_c/Barcodes").getChildren().size();
-//					logger.info("barcodeSize : " + barcodeSize);
-//
-//					if (barcodeSize > 0) {
-//
-//						for (int i = 0; i < barcodeSize; i++) {
-//
-//							String attrPath = "Product_c/Barcodes#" + i + "/Pack_barcode_number";
-//							String barcodeType = (String) item
-//									.getAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_type");
-//							String barcodeNumber = (String) item
-//									.getAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_number");
-//							if (barcodeType != null || barcodeNumber != null) {
-//								validateCheckDigitOfBarcodes(ctx, arg0, item, barcodeNumber, barcodeType, attrPath);
-//							}
-//						}
-//					}
-//
-//				}
+				AttributeInstance barcodeInst = item.getAttributeInstance("Product_c/Barcodes");
+
+				if (barcodeInst != null) {
+					int barcodeSize = item.getAttributeInstance("Product_c/Barcodes").getChildren().size();
+					logger.info("barcodeSize : " + barcodeSize);
+
+					if (barcodeSize > 0) {
+
+						for (int i = 0; i < barcodeSize; i++) {
+
+							String attrPath = "Product_c/Barcodes#" + i + "/Pack_barcode_number";
+							String barcodeType = (String) item
+									.getAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_type");
+							String barcodeNumber = (String) item
+									.getAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_number");
+							String substring = barcodeNumber.substring(0, barcodeNumber.lastIndexOf("E"));
+							String updatedBarcode = substring.replace(".", "");
+
+							if (barcodeNumber.equals(updatedBarcode)) {
+								barcodeNumber = updatedBarcode;
+
+								item.setAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_number",
+										updatedBarcode);
+							}
+
+							if (barcodeType != null || barcodeNumber != null) {
+								validateCheckDigitOfBarcodes(ctx, arg0, item, barcodeNumber, barcodeType, attrPath);
+							}
+						}
+					}
+
+				}
 
 			}
 		}
