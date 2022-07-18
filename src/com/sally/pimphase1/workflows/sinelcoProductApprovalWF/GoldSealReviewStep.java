@@ -52,6 +52,42 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 		for (CollaborationItem item : items) {
 			try {
 				publishXML(ctx, sallyCatalog, stringWriter, xmlOutputFactory, item);
+				
+				Object isECOMApproved = item.getAttributeValue("Product_c/is_ECOM_Approved");
+				Object isSCApproved = item.getAttributeValue("Product_c/is_SC_Approved");
+				Object isLegalApproved = item.getAttributeValue("Product_c/is_Legal_Approved");
+				Object funcReject = item.getAttributeValue("Product_c/Functional/Func_reject_on_create");
+				
+				if (isECOMApproved != null) {
+
+					item.setAttributeValue("Product_c/is_ECOM_Approved", "");
+					logger.info("clear ECOM flag attribute");
+
+				}
+				
+				if (isSCApproved != null) {
+
+					item.setAttributeValue("Product_c/is_SC_Approved", "");
+					logger.info("clear SC flag attribute");
+
+				}
+				
+				if (isLegalApproved != null) {
+
+					item.setAttributeValue("Product_c/is_Legal_Approved", "");
+					logger.info("clear Legal flag attribute");
+
+				}
+				
+				if (funcReject != null) {
+
+					item.setAttributeValue("Product_c/Functional/Func_reject_on_create", "");
+					logger.info("clear Reject flag attribute");
+
+				}
+	
+				item.save();
+				
 			} catch (Exception e) {
 				logger.info("Error in XML : " + e);
 			}

@@ -26,7 +26,7 @@ public class TranslationtoSinelcoLangStep implements WorkflowStepFunction {
 		ItemCollaborationArea currentCollaborationArea = (ItemCollaborationArea) arg0.getCollaborationStep()
 				.getCollaborationArea();
 
-		CollaborationStep translationStep = currentCollaborationArea.getStep("03 Translation to Sinelco Languages");
+		CollaborationStep translationStep = currentCollaborationArea.getStep("02 Translation to Sinelco Languages");
 
 		Collection<ExitValue> objCollExitValue = arg0.getCollaborationStep().getWorkflowStep().getExitValues();
 		HashMap<String, ExitValue> objHashMap = new HashMap<>();
@@ -67,7 +67,7 @@ public class TranslationtoSinelcoLangStep implements WorkflowStepFunction {
 
 		// 03 Translation to Sinelco Languages
 		// 04 Packaging And Art Work
-		CollaborationStep packagingStep = currentCollaborationArea.getStep("04 Packaging And Art Work");
+		CollaborationStep packagingStep = currentCollaborationArea.getStep("03 Packaging And Art Work");
 
 		Collection<ExitValue> objCollExitValue = arg0.getCollaborationStep().getWorkflowStep().getExitValues();
 		HashMap<String, ExitValue> objHashMap = new HashMap<>();

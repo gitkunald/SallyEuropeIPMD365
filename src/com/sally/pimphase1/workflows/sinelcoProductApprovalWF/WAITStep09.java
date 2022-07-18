@@ -20,14 +20,14 @@ public class WAITStep09 implements WorkflowStepFunction {
 	@Override
 	public void in(WorkflowStepFunctionArguments arg0) {
 		
-		logger.info("Entered In function of 08WaitStep");
+		logger.info("Entered In function of 07WaitStep");
 
 		PIMCollection<CollaborationItem> objPIMCollection = arg0.getItems();
 		
 		ItemCollaborationArea currentCollaborationArea = (ItemCollaborationArea) arg0.getCollaborationStep()
 				.getCollaborationArea();
 		
-		CollaborationStep waitStep = currentCollaborationArea.getStep("08 WAIT");
+		CollaborationStep waitStep = currentCollaborationArea.getStep("07 WAIT");
 
 		Collection<ExitValue> objCollExitValue = arg0.getCollaborationStep().getWorkflowStep().getExitValues();
 		HashMap<String, ExitValue> objHashMap = new HashMap<>();

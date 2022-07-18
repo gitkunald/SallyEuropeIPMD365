@@ -154,5 +154,10 @@ public class Constants {
 	public static final String SYS_UPDATED_DATE = "Product_c/PIM System/Sys_updated_date";
 	public static final String SYS_UPDATED_BY = "Product_c/PIM System/Sys_updated_by";
 	
+	
+	//Secondary Specs
+	//Sinelco_ss
+	
+	
 
 }
