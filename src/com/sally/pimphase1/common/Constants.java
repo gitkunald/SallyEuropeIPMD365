@@ -40,6 +40,11 @@ public class Constants {
 	public static final String BASE_COST_PRICE = "Product_c/ERP Operational/Base_cost/Price";
 	public static final String BASE_COST_CURRENCY = "Product_c/ERP Operational/Base_cost/Currency";
 	
+	public static final String ERP_BATCH_TRACKED_ITEM = "Product_c/ERP Operational/ERP_batch_tracked_item";
+	public static final String ERP_LEGAL_ENTITIES = "Product_c/ERP Operational/ERP_legal_entities";
+	
+	
+	
 	//Type
 	public static final String TYPE_KIT_LISTING = "Product_c/Type/Type_kit_listing";
 	public static final String ITEM_TYPE = "Product_c/Type/Type_item_type";
@@ -157,7 +162,25 @@ public class Constants {
 	
 	//Secondary Specs
 	//Sinelco_ss
+	public static final String LOCAL_PRODUCT_NAME_EN_GB = "Sinelco_ss/Descriptions/Local_product_name/en_GB";
+	public static final String LOCAL_PRODUCT_NAME_ES_ES = "Sinelco_ss/Descriptions/Local_product_name/es_ES";
+	public static final String LOCAL_PRODUCT_NAME_DA_DK = "Sinelco_ss/Descriptions/Local_product_name/da_DK";
+	public static final String LOCAL_PRODUCT_NAME_NL_NL = "Sinelco_ss/Descriptions/Local_product_name/nl_NL";
+	public static final String LOCAL_PRODUCT_NAME_PL_PL = "Sinelco_ss/Descriptions/Local_product_name/pl_PL";
+	public static final String LOCAL_PRODUCT_NAME_IT_IT = "Sinelco_ss/Descriptions/Local_product_name/it_IT";
+	public static final String LOCAL_PRODUCT_NAME_PT_PT = "Sinelco_ss/Descriptions/Local_product_name/pt_PT";
+	public static final String LOCAL_PRODUCT_NAME_FR_FR = "Sinelco_ss/Descriptions/Local_product_name/fr_FR";
+	public static final String LOCAL_PRODUCT_NAME_DE_DE = "Sinelco_ss/Descriptions/Local_product_name/de_DE";
 	
+	public static final String LOCAL_PRODUCT_DESCRIPTION_EN_GB = "Sinelco_ss/Descriptions/Local_product_description/en_GB";
+	public static final String LOCAL_PRODUCT_DESCRIPTION_ES_ES = "Sinelco_ss/Descriptions/Local_product_description/es_ES";
+	public static final String LOCAL_PRODUCT_DESCRIPTION_DA_DK = "Sinelco_ss/Descriptions/Local_product_description/da_DK";
+	public static final String LOCAL_PRODUCT_DESCRIPTION_NL_NL = "Sinelco_ss/Descriptions/Local_product_description/nl_NL";
+	public static final String LOCAL_PRODUCT_DESCRIPTION_PL_PL = "Sinelco_ss/Descriptions/Local_product_description/pl_PL";
+	public static final String LOCAL_PRODUCT_DESCRIPTION_IT_IT = "Sinelco_ss/Descriptions/Local_product_description/it_IT";
+	public static final String LOCAL_PRODUCT_DESCRIPTION_PT_PT = "Sinelco_ss/Descriptions/Local_product_description/pt_PT";
+	public static final String LOCAL_PRODUCT_DESCRIPTION_FR_FR = "Sinelco_ss/Descriptions/Local_product_description/fr_FR";
+	public static final String LOCAL_PRODUCT_DESCRIPTION_DE_DE = "Sinelco_ss/Descriptions/Local_product_description/de_DE";
 	
 
 }

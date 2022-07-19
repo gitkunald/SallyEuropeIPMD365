@@ -39,18 +39,20 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 		AttributeInstance attributeInstance = item.getAttributeInstance("Product_c/Regulatory and Legal/UN_number");
 		AttributeInstance unNameInstance = item.getAttributeInstance("Product_c/Regulatory and Legal/UN_name");
 		int size = attributeInstance.getChildren().size() - unNameInstance.getChildren().size();
-		for(int z=0; z<size; z++) {
+		for (int z = 0; z < size; z++) {
 			unNameInstance.addOccurrence();
 		}
 		PIMCollection<LookupTableEntry> hazardousLkpEntries = ctx.getLookupTableManager()
 				.getLookupTable("Hazardous Lookup Table").getLookupTableEntries();
-		if(attributeInstance != null && attributeInstance.getChildren().size() > 0) {
-			for(int x=0; x< attributeInstance.getChildren().size(); x++) {
+		if (attributeInstance != null && attributeInstance.getChildren().size() > 0) {
+			for (int x = 0; x < attributeInstance.getChildren().size(); x++) {
 				for (Iterator<LookupTableEntry> iterator = hazardousLkpEntries.iterator(); iterator.hasNext();) {
 					LookupTableEntry lookupTableEntry = (LookupTableEntry) iterator.next();
-					if(attributeInstance.getChildren().get(x).getValue() != null && 
-							attributeInstance.getChildren().get(x).getValue().toString().equalsIgnoreCase(lookupTableEntry.getAttributeValue("Hazardous_Lookup_Spec/un_number").toString())) {
-						item.setAttributeValue("Product_c/Regulatory and Legal/UN_name#"+x, lookupTableEntry.getAttributeValue("Hazardous_Lookup_Spec/un_name"));
+					if (attributeInstance.getChildren().get(x).getValue() != null
+							&& attributeInstance.getChildren().get(x).getValue().toString().equalsIgnoreCase(
+									lookupTableEntry.getAttributeValue("Hazardous_Lookup_Spec/un_number").toString())) {
+						item.setAttributeValue("Product_c/Regulatory and Legal/UN_name#" + x,
+								lookupTableEntry.getAttributeValue("Hazardous_Lookup_Spec/un_name"));
 						break;
 					}
 				}
@@ -241,18 +243,20 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 		AttributeInstance attributeInstance = item.getAttributeInstance("Product_c/Regulatory and Legal/UN_number");
 		AttributeInstance unNameInstance = item.getAttributeInstance("Product_c/Regulatory and Legal/UN_name");
 		int size = attributeInstance.getChildren().size() - unNameInstance.getChildren().size();
-		for(int z=0; z<size; z++) {
+		for (int z = 0; z < size; z++) {
 			unNameInstance.addOccurrence();
 		}
 		PIMCollection<LookupTableEntry> hazardousLkpEntries = ctx.getLookupTableManager()
 				.getLookupTable("Hazardous Lookup Table").getLookupTableEntries();
-		if(attributeInstance != null && attributeInstance.getChildren().size() > 0) {
-			for(int x=0; x< attributeInstance.getChildren().size(); x++) {
+		if (attributeInstance != null && attributeInstance.getChildren().size() > 0) {
+			for (int x = 0; x < attributeInstance.getChildren().size(); x++) {
 				for (Iterator<LookupTableEntry> iterator = hazardousLkpEntries.iterator(); iterator.hasNext();) {
 					LookupTableEntry lookupTableEntry = (LookupTableEntry) iterator.next();
-					if(attributeInstance.getChildren().get(x).getValue() != null && 
-							attributeInstance.getChildren().get(x).getValue().toString().equalsIgnoreCase(lookupTableEntry.getAttributeValue("Hazardous_Lookup_Spec/un_number").toString())) {
-						item.setAttributeValue("Product_c/Regulatory and Legal/UN_name#"+x, lookupTableEntry.getAttributeValue("Hazardous_Lookup_Spec/un_name"));
+					if (attributeInstance.getChildren().get(x).getValue() != null
+							&& attributeInstance.getChildren().get(x).getValue().toString().equalsIgnoreCase(
+									lookupTableEntry.getAttributeValue("Hazardous_Lookup_Spec/un_number").toString())) {
+						item.setAttributeValue("Product_c/Regulatory and Legal/UN_name#" + x,
+								lookupTableEntry.getAttributeValue("Hazardous_Lookup_Spec/un_name"));
 						break;
 					}
 				}
@@ -729,19 +733,34 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 							String attrPath = "Product_c/Barcodes#" + i + "/Pack_barcode_number";
 							String barcodeType = (String) item
 									.getAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_type");
-							String barcodeNumber = (String) item
+
+							logger.info("barcodeType : " + barcodeType);
+
+							Object barcodeNumObj = item
 									.getAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_number");
-							String substring = barcodeNumber.substring(0, barcodeNumber.lastIndexOf("E"));
-							String updatedBarcode = substring.replace(".", "");
+							logger.info("barcodeNumObj : " + barcodeNumObj);
+							String barcodeNumber = "";
 
-							if (barcodeNumber.equals(updatedBarcode)) {
-								barcodeNumber = updatedBarcode;
+							if (barcodeNumObj != null) {
+								barcodeNumber = (String) item
+										.getAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_number");
 
-								item.setAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_number",
-										updatedBarcode);
+								if (barcodeNumber.contains("E") || barcodeNumber.contains(".")) {
+									String substring = barcodeNumber.substring(0, barcodeNumber.lastIndexOf("E"));
+									String updatedBarcode = substring.replace(".", "");
+
+									if (!barcodeNumber.equals(updatedBarcode)) {
+										barcodeNumber = updatedBarcode;
+
+										item.setAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_number",
+												updatedBarcode);
+									}
+								}
+
 							}
 
-							if (barcodeType != null || barcodeNumber != null) {
+							logger.info("barcodeNumAfterUpdate : " + barcodeNumber);
+							if (barcodeType != null || barcodeNumObj != null) {
 								validateCheckDigitOfBarcodes(ctx, arg0, item, barcodeNumber, barcodeType, attrPath);
 							}
 						}
@@ -760,7 +779,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 		logger.info("Barcode : " + barcode);
 		logger.info("barcodeType : " + barcodeType);
 
-		if (barcode != null) {
+		if (barcode != null && !barcode.isEmpty()) {
 			if (barcodeType.equalsIgnoreCase("EAN8")) {
 				if (barcode.length() != 8) { // check to see if the input is 13 digits
 					arg0.addValidationError(collabItem.getAttributeInstance(collabItemPath),
