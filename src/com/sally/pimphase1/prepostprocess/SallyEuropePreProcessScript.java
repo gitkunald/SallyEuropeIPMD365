@@ -5,6 +5,7 @@ package com.sally.pimphase1.prepostprocess;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import org.apache.logging.log4j.*;
 
@@ -12,6 +13,7 @@ import com.ibm.pim.attribute.AttributeInstance;
 import com.ibm.pim.catalog.item.BaseItem;
 import com.ibm.pim.catalog.item.Item;
 import com.ibm.pim.collaboration.CollaborationItem;
+import com.ibm.pim.collection.PIMCollection;
 import com.ibm.pim.common.ValidationError;
 import com.ibm.pim.context.Context;
 import com.ibm.pim.context.PIMContextFactory;
@@ -21,6 +23,7 @@ import com.ibm.pim.extensionpoints.CollaborationItemPrePostProcessingFunctionArg
 import com.ibm.pim.extensionpoints.ItemPrePostProcessingFunctionArguments;
 import com.ibm.pim.extensionpoints.PrePostProcessingFunction;
 import com.ibm.pim.hierarchy.category.Category;
+import com.ibm.pim.lookuptable.LookupTableEntry;
 
 public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
@@ -30,9 +33,27 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 	@Override
 	public void prePostProcessing(ItemPrePostProcessingFunctionArguments arg0) {
 		logger.info("Inside item preprocess");
-
 		Item item = arg0.getItem();
-
+		AttributeInstance attributeInstance = item.getAttributeInstance("Product_c/Regulatory and Legal/UN_number");
+		AttributeInstance unNameInstance = item.getAttributeInstance("Product_c/Regulatory and Legal/UN_name");
+		int size = attributeInstance.getChildren().size() - unNameInstance.getChildren().size();
+		for(int z=0; z<size; z++) {
+			unNameInstance.addOccurrence();
+		}
+		PIMCollection<LookupTableEntry> hazardousLkpEntries = ctx.getLookupTableManager()
+				.getLookupTable("Hazardous Lookup Table").getLookupTableEntries();
+		if(attributeInstance != null && attributeInstance.getChildren().size() > 0) {
+			for(int x=0; x< attributeInstance.getChildren().size(); x++) {
+				for (Iterator<LookupTableEntry> iterator = hazardousLkpEntries.iterator(); iterator.hasNext();) {
+					LookupTableEntry lookupTableEntry = (LookupTableEntry) iterator.next();
+					if(attributeInstance.getChildren().get(x).getValue() != null && 
+							attributeInstance.getChildren().get(x).getValue().toString().equalsIgnoreCase(lookupTableEntry.getAttributeValue("Hazardous_Lookup_Spec/un_number").toString())) {
+						item.setAttributeValue("Product_c/Regulatory and Legal/UN_name#"+x, lookupTableEntry.getAttributeValue("Hazardous_Lookup_Spec/un_name"));
+						break;
+					}
+				}
+			}
+		}
 		if (item != null) {
 			Collection<Category> itemCategories = item.getCategories();
 			for (Category category : itemCategories) {
@@ -103,7 +124,26 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 	@Override
 	public void prePostProcessing(CollaborationItemPrePostProcessingFunctionArguments arg0) {
 		CollaborationItem item = arg0.getCollaborationItem();
-
+		AttributeInstance attributeInstance = item.getAttributeInstance("Product_c/Regulatory and Legal/UN_number");
+		AttributeInstance unNameInstance = item.getAttributeInstance("Product_c/Regulatory and Legal/UN_name");
+		int size = attributeInstance.getChildren().size() - unNameInstance.getChildren().size();
+		for(int z=0; z<size; z++) {
+			unNameInstance.addOccurrence();
+		}
+		PIMCollection<LookupTableEntry> hazardousLkpEntries = ctx.getLookupTableManager()
+				.getLookupTable("Hazardous Lookup Table").getLookupTableEntries();
+		if(attributeInstance != null && attributeInstance.getChildren().size() > 0) {
+			for(int x=0; x< attributeInstance.getChildren().size(); x++) {
+				for (Iterator<LookupTableEntry> iterator = hazardousLkpEntries.iterator(); iterator.hasNext();) {
+					LookupTableEntry lookupTableEntry = (LookupTableEntry) iterator.next();
+					if(attributeInstance.getChildren().get(x).getValue() != null && 
+							attributeInstance.getChildren().get(x).getValue().toString().equalsIgnoreCase(lookupTableEntry.getAttributeValue("Hazardous_Lookup_Spec/un_number").toString())) {
+						item.setAttributeValue("Product_c/Regulatory and Legal/UN_name#"+x, lookupTableEntry.getAttributeValue("Hazardous_Lookup_Spec/un_name"));
+						break;
+					}
+				}
+			}
+		}
 		if (item != null) {
 
 			if (arg0.getCollaborationStep() != null) {
