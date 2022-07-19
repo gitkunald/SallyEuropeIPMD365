@@ -26,7 +26,7 @@ public class AutomatedStep implements WorkflowStepFunction {
 		ItemCollaborationArea currentCollaborationArea = (ItemCollaborationArea) arg0.getCollaborationStep()
 				.getCollaborationArea();
 		
-		CollaborationStep automatedStep = currentCollaborationArea.getStep("10 Automated Step");
+		CollaborationStep automatedStep = currentCollaborationArea.getStep("09 Automated Step");
 
 		Collection<ExitValue> objCollExitValue = arg0.getCollaborationStep().getWorkflowStep().getExitValues();
 		HashMap<String, ExitValue> objHashMap = new HashMap<>();
@@ -65,46 +65,7 @@ public class AutomatedStep implements WorkflowStepFunction {
 	public void out(WorkflowStepFunctionArguments arg0) {
 		logger.info("Entered out function of Automated Step");
 
-		PIMCollection<CollaborationItem> objPIMCollection = arg0.getItems();
-
-		for (CollaborationItem item : objPIMCollection) {
-
-			Object isECOMApproved = item.getAttributeValue("Product_c/is_ECOM_Approved");
-			Object isSCApproved = item.getAttributeValue("Product_c/is_SC_Approved");
-			Object isLegalApproved = item.getAttributeValue("Product_c/is_Legal_Approved");
-			Object funcReject = item.getAttributeValue("Product_c/Functional/Func_reject_on_create");
-			
-			if (isECOMApproved != null) {
-
-				item.setAttributeValue("Product_c/is_ECOM_Approved", "");
-				logger.info("clear ECOM flag attribute");
-
-			}
-			
-			if (isSCApproved != null) {
-
-				item.setAttributeValue("Product_c/is_SC_Approved", "");
-				logger.info("clear SC flag attribute");
-
-			}
-			
-			if (isLegalApproved != null) {
-
-				item.setAttributeValue("Product_c/is_Legal_Approved", "");
-				logger.info("clear Legal flag attribute");
-
-			}
-			
-			if (funcReject != null) {
-
-				item.setAttributeValue("Product_c/Functional/Func_reject_on_create", "");
-				logger.info("clear Reject flag attribute");
-
-			}
-
-			
-			item.save();
-		}
+		
 
 	}
 

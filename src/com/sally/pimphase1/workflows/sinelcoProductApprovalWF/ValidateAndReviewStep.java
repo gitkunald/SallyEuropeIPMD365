@@ -38,11 +38,47 @@ public class ValidateAndReviewStep implements WorkflowStepFunction {
 				
 				ItemCollaborationArea currentCollaborationArea = (ItemCollaborationArea) arg0.getCollaborationStep()
 						.getCollaborationArea();
-				CollaborationStep sCReviewStep = currentCollaborationArea.getStep("06 Supply Chain review");
+				CollaborationStep sCReviewStep = currentCollaborationArea.getStep("04 Supply Chain review");
 				currentCollaborationArea.moveToNextStep(item, sCReviewStep, "Approve");
 				logger.info("Moved out of SC review step");
 
 			}
+			
+			Object isECOMApproved = item.getAttributeValue("Product_c/is_ECOM_Approved");
+			Object isSCApproved = item.getAttributeValue("Product_c/is_SC_Approved");
+			Object isLegalApproved = item.getAttributeValue("Product_c/is_Legal_Approved");
+			Object funcReject = item.getAttributeValue("Product_c/Functional/Func_reject_on_create");
+			
+			if (isECOMApproved != null) {
+
+				item.setAttributeValue("Product_c/is_ECOM_Approved", "");
+				logger.info("clear ECOM flag attribute");
+
+			}
+			
+			if (isSCApproved != null) {
+
+				item.setAttributeValue("Product_c/is_SC_Approved", "");
+				logger.info("clear SC flag attribute");
+
+			}
+			
+			if (isLegalApproved != null) {
+
+				item.setAttributeValue("Product_c/is_Legal_Approved", "");
+				logger.info("clear Legal flag attribute");
+
+			}
+			
+			if (funcReject != null) {
+
+				item.setAttributeValue("Product_c/Functional/Func_reject_on_create", "");
+				logger.info("clear Reject flag attribute");
+
+			}
+
+			
+			item.save();
 		}
 		
 		logger.info("Exit out function of ValidateAndReviewStep");
