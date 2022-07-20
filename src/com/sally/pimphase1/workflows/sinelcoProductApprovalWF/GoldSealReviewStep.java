@@ -869,7 +869,7 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 
 		// Sinelco_SS
 
-		xmlStreamWriter.writeStartElement("Descriptions");
+		xmlStreamWriter.writeStartElement("Localised_Descriptions");
 		xmlStreamWriter.writeStartElement("Local_product_name");
 		xmlStreamWriter.writeStartElement("en_GB");
 		xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_EN_GB) == null) ? ""
@@ -986,64 +986,64 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 			for (int x = 0; x < uspBulletInst.getChildren().size(); x++) {
 				xmlStreamWriter.writeStartElement("en_GB_" + x);
 				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points" + x + "/en_GB") == null) ? ""
-								: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points" + x + "/en_GB")
+						((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/en_GB") == null) ? ""
+								: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/en_GB")
 										.toString()));
 				xmlStreamWriter.writeEndElement();
 
 				xmlStreamWriter.writeStartElement("es_ES_" + x);
 				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points" + x + "/es_ES") == null) ? ""
-								: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points" + x + "/es_ES")
+						((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/es_ES") == null) ? ""
+								: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/es_ES")
 										.toString()));
 				xmlStreamWriter.writeEndElement();
 
 				xmlStreamWriter.writeStartElement("da_DK_" + x);
 				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points" + x + "/da_DK") == null) ? ""
-								: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points" + x + "/da_DK")
+						((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/da_DK") == null) ? ""
+								: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/da_DK")
 										.toString()));
 				xmlStreamWriter.writeEndElement();
 
 				xmlStreamWriter.writeStartElement("nl_NL_" + x);
 				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points" + x + "/nl_NL") == null) ? ""
-								: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points" + x + "/nl_NL")
+						((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/nl_NL") == null) ? ""
+								: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/nl_NL")
 										.toString()));
 				xmlStreamWriter.writeEndElement();
 
 				xmlStreamWriter.writeStartElement("pl_PL_" + x);
 				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points" + x + "/pl_PL") == null) ? ""
-								: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points" + x + "/pl_PL")
+						((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/pl_PL") == null) ? ""
+								: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/pl_PL")
 										.toString()));
 				xmlStreamWriter.writeEndElement();
 
 				xmlStreamWriter.writeStartElement("it_IT_" + x);
 				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points" + x + "/it_IT") == null) ? ""
-								: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points" + x + "/it_IT")
+						((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/it_IT") == null) ? ""
+								: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/it_IT")
 										.toString()));
 				xmlStreamWriter.writeEndElement();
 
 				xmlStreamWriter.writeStartElement("pt_PT_" + x);
 				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points" + x + "/pt_PT") == null) ? ""
-								: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points" + x + "/pt_PT")
+						((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/pt_PT") == null) ? ""
+								: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/pt_PT")
 										.toString()));
 				xmlStreamWriter.writeEndElement();
 
 				xmlStreamWriter.writeStartElement("fr_FR_" + x);
 				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points" + x + "/fr_FR") == null) ? ""
-								: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points" + x + "/fr_FR")
+						((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/fr_FR") == null) ? ""
+								: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/fr_FR")
 										.toString()));
 				xmlStreamWriter.writeEndElement();
 
 				xmlStreamWriter.writeStartElement("de_DE_" + x);
 				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points" + x + "/de_DE") == null) ? ""
-								: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points" + x + "/de_DE")
+						((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/de_DE") == null) ? ""
+								: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/de_DE")
 										.toString()));
 				xmlStreamWriter.writeEndElement();
 
@@ -1126,27 +1126,27 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 			for (int x = 0; x < catEditionInst.getChildren().size(); x++) {
 				xmlStreamWriter.writeStartElement("Catalogue_edition_" + x);
 				xmlStreamWriter.writeCharacters(((item.getAttributeValue(
-						"Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition" + x + "/Catalogue_edition") == null)
+						"Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition#" + x + "/Catalogue_edition") == null)
 								? ""
-								: item.getAttributeValue("Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition" + x
+								: item.getAttributeValue("Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition#" + x
 										+ "/Catalogue_edition").toString()));
 				xmlStreamWriter.writeEndElement();
 
 				xmlStreamWriter.writeStartElement("Page_number_" + x);
 				xmlStreamWriter.writeCharacters(((item.getAttributeValue(
-						"Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition" + x + "/Page_number") == null)
+						"Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition#" + x + "/Page_number") == null)
 								? ""
 								: item.getAttributeValue(
-										"Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition" + x + "/Page_number")
+										"Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition#" + x + "/Page_number")
 										.toString()));
 				xmlStreamWriter.writeEndElement();
 
 				xmlStreamWriter.writeStartElement("New_" + x);
 				xmlStreamWriter.writeCharacters(((item.getAttributeValue(
-						"Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition" + x + "/New") == null)
+						"Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition#" + x + "/New") == null)
 								? ""
 								: item.getAttributeValue(
-										"Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition" + x + "/New")
+										"Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition#" + x + "/New")
 										.toString()));
 				xmlStreamWriter.writeEndElement();
 
@@ -1172,7 +1172,7 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 		xmlStreamWriter.writeEndElement();
 
 		// Cat_collection_reference
-		xmlStreamWriter.writeStartElement("Sinelco Collections");
+		xmlStreamWriter.writeStartElement("Sinelco_Collections");
 
 		AttributeInstance sinelcoCollecInst = item
 				.getAttributeInstance("Sinelco_ss/Sinelco Collections/Cat_collection_reference");
@@ -1181,9 +1181,9 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 			for (int x = 0; x < sinelcoCollecInst.getChildren().size(); x++) {
 				xmlStreamWriter.writeStartElement("Cat_collection_reference_" + x);
 				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Sinelco_ss/Sinelco Collections/Cat_collection_reference" + x) == null)
+						((item.getAttributeValue("Sinelco_ss/Sinelco Collections/Cat_collection_reference#" + x) == null)
 								? ""
-								: item.getAttributeValue("Sinelco_ss/Sinelco Collections/Cat_collection_reference" + x)
+								: item.getAttributeValue("Sinelco_ss/Sinelco Collections/Cat_collection_reference#" + x)
 										.toString()));
 				xmlStreamWriter.writeEndElement();
 			}
