@@ -6,8 +6,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import org.apache.logging.log4j.*;
 import com.ibm.pim.collaboration.CollaborationItem;
-import com.ibm.pim.collaboration.CollaborationStep;
-import com.ibm.pim.collaboration.ItemCollaborationArea;
+import com.ibm.pim.collaboration.CollaborationObject;
+import com.ibm.pim.collaboration.CollaborationStepTransitionConfiguration;
 import com.ibm.pim.collection.PIMCollection;
 import com.ibm.pim.extensionpoints.WorkflowStepFunction;
 import com.ibm.pim.extensionpoints.WorkflowStepFunctionArguments;
@@ -19,17 +19,19 @@ public class AutomatedStep implements WorkflowStepFunction {
 
 	@Override
 	public void in(WorkflowStepFunctionArguments arg0) {
-		logger.info("Entered In function of AutomatedStep");
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void out(WorkflowStepFunctionArguments arg0) {
+		logger.info("Entered Out function of AutomatedStep");
 
 		PIMCollection<CollaborationItem> objPIMCollection = arg0.getItems();
 		
-		ItemCollaborationArea currentCollaborationArea = (ItemCollaborationArea) arg0.getCollaborationStep()
-				.getCollaborationArea();
-		
-		CollaborationStep automatedStep = currentCollaborationArea.getStep("09 Automated Step");
 
-		Collection<ExitValue> objCollExitValue = arg0.getCollaborationStep().getWorkflowStep().getExitValues();
 		HashMap<String, ExitValue> objHashMap = new HashMap<>();
+		CollaborationStepTransitionConfiguration objCollabStepTransConfig = arg0.getTransitionConfiguration();
+		Collection<ExitValue> objCollExitValue = arg0.getCollaborationStep().getWorkflowStep().getExitValues();
 
 		for (ExitValue exitValue : objCollExitValue) {
 			objHashMap.put(exitValue.toString(), exitValue);
@@ -49,23 +51,16 @@ public class AutomatedStep implements WorkflowStepFunction {
 					&& (isSCApproved != null && isSCApproved.equals(Boolean.TRUE))
 					&& (isECOMApproved != null && isECOMApproved.equals(Boolean.TRUE))) {
 				
-				currentCollaborationArea.moveToNextStep(item, automatedStep, "Approve");
+				
+				objCollabStepTransConfig.setExitValue((CollaborationObject) item, objHashMap.get("Approve"));
 				
 				logger.info("set exitValue to Approve");
 			}
 			else
 			{
-				currentCollaborationArea.moveToNextStep(item, automatedStep, "Reject");
+				objCollabStepTransConfig.setExitValue((CollaborationObject) item, objHashMap.get("Reject"));
 			}
 		}
-
-	}
-
-	@Override
-	public void out(WorkflowStepFunctionArguments arg0) {
-		logger.info("Entered out function of Automated Step");
-
-		
 
 	}
 

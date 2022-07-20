@@ -147,8 +147,6 @@ public class Constants {
 	public static final String COUNTRY_SPECIFIC_MIN_ORDER_QTY = "Product_c/Vendors/Country_specific_minimum_order_quantity";
 	
 	public static final String SERIAL_TRACKED_ITEM = "Product_c/Vendors/Serial_tracked_item";
-	public static final String ERP_LEGAL_ENTITIES = "Product_c/ERP Operational/ERP_legal_entities";
-	public static final String ERP_BATCH_TRACKED_ITEM = "Product_c/ERP Operational/ERP_batch_tracked_item";
 	public static final String VENDOR_PRODUCT_ID = "Product_c/Vendors/Vendor_product_ID";
 	public static final String SUPPLIER_LEAD_TIME = "Product_c/Vendors/Supplier_lead_time";
 	

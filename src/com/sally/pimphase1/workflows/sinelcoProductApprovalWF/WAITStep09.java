@@ -53,14 +53,6 @@ public class WAITStep09 implements WorkflowStepFunction {
 				logger.info("set exitValue to Done...");
 			}
 			
-//			else if ((isLegalApproved != null && isLegalApproved.equals(Boolean.TRUE))
-//					&& (isECOMApproved != null && isECOMApproved.equals(Boolean.TRUE)))
-//			{
-//				currentCollaborationArea.moveToNextStep(item, waitStep, "DONE");
-//				logger.info("set exitValue to Done");
-//				
-//			}
-
 		}
 	}
 

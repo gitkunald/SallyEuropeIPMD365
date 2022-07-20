@@ -96,7 +96,7 @@ public class ItemERPIDImport implements ReportGenerateFunction {
 									.getStep("02 D365 GenerateItemID").getCollaborationArea();
 
 							boolean moveToNextStep = sourceCollaborationArea.moveToNextStep((CollaborationItem) collaborationObject,productInitiationCollabArea.getStep("02 D365 GenerateItemID"), "DONE");
-
+							logger.info("moveToNextStep : "+moveToNextStep);
 						}
 					}
 

@@ -4,6 +4,7 @@ package com.sally.pimphase1.workflows.sinelcoProductApprovalWF;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import com.ibm.pim.context.PIMContextFactory;
 import com.ibm.pim.docstore.Document;
 import com.ibm.pim.extensionpoints.WorkflowStepFunction;
 import com.ibm.pim.extensionpoints.WorkflowStepFunctionArguments;
+import com.ibm.pim.hierarchy.category.Category;
 import com.ibm.pim.lookuptable.LookupTable;
 import com.ibm.pim.lookuptable.LookupTableEntry;
 import com.microsoft.azure.storage.CloudStorageAccount;
@@ -140,12 +142,24 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 				: item.getAttributeValue(Constants.PIM_MDM_ID).toString()));
 		xmlStreamWriter.writeEndElement();
 
+		Collection<Category> categories = item.getCategories();
+		xmlStreamWriter.writeStartElement("Category_Info");
+		for (Category category : categories) {
+			String hierName = category.getHierarchy().getName().replaceAll(" ", "_");
+				xmlStreamWriter.writeStartElement(hierName);
+				xmlStreamWriter.writeCharacters(((category.getAttributeValue("Product_h/category_name") == null) ? ""
+						: category.getAttributeValue("Product_h/category_name").toString()));
+				xmlStreamWriter.writeEndElement();
+			
+		}
+		xmlStreamWriter.writeEndElement();//Category_info End
+		
 		xmlStreamWriter.writeStartElement("Descriptions");
 		xmlStreamWriter.writeStartElement("Product_name");
 		xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.PRODUCT_NAME) == null) ? ""
 				: item.getAttributeValue(Constants.PRODUCT_NAME).toString()));
 		xmlStreamWriter.writeEndElement();
-
+		
 		xmlStreamWriter.writeStartElement("Search_name");
 		xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.SEARCH_NAME) == null) ? ""
 				: item.getAttributeValue(Constants.SEARCH_NAME).toString()));
@@ -400,15 +414,6 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 										.toString()));
 				xmlStreamWriter.writeEndElement();
 
-				xmlStreamWriter.writeStartElement("Value" + x);
-				xmlStreamWriter
-						.writeCharacters(((item.getAttributeValue(
-								Constants.PACKAGING_INNER_PACKAGING_MATERIAL + "#" + x + "/Value") == null)
-										? ""
-										: item.getAttributeValue(
-												Constants.PACKAGING_INNER_PACKAGING_MATERIAL + "#" + x + "/Value")
-												.toString()));
-				xmlStreamWriter.writeEndElement();
 			}
 		}
 
@@ -488,15 +493,6 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 										.toString()));
 				xmlStreamWriter.writeEndElement();
 
-				xmlStreamWriter.writeStartElement("Value" + x);
-				xmlStreamWriter
-						.writeCharacters(((item.getAttributeValue(
-								Constants.PACKAGING_OUTER_PACKAGING_MATERIAL + "#" + x + "/Value") == null)
-										? ""
-										: item.getAttributeValue(
-												Constants.PACKAGING_OUTER_PACKAGING_MATERIAL + "#" + x + "/Value")
-												.toString()));
-				xmlStreamWriter.writeEndElement();
 			}
 		}
 

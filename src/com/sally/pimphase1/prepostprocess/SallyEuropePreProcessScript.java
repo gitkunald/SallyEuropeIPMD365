@@ -275,7 +275,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 						for (Category category : itemCategories) {
 
 							String hierName = category.getHierarchy().getName();
-							logger.info("hierName CollabItem>> " + hierName);
+							logger.info("hierName CollabItem11111>> " + hierName);
 
 							if (hierName.equals("Product Hierarchy")) {
 								Object catCode = category.getAttributeValue("Product_h/category_code");
@@ -745,6 +745,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 								barcodeNumber = (String) item
 										.getAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_number");
 
+								logger.info("barcodeNumber>> : " + barcodeNumber);
 								if (barcodeNumber.contains("E") || barcodeNumber.contains(".")) {
 									String substring = barcodeNumber.substring(0, barcodeNumber.lastIndexOf("E"));
 									String updatedBarcode = substring.replace(".", "");
