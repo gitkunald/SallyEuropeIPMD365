@@ -81,6 +81,9 @@ public class Constants {
 	
 	//Barcode multi occurring grouping
 	public static final String BARCODES = "Product_c/Barcodes";
+	public static final String PACK_BARCODE_NUMBER = "Product_c/Barcodes#0/Pack_barcode_number";
+	public static final String PACK_BARCODE_TYPE = "Product_c/Barcodes#0/Pack_barcode_type";
+	public static final String PACK_BARCODE_UNIT = "Product_c/Barcodes#0/Pack_barcode_unit";
 	
 	//Warehouse
 	public static final String WAREHOUSE_OUTERS_PER_LAYER = "Product_c/Warehouse Attributes/Outers_per_layer";
@@ -139,6 +142,8 @@ public class Constants {
 	public static final String COUNTRY_SPECIFIC_MIN_ORDER_QTY = "Product_c/Vendors/Country_specific_minimum_order_quantity";
 	
 	public static final String SERIAL_TRACKED_ITEM = "Product_c/Vendors/Serial_tracked_item";
+	public static final String ERP_LEGAL_ENTITIES = "Product_c/ERP Operational/ERP_legal_entities";
+	public static final String ERP_BATCH_TRACKED_ITEM = "Product_c/ERP Operational/ERP_batch_tracked_item";
 	public static final String VENDOR_PRODUCT_ID = "Product_c/Vendors/Vendor_product_ID";
 	public static final String SUPPLIER_LEAD_TIME = "Product_c/Vendors/Supplier_lead_time";
 	

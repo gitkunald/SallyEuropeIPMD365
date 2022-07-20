@@ -91,7 +91,7 @@ public class CreateItemStep implements WorkflowStepFunction {
 
 		xmlStreamWriter.writeStartElement("Product");
 		
-		xmlStreamWriter.writeStartElement("Sys_PIM_MDM_ID");
+		xmlStreamWriter.writeStartElement("PIM_item_id");
 		xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.PIM_MDM_ID) == null) ? ""
 				: item.getAttributeValue(Constants.PIM_MDM_ID).toString()));
 		xmlStreamWriter.writeEndElement();
@@ -101,7 +101,7 @@ public class CreateItemStep implements WorkflowStepFunction {
 				: item.getAttributeValue(Constants.PRODUCT_NAME).toString()));
 		xmlStreamWriter.writeEndElement();
 		
-		xmlStreamWriter.writeStartElement("Type_item_type");
+		xmlStreamWriter.writeStartElement("Item_type");
 		xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.ITEM_TYPE) == null) ? ""
 				: item.getAttributeValue(Constants.ITEM_TYPE).toString()));
 		xmlStreamWriter.writeEndElement();
@@ -109,6 +109,41 @@ public class CreateItemStep implements WorkflowStepFunction {
 		xmlStreamWriter.writeStartElement("Serial_tracked_item");
 		xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.SERIAL_TRACKED_ITEM) == null) ? ""
 				: item.getAttributeValue(Constants.SERIAL_TRACKED_ITEM).toString()));
+		xmlStreamWriter.writeEndElement();
+		
+		xmlStreamWriter.writeStartElement("ERP_legal_entities");
+		xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.ERP_LEGAL_ENTITIES) == null) ? ""
+				: item.getAttributeValue(Constants.ERP_LEGAL_ENTITIES).toString()));
+		xmlStreamWriter.writeEndElement();
+		
+		xmlStreamWriter.writeStartElement("Pack_barcode_number");
+		xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.PACK_BARCODE_NUMBER) == null) ? ""
+				: item.getAttributeValue(Constants.PACK_BARCODE_NUMBER).toString()));
+		xmlStreamWriter.writeEndElement();
+		
+		xmlStreamWriter.writeStartElement("Pack_barcode_type");
+		xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.PACK_BARCODE_TYPE) == null) ? ""
+				: item.getAttributeValue(Constants.PACK_BARCODE_TYPE).toString()));
+		xmlStreamWriter.writeEndElement();
+		
+		xmlStreamWriter.writeStartElement("Pack_barcode_unit");
+		xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.PACK_BARCODE_UNIT) == null) ? ""
+				: item.getAttributeValue(Constants.PACK_BARCODE_UNIT).toString()));
+		xmlStreamWriter.writeEndElement();
+		
+		xmlStreamWriter.writeStartElement("ERP_batch_tracked_item");
+		xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.ERP_BATCH_TRACKED_ITEM) == null) ? ""
+				: item.getAttributeValue(Constants.ERP_BATCH_TRACKED_ITEM).toString()));
+		xmlStreamWriter.writeEndElement();
+		
+		xmlStreamWriter.writeStartElement("Category_code");
+		xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.ERP_CATEGORY_CODE) == null) ? ""
+				: item.getAttributeValue(Constants.ERP_CATEGORY_CODE).toString()));
+		xmlStreamWriter.writeEndElement();
+		
+		xmlStreamWriter.writeStartElement("Category_name");
+		xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.ERP_CATEGORY_NAME) == null) ? ""
+				: item.getAttributeValue(Constants.ERP_CATEGORY_NAME).toString()));
 		xmlStreamWriter.writeEndElement();
 
 		//End tag of Product_c
