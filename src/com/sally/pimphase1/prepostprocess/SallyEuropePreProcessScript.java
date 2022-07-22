@@ -507,7 +507,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 				if (itemTypeValue != null) {
 					if (itemTypeValue.toString().equals("Item")) {
 
-						if (arg0.getCollaborationStep().getName().equalsIgnoreCase("02 Enrich Item Data")) {
+						if (arg0.getCollaborationStep().getName().equalsIgnoreCase("01 Enrich Item Data")) {
 
 							for (String attrPath : attrPaths) {
 
