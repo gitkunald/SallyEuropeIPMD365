@@ -27,6 +27,7 @@ public class TranslationtoSinelcoLangStep implements WorkflowStepFunction {
 				.getCollaborationArea();
 
 		CollaborationStep translationStep = currentCollaborationArea.getStep("02 Translation to Sinelco Languages");
+		//CollaborationStep packagingStep = currentCollaborationArea.getStep("03 Packaging And Art Work");
 
 		Collection<ExitValue> objCollExitValue = arg0.getCollaborationStep().getWorkflowStep().getExitValues();
 		HashMap<String, ExitValue> objHashMap = new HashMap<>();
@@ -39,18 +40,18 @@ public class TranslationtoSinelcoLangStep implements WorkflowStepFunction {
 
 			Object translationRequired = item
 					.getAttributeValue("Sinelco_ss/Functional/Func_modify_translation_required");
-			Object packagingRequired = item.getAttributeValue("Sinelco_ss/Functional/Func_modify_packaging_required");
 
 			logger.info("translationRequired : "+translationRequired);
-			logger.info("packagingRequired : "+packagingRequired);
-			if (translationRequired != null && packagingRequired != null
-					&& translationRequired.toString().equalsIgnoreCase("N")
-					&& packagingRequired.toString().equalsIgnoreCase("Y")) {
+			
+			
+			if (translationRequired != null && translationRequired.toString().equalsIgnoreCase("N")) {
 				
 				currentCollaborationArea.moveToNextStep(item, translationStep, "DONE");
-				logger.info("Item moved out of translation step when only packaging is required");
+				logger.info("Item moved out of translation step in In method");
 
 			}
+			
+			
 
 		}
 
@@ -78,18 +79,14 @@ public class TranslationtoSinelcoLangStep implements WorkflowStepFunction {
 
 		for (CollaborationItem item : objPIMCollection) {
 
-			Object translationRequired = item
-					.getAttributeValue("Sinelco_ss/Functional/Func_modify_translation_required");
 			Object packagingRequired = item.getAttributeValue("Sinelco_ss/Functional/Func_modify_packaging_required");
 
-			logger.info("translationRequired : "+translationRequired);
 			logger.info("packagingRequired : "+packagingRequired);
-			if (translationRequired != null && packagingRequired != null
-					&& translationRequired.toString().equalsIgnoreCase("Y")
-					&& packagingRequired.toString().equalsIgnoreCase("N")) {
+			
+			if (packagingRequired != null && packagingRequired.toString().equalsIgnoreCase("N")) {
 				
 				currentCollaborationArea.moveToNextStep(item, packagingStep, "DONE");
-				logger.info("Item moved out of Packaging step when only translation is required");
+				logger.info("Item moved out of Packaging step in Out func");
 
 			}
 

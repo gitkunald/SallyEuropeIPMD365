@@ -62,6 +62,7 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 				Object isSCApproved = item.getAttributeValue("Product_c/is_SC_Approved");
 				Object isLegalApproved = item.getAttributeValue("Product_c/is_Legal_Approved");
 				Object funcReject = item.getAttributeValue("Product_c/Functional/Func_reject_on_create");
+				Object sinelcoFunAttrInst = item.getAttributeInstance("Sinelco_ss/Functional");
 
 				if (isECOMApproved != null) {
 
@@ -91,11 +92,32 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 
 				}
 
+				if(sinelcoFunAttrInst != null)
+				{
+					Object transRequired = item.getAttributeValue("Sinelco_ss/Functional/Func_modify_translation_required");
+					Object packagingRequired = item.getAttributeValue("Sinelco_ss/Functional/Func_modify_packaging_required");
+					
+					if (transRequired != null) {
+
+						item.setAttributeValue("Sinelco_ss/Functional/Func_modify_translation_required", "");
+						logger.info("clear Translation required attribute");
+
+					}
+					
+					if (packagingRequired != null) {
+
+						item.setAttributeValue("Sinelco_ss/Functional/Func_modify_packaging_required", "");
+						logger.info("clear packaging required attribute");
+
+					}
+				}
+				
 				item.save();
 
 			} catch (Exception e) {
 				logger.info("Error in XML : " + e);
 				logger.info("Error in XML Msg : " + e.getMessage());
+				e.printStackTrace();
 			}
 		}
 
@@ -875,569 +897,619 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 
 		// Sinelco_SS
 
-		logger.info("Sinelco Secon Spec details");
-			xmlStreamWriter.writeStartElement("Localised_Descriptions");
-			xmlStreamWriter.writeStartElement("Local_product_name");
-			xmlStreamWriter.writeStartElement("en_GB");
-//			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_EN_GB) == null) ? ""
-//					: item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_EN_GB).toString()));
-			xmlStreamWriter.writeCharacters(((item.getAttributeInstance(Constants.LOCAL_PRODUCT_NAME_EN_GB) == null) ? ""
-					: item.getAttributeInstance(Constants.LOCAL_PRODUCT_NAME_EN_GB).getValue().toString()));
-			xmlStreamWriter.writeEndElement();
+		Collection<Spec> specs = item.getSpecs();
+		
+		logger.info("specs >> "+specs);
+		
+		for (Spec spec : specs) {
 
-			xmlStreamWriter.writeStartElement("es_ES");
-//			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_ES_ES) == null) ? ""
-//					: item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_ES_ES).toString()));
-			xmlStreamWriter.writeCharacters(((item.getAttributeInstance(Constants.LOCAL_PRODUCT_NAME_ES_ES) == null) ? ""
-					: item.getAttributeInstance(Constants.LOCAL_PRODUCT_NAME_ES_ES).getValue().toString()));
-			xmlStreamWriter.writeEndElement();
+			logger.info("Sinelco Secon Spec details");
 
-			xmlStreamWriter.writeStartElement("da_DK");
-			xmlStreamWriter.writeCharacters(((item.getAttributeInstance(Constants.LOCAL_PRODUCT_NAME_DA_DK) == null) ? ""
-					: item.getAttributeInstance(Constants.LOCAL_PRODUCT_NAME_DA_DK).getValue().toString()));
-			xmlStreamWriter.writeEndElement();
+			if (spec.getName().contains("Sinelco_ss")) {
 
-			xmlStreamWriter.writeStartElement("nl_NL");
-			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_NL_NL) == null) ? ""
-					: item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_NL_NL).toString()));
-			xmlStreamWriter.writeEndElement();
+				AttributeInstance localProdNameInst = item
+						.getAttributeInstance("Sinelco_ss/Descriptions/Local_product_name");
 
-			xmlStreamWriter.writeStartElement("pl_PL");
-			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_PL_PL) == null) ? ""
-					: item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_PL_PL).toString()));
-			xmlStreamWriter.writeEndElement();
+				xmlStreamWriter.writeStartElement("Localised_Descriptions");
+				if (localProdNameInst != null) {
+					xmlStreamWriter.writeStartElement("Local_product_name");
+					xmlStreamWriter.writeStartElement("en_GB");
+					xmlStreamWriter
+							.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_EN_GB) == null) ? ""
+									: item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_EN_GB).toString()));
+					xmlStreamWriter.writeEndElement();
 
-			xmlStreamWriter.writeStartElement("it_IT");
-			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_IT_IT) == null) ? ""
-					: item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_IT_IT).toString()));
-			xmlStreamWriter.writeEndElement();
+					xmlStreamWriter.writeStartElement("es_ES");
+					xmlStreamWriter
+							.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_ES_ES) == null) ? ""
+									: item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_ES_ES).toString()));
+					xmlStreamWriter.writeEndElement();
 
-			xmlStreamWriter.writeStartElement("pt_PT");
-			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_PT_PT) == null) ? ""
-					: item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_PT_PT).toString()));
-			xmlStreamWriter.writeEndElement();
-
-			xmlStreamWriter.writeStartElement("fr_FR");
-			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_FR_FR) == null) ? ""
-					: item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_FR_FR).toString()));
-			xmlStreamWriter.writeEndElement();
-
-			xmlStreamWriter.writeStartElement("de_DE");
-			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_DE_DE) == null) ? ""
-					: item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_DE_DE).toString()));
-			xmlStreamWriter.writeEndElement();
-
-			xmlStreamWriter.writeEndElement();// Local_Product_name end
-
-			xmlStreamWriter.writeStartElement("Local_product_description");
-			xmlStreamWriter.writeStartElement("en_GB");
-			xmlStreamWriter
-					.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_EN_GB) == null) ? ""
-							: item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_EN_GB).toString()));
-			xmlStreamWriter.writeEndElement();
-
-			xmlStreamWriter.writeStartElement("es_ES");
-			xmlStreamWriter
-					.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_ES_ES) == null) ? ""
-							: item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_ES_ES).toString()));
-			xmlStreamWriter.writeEndElement();
-
-			xmlStreamWriter.writeStartElement("da_DK");
-			xmlStreamWriter
-					.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_DA_DK) == null) ? ""
-							: item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_DA_DK).toString()));
-			xmlStreamWriter.writeEndElement();
-
-			xmlStreamWriter.writeStartElement("nl_NL");
-			xmlStreamWriter
-					.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_NL_NL) == null) ? ""
-							: item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_NL_NL).toString()));
-			xmlStreamWriter.writeEndElement();
-
-			xmlStreamWriter.writeStartElement("pl_PL");
-			xmlStreamWriter
-					.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_PL_PL) == null) ? ""
-							: item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_PL_PL).toString()));
-			xmlStreamWriter.writeEndElement();
-
-			xmlStreamWriter.writeStartElement("it_IT");
-			xmlStreamWriter
-					.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_IT_IT) == null) ? ""
-							: item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_IT_IT).toString()));
-			xmlStreamWriter.writeEndElement();
-
-			xmlStreamWriter.writeStartElement("pt_PT");
-			xmlStreamWriter
-					.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_PT_PT) == null) ? ""
-							: item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_PT_PT).toString()));
-			xmlStreamWriter.writeEndElement();
-
-			xmlStreamWriter.writeStartElement("fr_FR");
-			xmlStreamWriter
-					.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_FR_FR) == null) ? ""
-							: item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_FR_FR).toString()));
-			xmlStreamWriter.writeEndElement();
-
-			xmlStreamWriter.writeStartElement("de_DE");
-			xmlStreamWriter
-					.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_DE_DE) == null) ? ""
-							: item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_DE_DE).toString()));
-			xmlStreamWriter.writeEndElement();
-
-			xmlStreamWriter.writeEndElement();// Local_product_description end
-
-			xmlStreamWriter.writeEndElement();// Descriptions end
-
-			// USP
-			xmlStreamWriter.writeStartElement("USP_bullet_points");
-
-			AttributeInstance uspBulletInst = item.getAttributeInstance("Sinelco_ss/USPs/USP_bullet_points");
-
-			if (uspBulletInst != null) {
-				for (int x = 0; x < uspBulletInst.getChildren().size(); x++) {
-					xmlStreamWriter.writeStartElement("en_GB_" + x);
+					xmlStreamWriter.writeStartElement("da_DK");
 					xmlStreamWriter.writeCharacters(
-							((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/en_GB") == null) ? ""
-									: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/en_GB")
+							((item.getAttributeInstance(Constants.LOCAL_PRODUCT_NAME_DA_DK) == null) ? ""
+									: item.getAttributeInstance(Constants.LOCAL_PRODUCT_NAME_DA_DK).getValue()
 											.toString()));
 					xmlStreamWriter.writeEndElement();
 
-					xmlStreamWriter.writeStartElement("es_ES_" + x);
+					xmlStreamWriter.writeStartElement("nl_NL");
+					xmlStreamWriter
+							.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_NL_NL) == null) ? ""
+									: item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_NL_NL).toString()));
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("pl_PL");
+					xmlStreamWriter
+							.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_PL_PL) == null) ? ""
+									: item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_PL_PL).toString()));
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("it_IT");
+					xmlStreamWriter
+							.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_IT_IT) == null) ? ""
+									: item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_IT_IT).toString()));
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("pt_PT");
+					xmlStreamWriter
+							.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_PT_PT) == null) ? ""
+									: item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_PT_PT).toString()));
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("fr_FR");
+					xmlStreamWriter
+							.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_FR_FR) == null) ? ""
+									: item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_FR_FR).toString()));
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("de_DE");
+					xmlStreamWriter
+							.writeCharacters(((item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_DE_DE) == null) ? ""
+									: item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_DE_DE).toString()));
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeEndElement();// Local_Product_name end
+				}
+
+				logger.info("LocalProdName exported");
+
+				AttributeInstance localProdDescInst = item
+						.getAttributeInstance("Sinelco_ss/Descriptions/Local_product_description");
+
+				if (localProdDescInst != null) {
+					xmlStreamWriter.writeStartElement("Local_product_description");
+					xmlStreamWriter.writeStartElement("en_GB");
 					xmlStreamWriter.writeCharacters(
-							((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/es_ES") == null) ? ""
-									: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/es_ES")
+							((item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_EN_GB) == null) ? ""
+									: item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_EN_GB).toString()));
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("es_ES");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_ES_ES) == null) ? ""
+									: item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_ES_ES).toString()));
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("da_DK");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_DA_DK) == null) ? ""
+									: item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_DA_DK).toString()));
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("nl_NL");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_NL_NL) == null) ? ""
+									: item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_NL_NL).toString()));
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("pl_PL");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_PL_PL) == null) ? ""
+									: item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_PL_PL).toString()));
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("it_IT");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_IT_IT) == null) ? ""
+									: item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_IT_IT).toString()));
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("pt_PT");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_PT_PT) == null) ? ""
+									: item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_PT_PT).toString()));
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("fr_FR");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_FR_FR) == null) ? ""
+									: item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_FR_FR).toString()));
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("de_DE");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_DE_DE) == null) ? ""
+									: item.getAttributeValue(Constants.LOCAL_PRODUCT_DESCRIPTION_DE_DE).toString()));
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeEndElement();// Local_product_description end
+				}
+
+				logger.info("Local Prod Desc exported");
+
+				xmlStreamWriter.writeEndElement();// Descriptions end
+
+				// USP
+				xmlStreamWriter.writeStartElement("USP_bullet_points");
+
+				AttributeInstance uspBulletInst = item.getAttributeInstance("Sinelco_ss/USPs/USP_bullet_points");
+
+				if (uspBulletInst != null) {
+					for (int x = 0; x < uspBulletInst.getChildren().size(); x++) {
+						xmlStreamWriter.writeStartElement("en_GB_" + x);
+						xmlStreamWriter.writeCharacters(
+								((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/en_GB") == null)
+										? ""
+										: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/en_GB")
+												.toString()));
+						xmlStreamWriter.writeEndElement();
+
+						xmlStreamWriter.writeStartElement("es_ES_" + x);
+						xmlStreamWriter.writeCharacters(
+								((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/es_ES") == null)
+										? ""
+										: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/es_ES")
+												.toString()));
+						xmlStreamWriter.writeEndElement();
+
+						xmlStreamWriter.writeStartElement("da_DK_" + x);
+						xmlStreamWriter.writeCharacters(
+								((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/da_DK") == null)
+										? ""
+										: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/da_DK")
+												.toString()));
+						xmlStreamWriter.writeEndElement();
+
+						xmlStreamWriter.writeStartElement("nl_NL_" + x);
+						xmlStreamWriter.writeCharacters(
+								((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/nl_NL") == null)
+										? ""
+										: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/nl_NL")
+												.toString()));
+						xmlStreamWriter.writeEndElement();
+
+						xmlStreamWriter.writeStartElement("pl_PL_" + x);
+						xmlStreamWriter.writeCharacters(
+								((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/pl_PL") == null)
+										? ""
+										: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/pl_PL")
+												.toString()));
+						xmlStreamWriter.writeEndElement();
+
+						xmlStreamWriter.writeStartElement("it_IT_" + x);
+						xmlStreamWriter.writeCharacters(
+								((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/it_IT") == null)
+										? ""
+										: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/it_IT")
+												.toString()));
+						xmlStreamWriter.writeEndElement();
+
+						xmlStreamWriter.writeStartElement("pt_PT_" + x);
+						xmlStreamWriter.writeCharacters(
+								((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/pt_PT") == null)
+										? ""
+										: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/pt_PT")
+												.toString()));
+						xmlStreamWriter.writeEndElement();
+
+						xmlStreamWriter.writeStartElement("fr_FR_" + x);
+						xmlStreamWriter.writeCharacters(
+								((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/fr_FR") == null)
+										? ""
+										: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/fr_FR")
+												.toString()));
+						xmlStreamWriter.writeEndElement();
+
+						xmlStreamWriter.writeStartElement("de_DE_" + x);
+						xmlStreamWriter.writeCharacters(
+								((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/de_DE") == null)
+										? ""
+										: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/de_DE")
+												.toString()));
+						xmlStreamWriter.writeEndElement();
+
+					}
+				}
+
+				xmlStreamWriter.writeEndElement();// USP Bullet points end
+				logger.info("USP Bullet points exported");
+
+				// USP Features and Benefits
+				xmlStreamWriter.writeStartElement("USP_features_and_benefits");
+
+				AttributeInstance uspFeaturesInst = item
+						.getAttributeInstance("Sinelco_ss/USPs/USP_features_and_benefits");
+
+				if (uspFeaturesInst != null) {
+
+					xmlStreamWriter.writeStartElement("en_GB");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/en_GB") == null) ? ""
+									: item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/en_GB")
 											.toString()));
 					xmlStreamWriter.writeEndElement();
 
-					xmlStreamWriter.writeStartElement("da_DK_" + x);
+					xmlStreamWriter.writeStartElement("es_ES");
 					xmlStreamWriter.writeCharacters(
-							((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/da_DK") == null) ? ""
-									: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/da_DK")
+							((item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/es_ES") == null) ? ""
+									: item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/es_ES")
 											.toString()));
 					xmlStreamWriter.writeEndElement();
 
-					xmlStreamWriter.writeStartElement("nl_NL_" + x);
+					xmlStreamWriter.writeStartElement("da_DK");
 					xmlStreamWriter.writeCharacters(
-							((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/nl_NL") == null) ? ""
-									: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/nl_NL")
+							((item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/da_DK") == null) ? ""
+									: item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/da_DK")
 											.toString()));
 					xmlStreamWriter.writeEndElement();
 
-					xmlStreamWriter.writeStartElement("pl_PL_" + x);
+					xmlStreamWriter.writeStartElement("nl_NL");
 					xmlStreamWriter.writeCharacters(
-							((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/pl_PL") == null) ? ""
-									: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/pl_PL")
+							((item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/nl_NL") == null) ? ""
+									: item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/nl_NL")
 											.toString()));
 					xmlStreamWriter.writeEndElement();
 
-					xmlStreamWriter.writeStartElement("it_IT_" + x);
+					xmlStreamWriter.writeStartElement("pl_PL");
 					xmlStreamWriter.writeCharacters(
-							((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/it_IT") == null) ? ""
-									: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/it_IT")
+							((item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/pl_PL") == null) ? ""
+									: item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/pl_PL")
 											.toString()));
 					xmlStreamWriter.writeEndElement();
 
-					xmlStreamWriter.writeStartElement("pt_PT_" + x);
+					xmlStreamWriter.writeStartElement("it_IT");
 					xmlStreamWriter.writeCharacters(
-							((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/pt_PT") == null) ? ""
-									: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/pt_PT")
+							((item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/it_IT") == null) ? ""
+									: item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/it_IT")
 											.toString()));
 					xmlStreamWriter.writeEndElement();
 
-					xmlStreamWriter.writeStartElement("fr_FR_" + x);
+					xmlStreamWriter.writeStartElement("pt_PT");
 					xmlStreamWriter.writeCharacters(
-							((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/fr_FR") == null) ? ""
-									: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/fr_FR")
+							((item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/pt_PT") == null) ? ""
+									: item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/pt_PT")
 											.toString()));
 					xmlStreamWriter.writeEndElement();
 
-					xmlStreamWriter.writeStartElement("de_DE_" + x);
+					xmlStreamWriter.writeStartElement("fr_FR");
 					xmlStreamWriter.writeCharacters(
-							((item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/de_DE") == null) ? ""
-									: item.getAttributeValue("Sinelco_ss/USPs/USP_bullet_points#" + x + "/de_DE")
+							((item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/fr_FR") == null) ? ""
+									: item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/fr_FR")
 											.toString()));
 					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("de_DE");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/de_DE") == null) ? ""
+									: item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/de_DE")
+											.toString()));
+					xmlStreamWriter.writeEndElement();
+				}
+
+				xmlStreamWriter.writeEndElement();// USP Features and Benefits end
+
+				logger.info("USP Features and Benefits exported");
+
+				// Cat_catalogue_edition
+				xmlStreamWriter.writeStartElement("Cat_catalogue_edition");
+
+				AttributeInstance catEditionInst = item
+						.getAttributeInstance("Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition");
+
+				if (catEditionInst != null) {
+					for (int x = 0; x < catEditionInst.getChildren().size(); x++) {
+						xmlStreamWriter.writeStartElement("Catalogue_edition_" + x);
+						xmlStreamWriter.writeCharacters(
+								((item.getAttributeValue("Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition#" + x
+										+ "/Catalogue_edition") == null)
+												? ""
+												: item.getAttributeValue(
+														"Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition#" + x
+																+ "/Catalogue_edition")
+														.toString()));
+						xmlStreamWriter.writeEndElement();
+
+						xmlStreamWriter.writeStartElement("Page_number_" + x);
+						xmlStreamWriter.writeCharacters(
+								((item.getAttributeValue("Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition#" + x
+										+ "/Page_number") == null)
+												? ""
+												: item.getAttributeValue(
+														"Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition#" + x
+																+ "/Page_number")
+														.toString()));
+						xmlStreamWriter.writeEndElement();
+
+						xmlStreamWriter.writeStartElement("New_" + x);
+						xmlStreamWriter.writeCharacters(((item.getAttributeValue(
+								"Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition#" + x + "/New") == null)
+										? ""
+										: item.getAttributeValue(
+												"Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition#" + x
+														+ "/New")
+												.toString()));
+						xmlStreamWriter.writeEndElement();
+
+					}
 
 				}
-			}
 
-			xmlStreamWriter.writeEndElement();// USP Bullet points end
+				xmlStreamWriter.writeEndElement();// Cat_catalogue_edition end
 
-			// USP Features and Benefits
-			xmlStreamWriter.writeStartElement("USP_features_and_benefits");
+				logger.info("Cat_catalogue_edition exported");
 
-			AttributeInstance uspFeaturesInst = item.getAttributeInstance("Sinelco_ss/USPs/USP_features_and_benefits");
+				AttributeInstance sinelcoPrintAttrInst = item
+						.getAttributeInstance("Sinelco_ss/Sinelco Print Catalogue");
 
-			if (uspFeaturesInst != null) {
+				if (sinelcoPrintAttrInst != null) {
+					// Cat_info_block
+					xmlStreamWriter.writeStartElement("Cat_info_block");
 
-				xmlStreamWriter.writeStartElement("en_GB");
-				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/en_GB") == null) ? ""
-								: item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/en_GB")
-										.toString()));
-				xmlStreamWriter.writeEndElement();
-
-				xmlStreamWriter.writeStartElement("es_ES");
-				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/es_ES") == null) ? ""
-								: item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/es_ES")
-										.toString()));
-				xmlStreamWriter.writeEndElement();
-
-				xmlStreamWriter.writeStartElement("da_DK");
-				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/da_DK") == null) ? ""
-								: item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/da_DK")
-										.toString()));
-				xmlStreamWriter.writeEndElement();
-
-				xmlStreamWriter.writeStartElement("nl_NL");
-				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/nl_NL") == null) ? ""
-								: item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/nl_NL")
-										.toString()));
-				xmlStreamWriter.writeEndElement();
-
-				xmlStreamWriter.writeStartElement("pl_PL");
-				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/pl_PL") == null) ? ""
-								: item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/pl_PL")
-										.toString()));
-				xmlStreamWriter.writeEndElement();
-
-				xmlStreamWriter.writeStartElement("it_IT");
-				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/it_IT") == null) ? ""
-								: item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/it_IT")
-										.toString()));
-				xmlStreamWriter.writeEndElement();
-
-				xmlStreamWriter.writeStartElement("pt_PT");
-				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/pt_PT") == null) ? ""
-								: item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/pt_PT")
-										.toString()));
-				xmlStreamWriter.writeEndElement();
-
-				xmlStreamWriter.writeStartElement("fr_FR");
-				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/fr_FR") == null) ? ""
-								: item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/fr_FR")
-										.toString()));
-				xmlStreamWriter.writeEndElement();
-
-				xmlStreamWriter.writeStartElement("de_DE");
-				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/de_DE") == null) ? ""
-								: item.getAttributeValue("Sinelco_ss/USPs/USP_features_and_benefits/de_DE")
-										.toString()));
-				xmlStreamWriter.writeEndElement();
-			}
-
-			xmlStreamWriter.writeEndElement();// USP Features and Benefits end
-
-			// Cat_catalogue_edition
-			xmlStreamWriter.writeStartElement("Cat_catalogue_edition");
-
-			AttributeInstance catEditionInst = item
-					.getAttributeInstance("Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition");
-
-			if (catEditionInst != null) {
-				for (int x = 0; x < catEditionInst.getChildren().size(); x++) {
-					xmlStreamWriter.writeStartElement("Catalogue_edition_" + x);
 					xmlStreamWriter.writeCharacters(
-							((item.getAttributeValue("Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition#" + x
-									+ "/Catalogue_edition") == null)
+							((item.getAttributeValue("Sinelco_ss/Sinelco Print Catalogue/Cat_info_block") == null) ? ""
+									: item.getAttributeValue("Sinelco_ss/Sinelco Print Catalogue/Cat_info_block")
+											.toString()));
+//			xmlStreamWriter.writeCharacters(((item.getAttributeInstance("Sinelco_ss/Sinelco Print Catalogue/Cat_info_block") == null) ? ""
+//					: item.getAttributeInstance("Sinelco_ss/Sinelco Print Catalogue/Cat_info_block").getValue().toString()));
+					xmlStreamWriter.writeEndElement();
+
+					// Cat_equipment_direct
+					xmlStreamWriter.writeStartElement("Cat_equipment_direct");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Sinelco_ss/Sinelco Print Catalogue/Cat_equipment_direct") == null)
+									? ""
+									: item.getAttributeValue("Sinelco_ss/Sinelco Print Catalogue/Cat_equipment_direct")
+											.toString()));
+//			xmlStreamWriter.writeCharacters(((item.getAttributeInstance("Sinelco_ss/Sinelco Print Catalogue/Cat_equipment_direct") == null) ? ""
+//					: item.getAttributeInstance("Sinelco_ss/Sinelco Print Catalogue/Cat_equipment_direct").getValue().toString()));
+
+					xmlStreamWriter.writeEndElement();
+				}
+
+				logger.info("Sinelco Print Catalogue exported");
+
+				AttributeInstance sinelcoCollecAttrInst = item.getAttributeInstance("Sinelco_ss/Sinelco Collections");
+				if (sinelcoCollecAttrInst != null) {
+					// Cat_collection_reference
+					xmlStreamWriter.writeStartElement("Sinelco_Collections");
+
+					AttributeInstance sinelcoCollecInst = item
+							.getAttributeInstance("Sinelco_ss/Sinelco Collections/Cat_collection_reference");
+
+					if (sinelcoCollecInst != null) {
+						for (int x = 0; x < sinelcoCollecInst.getChildren().size(); x++) {
+							xmlStreamWriter.writeStartElement("Cat_collection_reference_" + x);
+							xmlStreamWriter.writeCharacters(((item.getAttributeValue(
+									"Sinelco_ss/Sinelco Collections/Cat_collection_reference#" + x) == null)
 											? ""
 											: item.getAttributeValue(
-													"Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition#" + x
-															+ "/Catalogue_edition")
+													"Sinelco_ss/Sinelco Collections/Cat_collection_reference#" + x)
 													.toString()));
-					xmlStreamWriter.writeEndElement();
+							xmlStreamWriter.writeEndElement();
+						}
+					}
 
-					xmlStreamWriter.writeStartElement("Page_number_" + x);
-					xmlStreamWriter.writeCharacters(((item.getAttributeValue(
-							"Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition#" + x + "/Page_number") == null)
-									? ""
-									: item.getAttributeValue("Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition#"
-											+ x + "/Page_number").toString()));
-					xmlStreamWriter.writeEndElement();
-
-					xmlStreamWriter.writeStartElement("New_" + x);
-					xmlStreamWriter.writeCharacters(((item.getAttributeValue(
-							"Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition#" + x + "/New") == null)
-									? ""
-									: item.getAttributeValue(
-											"Sinelco_ss/Sinelco Print Catalogue/Cat_catalogue_edition#" + x + "/New")
-											.toString()));
-					xmlStreamWriter.writeEndElement();
-
-				}
-
-			}
-
-			xmlStreamWriter.writeEndElement();// Cat_catalogue_edition end
-
-			AttributeInstance sinelcoPrintAttrInst = item
-					.getAttributeInstance("Sinelco_ss/Sinelco Print Catalogue");
-
-			if (sinelcoPrintAttrInst != null) {
-			// Cat_info_block
-			xmlStreamWriter.writeStartElement("Cat_info_block");
-			
-//			xmlStreamWriter.writeCharacters(
-//					((item.getAttributeValue("Sinelco_ss/Sinelco Print Catalogue/Cat_info_block") == null) ? ""
-//							: item.getAttributeValue("Sinelco_ss/Sinelco Print Catalogue/Cat_info_block").toString()));
-			xmlStreamWriter.writeCharacters(((item.getAttributeInstance("Sinelco_ss/Sinelco Print Catalogue/Cat_info_block") == null) ? ""
-					: item.getAttributeInstance("Sinelco_ss/Sinelco Print Catalogue/Cat_info_block").getValue().toString()));
-			xmlStreamWriter.writeEndElement();
-
-			// Cat_equipment_direct
-			xmlStreamWriter.writeStartElement("Cat_equipment_direct");
-//			xmlStreamWriter.writeCharacters(
-//					((item.getAttributeValue("Sinelco_ss/Sinelco Print Catalogue/Cat_equipment_direct") == null) ? ""
-//							: item.getAttributeValue("Sinelco_ss/Sinelco Print Catalogue/Cat_equipment_direct")
-//									.toString()));
-			xmlStreamWriter.writeCharacters(((item.getAttributeInstance("Sinelco_ss/Sinelco Print Catalogue/Cat_equipment_direct") == null) ? ""
-					: item.getAttributeInstance("Sinelco_ss/Sinelco Print Catalogue/Cat_equipment_direct").getValue().toString()));
-			
-			xmlStreamWriter.writeEndElement();
-			}
-
-			AttributeInstance sinelcoCollecAttrInst = item
-					.getAttributeInstance("Sinelco_ss/Sinelco Collections");
-			if (sinelcoCollecAttrInst != null) {
-			// Cat_collection_reference
-			xmlStreamWriter.writeStartElement("Sinelco_Collections");
-
-			AttributeInstance sinelcoCollecInst = item
-					.getAttributeInstance("Sinelco_ss/Sinelco Collections/Cat_collection_reference");
-
-			if (sinelcoCollecInst != null) {
-				for (int x = 0; x < sinelcoCollecInst.getChildren().size(); x++) {
-					xmlStreamWriter.writeStartElement("Cat_collection_reference_" + x);
-					xmlStreamWriter.writeCharacters(((item
-							.getAttributeValue("Sinelco_ss/Sinelco Collections/Cat_collection_reference#" + x) == null)
-									? ""
-									: item.getAttributeValue(
-											"Sinelco_ss/Sinelco Collections/Cat_collection_reference#" + x)
-											.toString()));
-					xmlStreamWriter.writeEndElement();
-				}
-			}
-
-			xmlStreamWriter.writeStartElement("Cat_one_shot");
+					xmlStreamWriter.writeStartElement("Cat_one_shot");
 //			xmlStreamWriter.writeCharacters(
 //					((item.getAttributeValue("Sinelco_ss/Sinelco Collections/Cat_one_shot") == null) ? ""
 //							: item.getAttributeValue("Sinelco_ss/Sinelco Collections/Cat_one_shot").toString()));
-			
-			xmlStreamWriter.writeCharacters(((item.getAttributeInstance("Sinelco_ss/Sinelco Collections/Cat_one_shot") == null) ? ""
-					: item.getAttributeInstance("Sinelco_ss/Sinelco Collections/Cat_one_shot").getValue().toString()));
-			
 
-			xmlStreamWriter.writeEndElement();// Cat_One_Shot tag end
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeInstance("Sinelco_ss/Sinelco Collections/Cat_one_shot") == null) ? ""
+									: item.getAttributeInstance("Sinelco_ss/Sinelco Collections/Cat_one_shot")
+											.getValue().toString()));
 
-			// End tag of Sinelco Collections tag
-			xmlStreamWriter.writeEndElement();
-			}
+					xmlStreamWriter.writeEndElement();// Cat_One_Shot tag end
 
-		
-			logger.info("End of Sinelco Secon Spec details");
-		// General_ss
-
-			logger.info("Start of General Secon Spec details");
-			AttributeInstance veganAttrInst = item.getAttributeInstance("General_ss/Specification");
-
-			if (veganAttrInst != null) {
-				xmlStreamWriter.writeStartElement("Spec_vegan");
-				xmlStreamWriter
-						.writeCharacters(((item.getAttributeValue("General_ss/Specification/Spec_vegan") == null) ? ""
-								: item.getAttributeValue("General_ss/Specification/Spec_vegan").toString()));
-
-				xmlStreamWriter.writeEndElement();// Spec Vegan tag end
-
-			}
-		
-
-		
-			logger.info("Start of Usage Secon Spec details");
-			// Usage_ss
-			AttributeInstance usageAttrInst = item.getAttributeInstance("Usage_ss/Usage");
-
-			if (usageAttrInst != null) {
-				xmlStreamWriter.writeStartElement("Use_applied_to_hair_skin");
-				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Usage_ss/Usage/Use_applied_to_hair_skin") == null) ? ""
-								: item.getAttributeValue("Usage_ss/Usage/Use_applied_to_hair_skin").toString()));
-
-				xmlStreamWriter.writeEndElement();// Use_applied_to_hair_skin tag end
-
-				xmlStreamWriter.writeStartElement("Use_period_after_opening");
-				xmlStreamWriter.writeCharacters(
-						((item.getAttributeValue("Usage_ss/Usage/Use_period_after_opening") == null) ? ""
-								: item.getAttributeValue("Usage_ss/Usage/Use_period_after_opening").toString()));
-
-				xmlStreamWriter.writeEndElement();// Use_period_after_opening tag end
-
-			}
-		
-			logger.info("Start of Electrical Secon Spec details");
-		
-			// Electrical_ss
-			
-			Collection<Spec> specs = item.getSpecs();
-			
-			logger.info("specs >> "+specs);
-			
-			for (Spec spec : specs) {
-				logger.info("spec name >> "+spec.getName());
-				if(spec.getName().contains("Electrical_ss"))
-				{
-					AttributeInstance elecSpecificationInst = item.getAttributeInstance("Electrical_ss/Specification");
-
-					if (elecSpecificationInst != null) {
-						xmlStreamWriter.writeStartElement("Model_number");
-						xmlStreamWriter.writeCharacters(
-								((item.getAttributeValue("Electrical_ss/Specification/Model_number") == null) ? ""
-										: item.getAttributeValue("Electrical_ss/Specification/Model_number").toString()));
-
-						xmlStreamWriter.writeEndElement();
-
-						xmlStreamWriter.writeStartElement("Spec_airflow");
-						xmlStreamWriter.writeCharacters(
-								((item.getAttributeValue("Electrical_ss/Specification/Spec_airflow") == null) ? ""
-										: item.getAttributeValue("Electrical_ss/Specification/Spec_airflow").toString()));
-
-						xmlStreamWriter.writeEndElement();
-
-						xmlStreamWriter.writeStartElement("Spec_max_temp");
-						xmlStreamWriter.writeCharacters(
-								((item.getAttributeValue("Electrical_ss/Specification/Spec_max_temp") == null) ? ""
-										: item.getAttributeValue("Electrical_ss/Specification/Spec_max_temp").toString()));
-
-						xmlStreamWriter.writeEndElement();
-
-						xmlStreamWriter.writeStartElement("Spec_min_temp");
-						xmlStreamWriter.writeCharacters(
-								((item.getAttributeValue("Electrical_ss/Specification/Spec_min_temp") == null) ? ""
-										: item.getAttributeValue("Electrical_ss/Specification/Spec_min_temp").toString()));
-
-						xmlStreamWriter.writeEndElement();
-
-						xmlStreamWriter.writeStartElement("Spec_contents");
-						xmlStreamWriter.writeCharacters(
-								((item.getAttributeValue("Electrical_ss/Specification/Spec_contents") == null) ? ""
-										: item.getAttributeValue("Electrical_ss/Specification/Spec_contents").toString()));
-
-						xmlStreamWriter.writeEndElement();
-
-						xmlStreamWriter.writeStartElement("Spec_watt");
-						xmlStreamWriter
-								.writeCharacters(((item.getAttributeValue("Electrical_ss/Specification/Spec_watt") == null) ? ""
-										: item.getAttributeValue("Electrical_ss/Specification/Spec_watt").toString()));
-
-						xmlStreamWriter.writeEndElement();
-
-						xmlStreamWriter.writeStartElement("Spec_outer_diameter");
-						xmlStreamWriter.writeCharacters(
-								((item.getAttributeValue("Electrical_ss/Specification/Spec_outer_diameter") == null) ? ""
-										: item.getAttributeValue("Electrical_ss/Specification/Spec_outer_diameter")
-												.toString()));
-
-						xmlStreamWriter.writeEndElement();
-
-						xmlStreamWriter.writeStartElement("Spec_inner_diameter");
-						xmlStreamWriter.writeCharacters(
-								((item.getAttributeValue("Electrical_ss/Specification/Spec_inner_diameter") == null) ? ""
-										: item.getAttributeValue("Electrical_ss/Specification/Spec_inner_diameter")
-												.toString()));
-
-						xmlStreamWriter.writeEndElement();
-
-						xmlStreamWriter.writeStartElement("Spec_battery_chemical_family");
-						xmlStreamWriter.writeCharacters(
-								((item.getAttributeValue("Electrical_ss/Specification/Spec_battery_chemical_family") == null)
-										? ""
-										: item.getAttributeValue("Electrical_ss/Specification/Spec_battery_chemical_family")
-												.toString()));
-
-						xmlStreamWriter.writeEndElement();
-
-						xmlStreamWriter.writeStartElement("Spec_battery_format");
-						xmlStreamWriter.writeCharacters(
-								((item.getAttributeValue("Electrical_ss/Specification/Spec_battery_format") == null) ? ""
-										: item.getAttributeValue("Electrical_ss/Specification/Spec_battery_format")
-												.toString()));
-
-						xmlStreamWriter.writeEndElement();
-
-						xmlStreamWriter.writeStartElement("Spec_battery_removable");
-						xmlStreamWriter.writeCharacters(
-								((item.getAttributeValue("Electrical_ss/Specification/Spec_battery_removable") == null) ? ""
-										: item.getAttributeValue("Electrical_ss/Specification/Spec_battery_removable")
-												.toString()));
-
-						xmlStreamWriter.writeEndElement();
-
-						xmlStreamWriter.writeStartElement("Spec_battery_OEM");
-						xmlStreamWriter.writeCharacters(
-								((item.getAttributeValue("Electrical_ss/Specification/Spec_battery_OEM") == null) ? ""
-										: item.getAttributeValue("Electrical_ss/Specification/Spec_battery_OEM").toString()));
-
-						xmlStreamWriter.writeEndElement();
-
-						xmlStreamWriter.writeStartElement("Spec_battery_rechargeable");
-						xmlStreamWriter.writeCharacters(
-								((item.getAttributeValue("Electrical_ss/Specification/Spec_battery_rechargeable") == null) ? ""
-										: item.getAttributeValue("Electrical_ss/Specification/Spec_battery_rechargeable")
-												.toString()));
-
-						xmlStreamWriter.writeEndElement();
-
-						xmlStreamWriter.writeStartElement("Sepc_battery_OEM_qty");
-						xmlStreamWriter.writeCharacters(
-								((item.getAttributeValue("Electrical_ss/Specification/Sepc_battery_OEM_qty") == null) ? ""
-										: item.getAttributeValue("Electrical_ss/Specification/Sepc_battery_OEM_qty")
-												.toString()));
-
-						xmlStreamWriter.writeEndElement();
-
-						xmlStreamWriter.writeStartElement("Spec_battery_weight");
-						xmlStreamWriter.writeCharacters(
-								((item.getAttributeValue("Electrical_ss/Specification/Spec_battery_weight") == null) ? ""
-										: item.getAttributeValue("Electrical_ss/Specification/Spec_battery_weight")
-												.toString()));
-
-						xmlStreamWriter.writeEndElement();
-
-					}
-
-					AttributeInstance typeAttrInst = item.getAttributeInstance("Electrical_ss/Type");
-
-					if (typeAttrInst != null) {
-						xmlStreamWriter.writeStartElement("Type_plug");
-						xmlStreamWriter.writeCharacters(((item.getAttributeValue("Electrical_ss/Type/Type_plug") == null) ? ""
-								: item.getAttributeValue("Electrical_ss/Type/Type_plug").toString()));
-
-						xmlStreamWriter.writeEndElement();
-					}
-
-					AttributeInstance regLegalAttrInst = item.getAttributeInstance("Electrical_ss/Regulatory and Legal");
-
-					if (regLegalAttrInst != null) {
-						xmlStreamWriter.writeStartElement("WEEE");
-						xmlStreamWriter.writeCharacters(
-								((item.getAttributeValue("Electrical_ss/Regulatory and Legal/WEEE") == null) ? ""
-										: item.getAttributeValue("Electrical_ss/Regulatory and Legal/WEEE").toString()));
-
-						xmlStreamWriter.writeEndElement();
-					}
-
-					logger.info("End of Electrical Secon Spec details");
+					// End tag of Sinelco Collections tag
+					xmlStreamWriter.writeEndElement();
 				}
-				
-					
+				logger.info("Sinelco Collections exported");
 			}
+
+			logger.info("End of Sinelco Secon Spec details");
+
+			// General_ss
+
+			if (spec.getName().contains("General_ss")) {
+				logger.info("Start of General Secon Spec details");
+				AttributeInstance veganAttrInst = item.getAttributeInstance("General_ss/Specification");
+
+				if (veganAttrInst != null) {
+					xmlStreamWriter.writeStartElement("Spec_vegan");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("General_ss/Specification/Spec_vegan") == null) ? ""
+									: item.getAttributeValue("General_ss/Specification/Spec_vegan").toString()));
+
+					xmlStreamWriter.writeEndElement();// Spec Vegan tag end
+
+				}
+			}
+			if (spec.getName().contains("Usage_ss")) {
+
+				logger.info("Start of Usage Secon Spec details");
+				// Usage_ss
+				AttributeInstance usageAttrInst = item.getAttributeInstance("Usage_ss/Usage");
+
+				if (usageAttrInst != null) {
+					xmlStreamWriter.writeStartElement("Use_applied_to_hair_skin");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Usage_ss/Usage/Use_applied_to_hair_skin") == null) ? ""
+									: item.getAttributeValue("Usage_ss/Usage/Use_applied_to_hair_skin").toString()));
+
+					xmlStreamWriter.writeEndElement();// Use_applied_to_hair_skin tag end
+
+					xmlStreamWriter.writeStartElement("Use_period_after_opening");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Usage_ss/Usage/Use_period_after_opening") == null) ? ""
+									: item.getAttributeValue("Usage_ss/Usage/Use_period_after_opening").toString()));
+
+					xmlStreamWriter.writeEndElement();// Use_period_after_opening tag end
+
+				}
+			}
+			logger.info("Start of Electrical Secon Spec details");
+
+			// Electrical_ss
+
+			logger.info("spec name >> " + spec.getName());
+			if (spec.getName().contains("Electrical_ss")) {
+				AttributeInstance elecSpecificationInst = item.getAttributeInstance("Electrical_ss/Specification");
+
+				if (elecSpecificationInst != null) {
+					xmlStreamWriter.writeStartElement("Model_number");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Electrical_ss/Specification/Model_number") == null) ? ""
+									: item.getAttributeValue("Electrical_ss/Specification/Model_number").toString()));
+
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("Spec_airflow");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Electrical_ss/Specification/Spec_airflow") == null) ? ""
+									: item.getAttributeValue("Electrical_ss/Specification/Spec_airflow").toString()));
+
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("Spec_max_temp");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Electrical_ss/Specification/Spec_max_temp") == null) ? ""
+									: item.getAttributeValue("Electrical_ss/Specification/Spec_max_temp").toString()));
+
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("Spec_min_temp");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Electrical_ss/Specification/Spec_min_temp") == null) ? ""
+									: item.getAttributeValue("Electrical_ss/Specification/Spec_min_temp").toString()));
+
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("Spec_contents");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Electrical_ss/Specification/Spec_contents") == null) ? ""
+									: item.getAttributeValue("Electrical_ss/Specification/Spec_contents").toString()));
+
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("Spec_watt");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Electrical_ss/Specification/Spec_watt") == null) ? ""
+									: item.getAttributeValue("Electrical_ss/Specification/Spec_watt").toString()));
+
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("Spec_outer_diameter");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Electrical_ss/Specification/Spec_outer_diameter") == null) ? ""
+									: item.getAttributeValue("Electrical_ss/Specification/Spec_outer_diameter")
+											.toString()));
+
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("Spec_inner_diameter");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Electrical_ss/Specification/Spec_inner_diameter") == null) ? ""
+									: item.getAttributeValue("Electrical_ss/Specification/Spec_inner_diameter")
+											.toString()));
+
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("Spec_battery_chemical_family");
+					xmlStreamWriter.writeCharacters(((item
+							.getAttributeValue("Electrical_ss/Specification/Spec_battery_chemical_family") == null) ? ""
+									: item.getAttributeValue("Electrical_ss/Specification/Spec_battery_chemical_family")
+											.toString()));
+
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("Spec_battery_format");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Electrical_ss/Specification/Spec_battery_format") == null) ? ""
+									: item.getAttributeValue("Electrical_ss/Specification/Spec_battery_format")
+											.toString()));
+
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("Spec_battery_removable");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Electrical_ss/Specification/Spec_battery_removable") == null) ? ""
+									: item.getAttributeValue("Electrical_ss/Specification/Spec_battery_removable")
+											.toString()));
+
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("Spec_battery_OEM");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Electrical_ss/Specification/Spec_battery_OEM") == null) ? ""
+									: item.getAttributeValue("Electrical_ss/Specification/Spec_battery_OEM")
+											.toString()));
+
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("Spec_battery_rechargeable");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Electrical_ss/Specification/Spec_battery_rechargeable") == null)
+									? ""
+									: item.getAttributeValue("Electrical_ss/Specification/Spec_battery_rechargeable")
+											.toString()));
+
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("Sepc_battery_OEM_qty");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Electrical_ss/Specification/Sepc_battery_OEM_qty") == null) ? ""
+									: item.getAttributeValue("Electrical_ss/Specification/Sepc_battery_OEM_qty")
+											.toString()));
+
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("Spec_battery_weight");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Electrical_ss/Specification/Spec_battery_weight") == null) ? ""
+									: item.getAttributeValue("Electrical_ss/Specification/Spec_battery_weight")
+											.toString()));
+
+					xmlStreamWriter.writeEndElement();
+
+				}
+
+				AttributeInstance typeAttrInst = item.getAttributeInstance("Electrical_ss/Type");
+
+				if (typeAttrInst != null) {
+					xmlStreamWriter.writeStartElement("Type_plug");
+					xmlStreamWriter
+							.writeCharacters(((item.getAttributeValue("Electrical_ss/Type/Type_plug") == null) ? ""
+									: item.getAttributeValue("Electrical_ss/Type/Type_plug").toString()));
+
+					xmlStreamWriter.writeEndElement();
+				}
+
+				AttributeInstance regLegalAttrInst = item.getAttributeInstance("Electrical_ss/Regulatory and Legal");
+
+				if (regLegalAttrInst != null) {
+					xmlStreamWriter.writeStartElement("WEEE");
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue("Electrical_ss/Regulatory and Legal/WEEE") == null) ? ""
+									: item.getAttributeValue("Electrical_ss/Regulatory and Legal/WEEE").toString()));
+
+					xmlStreamWriter.writeEndElement();
+				}
+
+				logger.info("End of Electrical Secon Spec details");
+			}
+
+		}
 			
 
 		// End tag of Product tag

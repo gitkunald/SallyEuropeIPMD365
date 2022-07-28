@@ -475,6 +475,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
 			if (arg0.getCollaborationStep() != null) {
 
+				if (arg0.getCollaborationStep().getName().equalsIgnoreCase("01 Enrich Item Data")) {
 				// Item Type mandatory validations
 				Object itemTypeValue = item.getAttributeValue("Product_c/Type/Type_item_type");
 				logger.info("itemTypeValue >> " + itemTypeValue);
@@ -507,7 +508,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 				if (itemTypeValue != null) {
 					if (itemTypeValue.toString().equals("Item")) {
 
-						if (arg0.getCollaborationStep().getName().equalsIgnoreCase("01 Enrich Item Data")) {
+						
 
 							for (String attrPath : attrPaths) {
 
@@ -525,10 +526,27 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 								}
 
 							}
-						}
+						
 
 					}
 				}
+				
+				Collection<Category> categories = item.getCategories();
+				ArrayList<String> hierNames = new ArrayList<>();
+				for (Category category : categories) {
+					
+					String hierName = category.getHierarchy().getName();
+					hierNames.add(hierName);
+					
+				}
+				
+				if(!hierNames.contains("Brand Hierarchy"))
+				{
+					arg0.addValidationError(item.getAttributeInstance("Product_c/Sys_PIM_item_ID"),
+							ValidationError.Type.VALIDATION_RULE,
+							"Brand Hierarchy is not mapped to the Item");
+				}
+			}
 
 				// Legal Regulatory Attribute Validations
 				AttributeInstance legalAttributeInstance = item
@@ -718,23 +736,11 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 						Object packagingRequired = item
 								.getAttributeValue("Sinelco_ss/Functional/Func_modify_packaging_required");
 
-						if (translationRequired != null && packagingRequired != null) {
-							if (translationRequired.toString().equalsIgnoreCase("N")
-									&& packagingRequired.toString().equalsIgnoreCase("N")) {
-								arg0.addValidationError(
-										item.getAttributeInstance(
-												"Sinelco_ss/Functional/Func_modify_translation_required"),
-										ValidationError.Type.VALIDATION_RULE,
-										"Either Translation or Packaging is required");
-								logger.info("Either Translation or Packaging is required");
-							}
-						}
-
-						else {
+						if (translationRequired == null && packagingRequired == null) {
 							arg0.addValidationError(
 									item.getAttributeInstance("Sinelco_ss/Functional/Func_modify_translation_required"),
 									ValidationError.Type.VALIDATION_RULE,
-									"Either Translation or Packaging should be selected");
+									"Translation and Packaging cannot be blank");
 							logger.info("Either Translation or Packaging should be selected");
 						}
 
@@ -908,28 +914,28 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 					}
 				}
 
-				if (legalClassificationValue != null && legalClassificationValue.equals("Electrical")) {
-
-					AttributeInstance attributeInstance = item.getAttributeInstance("Electrical_ss/Type/Type_battery");
-
-					if (attributeInstance != null) {
-						Object typeBatteryValue = item.getAttributeValue("Electrical_ss/Type_battery");
-
-						if (typeBatteryValue != null && typeBatteryValue != "") {
-							String safetyDateSheetAttrPath = legalAttributeInstance.getParent().getPath()
-									+ "/Safety_data_sheet";
-
-							if (item.getAttributeValue(safetyDateSheetAttrPath) == null) {
-
-								arg0.addValidationError(item.getAttributeInstance(safetyDateSheetAttrPath),
-										ValidationError.Type.VALIDATION_RULE,
-										"Safety Data Sheet is mandatory for the legal classification value and Type Battery selected");
-								logger.info("Safety Data sheet error");
-
-							}
-						}
-					}
-				}
+//				if (legalClassificationValue != null && legalClassificationValue.equals("Electrical")) {
+//
+//					AttributeInstance attributeInstance = item.getAttributeInstance("Electrical_ss/Type/Type_battery");
+//
+//					if (attributeInstance != null) {
+//						Object typeBatteryValue = item.getAttributeValue("Electrical_ss/Type_battery");
+//
+//						if (typeBatteryValue != null && typeBatteryValue != "") {
+//							String safetyDateSheetAttrPath = legalAttributeInstance.getParent().getPath()
+//									+ "/Safety_data_sheet";
+//
+//							if (item.getAttributeValue(safetyDateSheetAttrPath) == null) {
+//
+//								arg0.addValidationError(item.getAttributeInstance(safetyDateSheetAttrPath),
+//										ValidationError.Type.VALIDATION_RULE,
+//										"Safety Data Sheet is mandatory for the legal classification value and Type Battery selected");
+//								logger.info("Safety Data sheet error");
+//
+//							}
+//						}
+//					}
+//				}
 
 				if (legalClassificationValue != null && (legalClassificationValue.equals("Cosmetics leave on")
 						|| legalClassificationValue.equals("Cosmetics wash off")
