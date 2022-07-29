@@ -25,7 +25,10 @@ import com.ibm.pim.extensionpoints.ItemPrePostProcessingFunctionArguments;
 import com.ibm.pim.extensionpoints.PrePostProcessingFunction;
 import com.ibm.pim.hierarchy.Hierarchy;
 import com.ibm.pim.hierarchy.category.Category;
+import com.ibm.pim.lookuptable.LookupTable;
 import com.ibm.pim.lookuptable.LookupTableEntry;
+import com.ibm.pim.search.SearchQuery;
+import com.ibm.pim.search.SearchResultSet;
 
 public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
@@ -505,10 +508,10 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 								logger.info("barcodeNumAfterUpdate : " + barcodeNumber);
 								if (barcodeType != null || barcodeNumObj != null) {
 									validateCheckDigitOfBarcodes(ctx, arg0, item, barcodeNumber, barcodeType, attrPath);
+									validateBarcodes(ctx, arg0, item, barcodeNumber, attrPath);
 								}
 							}
 						}
-
 					}
 					
 					Collection<Category> categories = item.getCategories();
@@ -1046,6 +1049,35 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 			}
 
 		}
+	}
+	
+	public static void validateBarcodes(Context ctx, CollaborationItemPrePostProcessingFunctionArguments inArgs,
+			CollaborationItem collabItem, String barcode, String collabItemPath) {
+		logger.info("*** Start of function of validateBarcodes ***");
+		String enterpriseId = collabItem.getPrimaryKey();
+		logger.info("barcode : " + barcode + "   enterpriseId : " + enterpriseId);
+		LookupTable barcodeLkp = ctx.getLookupTableManager().getLookupTable("Barcode_Lookup_Table");
+		String lkpName = "Barcode_Lookup_Table";
+		String path = "Barcode_Lookup_Spec/barcode";
+
+		String sBarcodeQuery = "select item from catalog('" + lkpName + "') where item['" + path + "']  like '"
+				+ barcode + "'";
+		logger.info("sBarcodeQuery : " + sBarcodeQuery);
+		SearchQuery searchBarcodeQuery = ctx.createSearchQuery(sBarcodeQuery);
+		SearchResultSet searchBarcodeResult = searchBarcodeQuery.execute();
+		logger.info("searchBarcodeResult.size() updated : " + searchBarcodeResult.size());
+		if (searchBarcodeResult.size() > 0) {
+			inArgs.addValidationError(collabItem.getAttributeInstance(collabItemPath),
+					ValidationError.Type.VALIDATION_RULE,
+					"Duplicate Barcode error : Barcode is already associated to another Item in Catalog");
+		} else {
+			logger.info("** Creates new Entry **");
+			LookupTableEntry newEntry = barcodeLkp.createEntry();
+			newEntry.setAttributeValue(path, barcode);
+			newEntry.setAttributeValue("Barcode_Lookup_Spec/enterprise_item_id", enterpriseId);
+			logger.info(newEntry.save());
+		}
+		logger.info("*** End of function of validateBarcodes ***");
 	}
 
 	@Override
