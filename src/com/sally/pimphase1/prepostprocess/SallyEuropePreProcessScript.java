@@ -290,6 +290,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
 				if (arg0.getCollaborationStep().getName().equalsIgnoreCase("01 Create Items")
 						|| arg0.getCollaborationStep().getName().equalsIgnoreCase("01 Enrich Item Data")) {
+					
 
 					Collection<Category> itemCategories = item.getCategories();
 
@@ -460,6 +461,71 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 							}
 						}
 					}
+					
+					AttributeInstance barcodeInst = item.getAttributeInstance("Product_c/Barcodes");
+
+					if (barcodeInst != null) {
+						int barcodeSize = item.getAttributeInstance("Product_c/Barcodes").getChildren().size();
+						logger.info("barcodeSize : " + barcodeSize);
+
+						if (barcodeSize > 0) {
+
+							for (int i = 0; i < barcodeSize; i++) {
+
+								String attrPath = "Product_c/Barcodes#" + i + "/Pack_barcode_number";
+								String barcodeType = (String) item
+										.getAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_type");
+
+								logger.info("barcodeType : " + barcodeType);
+
+								Object barcodeNumObj = item
+										.getAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_number");
+								logger.info("barcodeNumObj : " + barcodeNumObj);
+								String barcodeNumber = "";
+
+								if (barcodeNumObj != null) {
+									barcodeNumber = (String) item
+											.getAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_number");
+
+									logger.info("barcodeNumber>> : " + barcodeNumber);
+									if (barcodeNumber.contains("E") || barcodeNumber.contains(".")) {
+										String substring = barcodeNumber.substring(0, barcodeNumber.lastIndexOf("E"));
+										String updatedBarcode = substring.replace(".", "");
+
+										if (!barcodeNumber.equals(updatedBarcode)) {
+											barcodeNumber = updatedBarcode;
+
+											item.setAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_number",
+													updatedBarcode);
+										}
+									}
+
+								}
+
+								logger.info("barcodeNumAfterUpdate : " + barcodeNumber);
+								if (barcodeType != null || barcodeNumObj != null) {
+									validateCheckDigitOfBarcodes(ctx, arg0, item, barcodeNumber, barcodeType, attrPath);
+								}
+							}
+						}
+
+					}
+					
+					Collection<Category> categories = item.getCategories();
+					ArrayList<String> hierNames = new ArrayList<>();
+					for (Category category : categories) {
+						
+						String hierName = category.getHierarchy().getName();
+						hierNames.add(hierName);
+						
+					}
+					
+					if(!hierNames.contains("Brand Hierarchy"))
+					{
+						arg0.addValidationError(item.getAttributeInstance("Product_c/Sys_PIM_item_ID"),
+								ValidationError.Type.VALIDATION_RULE,
+								"Brand Hierarchy is not mapped to the Item");
+					}
 				}
 			}
 
@@ -531,23 +597,6 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 					}
 				}
 				
-				Collection<Category> categories = item.getCategories();
-				ArrayList<String> hierNames = new ArrayList<>();
-				for (Category category : categories) {
-					
-					String hierName = category.getHierarchy().getName();
-					hierNames.add(hierName);
-					
-				}
-				
-				if(!hierNames.contains("Brand Hierarchy"))
-				{
-					arg0.addValidationError(item.getAttributeInstance("Product_c/Sys_PIM_item_ID"),
-							ValidationError.Type.VALIDATION_RULE,
-							"Brand Hierarchy is not mapped to the Item");
-				}
-			}
-
 				// Legal Regulatory Attribute Validations
 				AttributeInstance legalAttributeInstance = item
 						.getAttributeInstance("Product_c/Regulatory and Legal/Legal_classification");
@@ -575,28 +624,6 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
 						}
 					}
-
-//				if (legalClassificationValue != null && legalClassificationValue.equals("Electrical")) {
-//
-//					AttributeInstance attributeInstance = item.getAttributeInstance("Electrical_ss/Type/Type_battery");
-//					if (attributeInstance != null) {
-//						Object typeBatteryValue = item.getAttributeValue("Electrical_ss/Type_battery");
-//
-//						if (typeBatteryValue != null && typeBatteryValue != "") {
-//							String safetyDateSheetAttrPath = legalAttributeInstance.getParent().getPath()
-//									+ "/Safety_data_sheet";
-//
-//							if (item.getAttributeValue(safetyDateSheetAttrPath) == null) {
-//
-//								arg0.addValidationError(item.getAttributeInstance(safetyDateSheetAttrPath),
-//										ValidationError.Type.VALIDATION_RULE,
-//										"Safety Data Sheet is mandatory for the legal classification value and Type Battery selected");
-//								logger.info("Safety Data sheet error");
-//
-//							}
-//						}
-//					}
-//				}
 
 					if (legalClassificationValue != null && (legalClassificationValue.equals("Cosmetics leave on")
 							|| legalClassificationValue.equals("Cosmetics wash off")
@@ -725,7 +752,10 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
 					}
 				}
+				
+			}
 
+				
 				if (arg0.getCollaborationStep().getName().equalsIgnoreCase("10 Validate and Review")) {
 
 					AttributeInstance funcAttrInst = item.getAttributeInstance("Sinelco_ss/Functional");
@@ -748,54 +778,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
 				}
 
-				AttributeInstance barcodeInst = item.getAttributeInstance("Product_c/Barcodes");
-
-				if (barcodeInst != null) {
-					int barcodeSize = item.getAttributeInstance("Product_c/Barcodes").getChildren().size();
-					logger.info("barcodeSize : " + barcodeSize);
-
-					if (barcodeSize > 0) {
-
-						for (int i = 0; i < barcodeSize; i++) {
-
-							String attrPath = "Product_c/Barcodes#" + i + "/Pack_barcode_number";
-							String barcodeType = (String) item
-									.getAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_type");
-
-							logger.info("barcodeType : " + barcodeType);
-
-							Object barcodeNumObj = item
-									.getAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_number");
-							logger.info("barcodeNumObj : " + barcodeNumObj);
-							String barcodeNumber = "";
-
-							if (barcodeNumObj != null) {
-								barcodeNumber = (String) item
-										.getAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_number");
-
-								logger.info("barcodeNumber>> : " + barcodeNumber);
-								if (barcodeNumber.contains("E") || barcodeNumber.contains(".")) {
-									String substring = barcodeNumber.substring(0, barcodeNumber.lastIndexOf("E"));
-									String updatedBarcode = substring.replace(".", "");
-
-									if (!barcodeNumber.equals(updatedBarcode)) {
-										barcodeNumber = updatedBarcode;
-
-										item.setAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_number",
-												updatedBarcode);
-									}
-								}
-
-							}
-
-							logger.info("barcodeNumAfterUpdate : " + barcodeNumber);
-							if (barcodeType != null || barcodeNumObj != null) {
-								validateCheckDigitOfBarcodes(ctx, arg0, item, barcodeNumber, barcodeType, attrPath);
-							}
-						}
-					}
-
-				}
+			
 
 			}
 		}

@@ -760,11 +760,8 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 		xmlStreamWriter.writeStartElement("Usage");
 		xmlStreamWriter.writeStartElement("Use_directions_or_assembly_instructions");
 		
-		xmlStreamWriter.writeCharacters(((item.getAttributeInstance(Constants.USE_DIRECTIONS_ASSEMBLY_INST) == null) ? ""
-				: item.getAttributeInstance(Constants.USE_DIRECTIONS_ASSEMBLY_INST).getValue().toString()));
-		
-//		xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.USE_DIRECTIONS_ASSEMBLY_INST) == null) ? ""
-//				: item.getAttributeValue(Constants.USE_DIRECTIONS_ASSEMBLY_INST).toString()));
+		xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.USE_DIRECTIONS_ASSEMBLY_INST) == null) ? ""
+				: item.getAttributeValue(Constants.USE_DIRECTIONS_ASSEMBLY_INST).toString()));
 		xmlStreamWriter.writeEndElement();
 
 		xmlStreamWriter.writeEndElement();// Usage End
@@ -927,9 +924,8 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 
 					xmlStreamWriter.writeStartElement("da_DK");
 					xmlStreamWriter.writeCharacters(
-							((item.getAttributeInstance(Constants.LOCAL_PRODUCT_NAME_DA_DK) == null) ? ""
-									: item.getAttributeInstance(Constants.LOCAL_PRODUCT_NAME_DA_DK).getValue()
-											.toString()));
+							((item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_DA_DK) == null) ? ""
+									: item.getAttributeValue(Constants.LOCAL_PRODUCT_NAME_DA_DK).toString()));
 					xmlStreamWriter.writeEndElement();
 
 					xmlStreamWriter.writeStartElement("nl_NL");
@@ -1259,8 +1255,6 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 							((item.getAttributeValue("Sinelco_ss/Sinelco Print Catalogue/Cat_info_block") == null) ? ""
 									: item.getAttributeValue("Sinelco_ss/Sinelco Print Catalogue/Cat_info_block")
 											.toString()));
-//			xmlStreamWriter.writeCharacters(((item.getAttributeInstance("Sinelco_ss/Sinelco Print Catalogue/Cat_info_block") == null) ? ""
-//					: item.getAttributeInstance("Sinelco_ss/Sinelco Print Catalogue/Cat_info_block").getValue().toString()));
 					xmlStreamWriter.writeEndElement();
 
 					// Cat_equipment_direct
@@ -1270,9 +1264,6 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 									? ""
 									: item.getAttributeValue("Sinelco_ss/Sinelco Print Catalogue/Cat_equipment_direct")
 											.toString()));
-//			xmlStreamWriter.writeCharacters(((item.getAttributeInstance("Sinelco_ss/Sinelco Print Catalogue/Cat_equipment_direct") == null) ? ""
-//					: item.getAttributeInstance("Sinelco_ss/Sinelco Print Catalogue/Cat_equipment_direct").getValue().toString()));
-
 					xmlStreamWriter.writeEndElement();
 				}
 
@@ -1300,14 +1291,9 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 					}
 
 					xmlStreamWriter.writeStartElement("Cat_one_shot");
-//			xmlStreamWriter.writeCharacters(
-//					((item.getAttributeValue("Sinelco_ss/Sinelco Collections/Cat_one_shot") == null) ? ""
-//							: item.getAttributeValue("Sinelco_ss/Sinelco Collections/Cat_one_shot").toString()));
-
-					xmlStreamWriter.writeCharacters(
-							((item.getAttributeInstance("Sinelco_ss/Sinelco Collections/Cat_one_shot") == null) ? ""
-									: item.getAttributeInstance("Sinelco_ss/Sinelco Collections/Cat_one_shot")
-											.getValue().toString()));
+			xmlStreamWriter.writeCharacters(
+					((item.getAttributeValue("Sinelco_ss/Sinelco Collections/Cat_one_shot") == null) ? ""
+							: item.getAttributeValue("Sinelco_ss/Sinelco Collections/Cat_one_shot").toString()));
 
 					xmlStreamWriter.writeEndElement();// Cat_One_Shot tag end
 
