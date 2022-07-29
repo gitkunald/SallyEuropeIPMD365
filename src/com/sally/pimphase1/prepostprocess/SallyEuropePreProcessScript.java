@@ -1065,13 +1065,28 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 		logger.info("sBarcodeQuery : " + sBarcodeQuery);
 		SearchQuery searchBarcodeQuery = ctx.createSearchQuery(sBarcodeQuery);
 		SearchResultSet searchBarcodeResult = searchBarcodeQuery.execute();
+		Boolean flag = false;
 		logger.info("searchBarcodeResult.size() updated : " + searchBarcodeResult.size());
 		if (searchBarcodeResult.size() > 0) {
-			inArgs.addValidationError(collabItem.getAttributeInstance(collabItemPath),
-					ValidationError.Type.VALIDATION_RULE,
-					"Duplicate Barcode error : Barcode is already associated to another Item in Catalog");
-		} else {
-			logger.info("** Creates new Entry **");
+			PIMCollection<LookupTableEntry> lkpEntries = barcodeLkp.getLookupTableEntries();
+			for (Iterator<LookupTableEntry> iterator = lkpEntries.iterator(); iterator.hasNext();) {
+				LookupTableEntry lookupTableEntry = (LookupTableEntry) iterator.next();
+				String entId = (String) lookupTableEntry.getAttributeValue("Barcode_Lookup_Spec/enterprise_item_id");
+				String lkpBarcode = lookupTableEntry.getKey();
+				logger.info("entId : " + entId);
+				logger.info("enterpriseId.equalsIgnoreCase(entId) : " + enterpriseId.equalsIgnoreCase(entId));
+				if (enterpriseId.equalsIgnoreCase(entId) && barcode.equalsIgnoreCase(lkpBarcode)) {
+					flag = true;
+					break;
+				}
+			}
+			logger.info("flag : " + flag);
+			if (flag == false) {
+				inArgs.addValidationError(collabItem.getAttributeInstance(collabItemPath),
+						ValidationError.Type.VALIDATION_RULE,"Duplicate Barcode error : Barcode is already associated to another Item in Catalog");
+			}		
+		}else {
+			logger.info("** Creates new Entry in lookup **");
 			LookupTableEntry newEntry = barcodeLkp.createEntry();
 			newEntry.setAttributeValue(path, barcode);
 			newEntry.setAttributeValue("Barcode_Lookup_Spec/enterprise_item_id", enterpriseId);
