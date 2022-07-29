@@ -229,7 +229,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 						Object brandCatName = brandCategoryObj.getAttributeValue("Product_h/category_name");
 						Object itemBrandName = item.getAttributeValue("Product_c/ERP Operational/Brand_name");
 						if (itemBrandName == null) {
-							item.setAttributeValue("Product_c/ERP Operational/Category_name", brandCatName);
+							item.setAttributeValue("Product_c/ERP Operational/Brand_name", brandCatName);
 						}
 					}
 				}
@@ -457,7 +457,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 							Object brandCatName = brandCategoryObj.getAttributeValue("Product_h/category_name");
 							Object itemBrandName = item.getAttributeValue("Product_c/ERP Operational/Brand_name");
 							if (itemBrandName == null) {
-								item.setAttributeValue("Product_c/ERP Operational/Category_name", brandCatName);
+								item.setAttributeValue("Product_c/ERP Operational/Brand_name", brandCatName);
 							}
 						}
 					}
