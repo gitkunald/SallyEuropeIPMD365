@@ -46,22 +46,8 @@ public class CreateItemStep implements WorkflowStepFunction {
 		Context ctx = PIMContextFactory.getCurrentContext();
 		Catalog sallyCatalog = ctx.getCatalogManager().getCatalog("Sally Europe");
 		PIMCollection<CollaborationItem> items = arg0.getItems();
-		StringWriter stringWriter = new StringWriter();
-		XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
 		
-		for (CollaborationItem item : items) {
-			try {
-				publishXML(ctx, sallyCatalog, stringWriter, xmlOutputFactory, item);
-			} catch (Exception e) {
-				logger.info("Error in XML : " + e);
-			}
-		}
-
-	}
-	
-	private void publishXML(Context ctx, Catalog sallyCatalog, StringWriter stringWriter,
-			XMLOutputFactory xmlOutputFactory, CollaborationItem item)
-			throws XMLStreamException, PIMSearchException, IOException {
+		
 		LookupTable itmTypeLkpTable = ctx.getLookupTableManager().getLookupTable("AzureConstantsLookup");
 		PIMCollection<LookupTableEntry> lkpEntries = itmTypeLkpTable.getLookupTableEntries();
 		String storageConnectionString = "";
@@ -85,6 +71,30 @@ public class CreateItemStep implements WorkflowStepFunction {
 			}
 		}
 		logger.info("Connection Str : "+storageConnectionString+" localfilepath : "+localFilePath);
+		
+		
+		for (CollaborationItem item : items) {
+			StringWriter stringWriter = new StringWriter();
+			XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
+			try {
+				Document doc = null;
+				logger.info("WF Item .... "+item.getPrimaryKey());
+				publishXML(ctx, sallyCatalog, stringWriter, xmlOutputFactory, item,doc,storageConnectionString,localFilePath,fileShare,outboundWorkingDirectory);
+				stringWriter.flush();
+				stringWriter.close();
+				
+			} catch (Exception e) {
+				logger.info("Error in XML : " + e);
+			}
+		}
+
+	}
+	
+	private void publishXML(Context ctx, Catalog sallyCatalog, StringWriter stringWriter,
+			XMLOutputFactory xmlOutputFactory, CollaborationItem item, Document docstoreDoc, String storageConnectionString, String localFilePath, String fileShare, String outboundWorkingDirectory)
+			throws XMLStreamException, PIMSearchException, IOException {
+		
+		
 		XMLStreamWriter xmlStreamWriter = xmlOutputFactory.createXMLStreamWriter(stringWriter);
 		xmlStreamWriter.writeStartDocument();
 		xmlStreamWriter.writeStartElement("Product_Attributes_XML");
@@ -160,14 +170,18 @@ public class CreateItemStep implements WorkflowStepFunction {
 		logger.info("XML is : " + xmlString);
 		logger.info("Executed .........");
 		logger.info("To Xml : " + item.toXml().toString());
-		Document doc = null;
+		
 		
 		logger.info("Save the XML for Items");
-		doc = ctx.getDocstoreManager().createAndPersistDocument("/outbound/ItemCreation/Working/" + item.getPrimaryKey() + ".xml");
+		if(docstoreDoc == null)
+		{
+			docstoreDoc = ctx.getDocstoreManager().createAndPersistDocument("/outbound/ItemCreation/Working/" + item.getPrimaryKey() + ".xml");	
+			docstoreDoc.setContent(xmlString);
 		logger.info("XML Saved");
-		if (doc != null) {
-			doc.setContent(xmlString);
 		}
+		
+		logger.info("Flush Stringwriter");
+		stringWriter.flush();
 		stringWriter.close();
 	
 		try {
@@ -197,8 +211,9 @@ public class CreateItemStep implements WorkflowStepFunction {
             //logger.info("Cloud File Text : "+cloudFile.downloadText());
             cloudFile.uploadFromFile(localFilePath+item.getPrimaryKey()+".xml");
             logger.info("File uploaded successfully");  
-            doc.moveTo("/outbound/ItemCreation/Archive/" + item.getPrimaryKey() + ".xml");
+            docstoreDoc.moveTo("/outbound/ItemCreation/Archive/" + item.getPrimaryKey() + ".xml");
             logger.info("File archived successfully"); 
+           
         }
         catch(Exception e) {
         	logger.info("Exception : "+e.getMessage());

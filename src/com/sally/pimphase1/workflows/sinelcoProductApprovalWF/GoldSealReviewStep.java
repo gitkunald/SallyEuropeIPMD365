@@ -51,13 +51,45 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 		Context ctx = PIMContextFactory.getCurrentContext();
 		Catalog sallyCatalog = ctx.getCatalogManager().getCatalog("Sally Europe");
 		PIMCollection<CollaborationItem> items = arg0.getItems();
-		StringWriter stringWriter = new StringWriter();
-		XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
+		LookupTable itmTypeLkpTable = ctx.getLookupTableManager().getLookupTable("AzureConstantsLookup");
+		PIMCollection<LookupTableEntry> lkpEntries = itmTypeLkpTable.getLookupTableEntries();
+		String storageConnectionString = "";
+		String localFilePath = "";
+		String fileShare = "";
+		String outboundWorkingDirectory = "";
+
+		for (Iterator<LookupTableEntry> iterator = lkpEntries.iterator(); iterator.hasNext();) {
+			LookupTableEntry lookupTableEntry = (LookupTableEntry) iterator.next();
+			if (lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/key").toString()
+					.equalsIgnoreCase("storageConnectionString")) {
+				storageConnectionString = lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/value")
+						.toString();
+			}
+			if (lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/key").toString()
+					.equalsIgnoreCase("OutboundLocalPublishFilePath")) {
+				localFilePath = lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/value").toString();
+			}
+			if (lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/key").toString()
+					.equalsIgnoreCase("fileShare")) {
+				fileShare = lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/value").toString();
+			}
+			if (lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/key").toString()
+					.equalsIgnoreCase("OutboundPublishWorkingDirectory")) {
+				outboundWorkingDirectory = lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/value")
+						.toString();
+			}
+		}
+		logger.info("Connection Str : " + storageConnectionString + " localfilepath : " + localFilePath);
 
 		for (CollaborationItem item : items) {
 			try {
-				publishXML(ctx, sallyCatalog, stringWriter, xmlOutputFactory, item);
-
+				StringWriter stringWriter = new StringWriter();
+				XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
+				Document doc = null;
+				publishXML(ctx, sallyCatalog, stringWriter, xmlOutputFactory, item,doc,storageConnectionString,localFilePath,fileShare,outboundWorkingDirectory);
+				stringWriter.flush();
+				stringWriter.close();
+				
 				Object isECOMApproved = item.getAttributeValue("Product_c/is_ECOM_Approved");
 				Object isSCApproved = item.getAttributeValue("Product_c/is_SC_Approved");
 				Object isLegalApproved = item.getAttributeValue("Product_c/is_Legal_Approved");
@@ -124,40 +156,12 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 	}
 
 	private void publishXML(Context ctx, Catalog sallyCatalog, StringWriter stringWriter,
-			XMLOutputFactory xmlOutputFactory, CollaborationItem item)
+			XMLOutputFactory xmlOutputFactory, CollaborationItem item, Document xmlDoc, String storageConnectionString, String localFilePath, String fileShare, String outboundWorkingDirectory)
 			throws XMLStreamException, PIMSearchException, IOException {
 		
 		try
 		{
-		LookupTable itmTypeLkpTable = ctx.getLookupTableManager().getLookupTable("AzureConstantsLookup");
-		PIMCollection<LookupTableEntry> lkpEntries = itmTypeLkpTable.getLookupTableEntries();
-		String storageConnectionString = "";
-		String localFilePath = "";
-		String fileShare = "";
-		String outboundWorkingDirectory = "";
-
-		for (Iterator<LookupTableEntry> iterator = lkpEntries.iterator(); iterator.hasNext();) {
-			LookupTableEntry lookupTableEntry = (LookupTableEntry) iterator.next();
-			if (lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/key").toString()
-					.equalsIgnoreCase("storageConnectionString")) {
-				storageConnectionString = lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/value")
-						.toString();
-			}
-			if (lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/key").toString()
-					.equalsIgnoreCase("OutboundLocalPublishFilePath")) {
-				localFilePath = lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/value").toString();
-			}
-			if (lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/key").toString()
-					.equalsIgnoreCase("fileShare")) {
-				fileShare = lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/value").toString();
-			}
-			if (lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/key").toString()
-					.equalsIgnoreCase("OutboundPublishWorkingDirectory")) {
-				outboundWorkingDirectory = lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/value")
-						.toString();
-			}
-		}
-		logger.info("Connection Str : " + storageConnectionString + " localfilepath : " + localFilePath);
+		
 		XMLStreamWriter xmlStreamWriter = xmlOutputFactory.createXMLStreamWriter(stringWriter);
 		xmlStreamWriter.writeStartDocument();
 		xmlStreamWriter.writeStartElement("Product_Attributes_XML");
@@ -1512,17 +1516,21 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 		logger.info("XML is : " + xmlString);
 		logger.info("Executed .........");
 		logger.info("To Xml : " + item.toXml().toString());
-		Document doc = null;
+		
 
 		logger.info("Save the XML for Items");
-		doc = ctx.getDocstoreManager()
+		if(xmlDoc == null)
+		{
+		xmlDoc = ctx.getDocstoreManager()
 				.createAndPersistDocument("/outbound/ItemPublish/Working/" + item.getPrimaryKey() + ".xml");
+		xmlDoc.setContent(xmlString);
 		logger.info("XML Saved");
-		if (doc != null) {
-			doc.setContent(xmlString);
 		}
+		
+		stringWriter.flush();
 		stringWriter.close();
-
+		
+		
 		try {
 			logger.info("Executing the cloud code ..");
 			// Use the CloudStorageAccount object to connect to your storage account
@@ -1550,6 +1558,9 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 			// logger.info("Cloud File Text : "+cloudFile.downloadText());
 			cloudFile.uploadFromFile(localFilePath + item.getPrimaryKey() + ".xml");
 			logger.info("Files uploaded successfully");
+			xmlDoc.moveTo("/outbound/ItemPublish/Archive/" + item.getPrimaryKey() + ".xml");
+	            logger.info("File archived successfully"); 
+	            
 		} catch (Exception e) {
 			logger.info("Exception : " + e.getMessage());
 			e.printStackTrace();
