@@ -77,7 +77,7 @@ public class ValidateAndReviewStep implements WorkflowStepFunction {
 
 			}
 
-			
+			item.getCollaborationArea().getProcessingOptions().setAllProcessingOptions(false);
 			item.save();
 		}
 		

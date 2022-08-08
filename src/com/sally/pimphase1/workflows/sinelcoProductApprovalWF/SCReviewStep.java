@@ -43,6 +43,8 @@ public class SCReviewStep implements WorkflowStepFunction {
 				}
 				
 				item.setAttributeValue("Product_c/Status Attributes/Approval_date_supply_chain", new Date());
+				item.setAttributeValue("Product_c/Status Attributes/Approval_supply_chain", "Y");
+				item.getCollaborationArea().getProcessingOptions().setAllProcessingOptions(false);
 				item.save();
 			}
 			
@@ -59,6 +61,7 @@ public class SCReviewStep implements WorkflowStepFunction {
 						item.setAttributeValue("Product_c/Functional/Func_reject_on_create","Y");
 					}
 					
+					item.getCollaborationArea().getProcessingOptions().setAllProcessingOptions(false);
 					item.save();
 					logger.info("Set SC Approve flag attribute to false");
 

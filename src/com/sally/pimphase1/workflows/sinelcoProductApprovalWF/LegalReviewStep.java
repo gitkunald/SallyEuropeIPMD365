@@ -42,6 +42,8 @@ public class LegalReviewStep implements WorkflowStepFunction {
 
 				}
 				item.setAttributeValue("Product_c/Status Attributes/Approval_date_legal", new Date());
+				item.setAttributeValue("Product_c/Status Attributes/Approval_legal", "Y");
+				item.getCollaborationArea().getProcessingOptions().setAllProcessingOptions(false);
 				item.save();
 			}
 			
@@ -59,6 +61,7 @@ public class LegalReviewStep implements WorkflowStepFunction {
 					{
 						item.setAttributeValue("Product_c/Functional/Func_reject_on_create","Y");
 					}
+					item.getCollaborationArea().getProcessingOptions().setAllProcessingOptions(false);
 					item.save();
 				}
 			}

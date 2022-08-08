@@ -44,6 +44,8 @@ public class ECOMReviewStep implements WorkflowStepFunction {
 				}
 				
 				item.setAttributeValue("Product_c/Status Attributes/Approval_date_ECOM", new Date());
+				item.setAttributeValue("Product_c/Status Attributes/Approval_ECOM", "Y");
+				item.getCollaborationArea().getProcessingOptions().setAllProcessingOptions(false);
 				item.save();
 			}
 			
@@ -60,6 +62,7 @@ public class ECOMReviewStep implements WorkflowStepFunction {
 						item.setAttributeValue("Product_c/Functional/Func_reject_on_create","Y");
 					}
 					
+					item.getCollaborationArea().getProcessingOptions().setAllProcessingOptions(false);
 					item.save();
 					logger.info("Set ECOM Approve flag attribute to false");
 

@@ -29,6 +29,8 @@ import com.ibm.pim.lookuptable.LookupTable;
 import com.ibm.pim.lookuptable.LookupTableEntry;
 import com.ibm.pim.search.SearchQuery;
 import com.ibm.pim.search.SearchResultSet;
+import com.ibm.pim.spec.Spec;
+import com.vivisimo.gelato.stubs.ForEach;
 
 public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
@@ -39,18 +41,18 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 	public void prePostProcessing(ItemPrePostProcessingFunctionArguments arg0) {
 		logger.info("Inside item preprocess");
 		Item item = arg0.getItem();
-		
+
 		if (item != null) {
-			
+
 			AttributeInstance attributeInstance = item.getAttributeInstance("Product_c/Regulatory and Legal/UN_number");
 			AttributeInstance unNameInstance = item.getAttributeInstance("Product_c/Regulatory and Legal/UN_name");
 			int size = attributeInstance.getChildren().size() - unNameInstance.getChildren().size();
-			if(size > 0) {
+			if (size > 0) {
 				for (int z = 0; z < size; z++) {
 					unNameInstance.addOccurrence();
 				}
 			}
-			if(size < 0) {
+			if (size < 0) {
 				for (int z = 0; z < Math.abs(size); z++) {
 					logger.info(unNameInstance.isMultiOccurrence());
 					unNameInstance.getChildren().get(z).removeOccurrence();
@@ -62,9 +64,9 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 				for (int x = 0; x < attributeInstance.getChildren().size(); x++) {
 					for (Iterator<LookupTableEntry> iterator = hazardousLkpEntries.iterator(); iterator.hasNext();) {
 						LookupTableEntry lookupTableEntry = (LookupTableEntry) iterator.next();
-						if (attributeInstance.getChildren().get(x).getValue() != null
-								&& attributeInstance.getChildren().get(x).getValue().toString().equalsIgnoreCase(
-										lookupTableEntry.getAttributeValue("Hazardous_Lookup_Spec/un_number").toString())) {
+						if (attributeInstance.getChildren().get(x).getValue() != null && attributeInstance.getChildren()
+								.get(x).getValue().toString().equalsIgnoreCase(lookupTableEntry
+										.getAttributeValue("Hazardous_Lookup_Spec/un_number").toString())) {
 							item.setAttributeValue("Product_c/Regulatory and Legal/UN_name#" + x,
 									lookupTableEntry.getAttributeValue("Hazardous_Lookup_Spec/un_name"));
 							break;
@@ -72,7 +74,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 					}
 				}
 			}
-			
+
 			Collection<Category> itemCategories = item.getCategories();
 
 			if (!itemCategories.isEmpty()) {
@@ -254,19 +256,19 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 	@Override
 	public void prePostProcessing(CollaborationItemPrePostProcessingFunctionArguments arg0) {
 		CollaborationItem item = arg0.getCollaborationItem();
-		
+
 		if (item != null) {
 
 			AttributeInstance attributeInstance = item.getAttributeInstance("Product_c/Regulatory and Legal/UN_number");
 			AttributeInstance unNameInstance = item.getAttributeInstance("Product_c/Regulatory and Legal/UN_name");
 			int size = attributeInstance.getChildren().size() - unNameInstance.getChildren().size();
-			if(size > 0) {
+			if (size > 0) {
 				for (int z = 0; z < size; z++) {
 					unNameInstance.addOccurrence();
 				}
 			}
-			if(size < 0) {
-				logger.info("Negative Size is : "+Math.abs(size));
+			if (size < 0) {
+				logger.info("Negative Size is : " + Math.abs(size));
 				for (int z = 0; z < Math.abs(size); z++) {
 					logger.info(unNameInstance.isMultiOccurrence());
 					unNameInstance.getChildren().get(z).removeOccurrence();
@@ -278,9 +280,9 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 				for (int x = 0; x < attributeInstance.getChildren().size(); x++) {
 					for (Iterator<LookupTableEntry> iterator = hazardousLkpEntries.iterator(); iterator.hasNext();) {
 						LookupTableEntry lookupTableEntry = (LookupTableEntry) iterator.next();
-						if (attributeInstance.getChildren().get(x).getValue() != null
-								&& attributeInstance.getChildren().get(x).getValue().toString().equalsIgnoreCase(
-										lookupTableEntry.getAttributeValue("Hazardous_Lookup_Spec/un_number").toString())) {
+						if (attributeInstance.getChildren().get(x).getValue() != null && attributeInstance.getChildren()
+								.get(x).getValue().toString().equalsIgnoreCase(lookupTableEntry
+										.getAttributeValue("Hazardous_Lookup_Spec/un_number").toString())) {
 							item.setAttributeValue("Product_c/Regulatory and Legal/UN_name#" + x,
 									lookupTableEntry.getAttributeValue("Hazardous_Lookup_Spec/un_name"));
 							break;
@@ -288,12 +290,11 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 					}
 				}
 			}
-			
+
 			if (arg0.getCollaborationStep() != null) {
 
 				if (arg0.getCollaborationStep().getName().equalsIgnoreCase("01 Create Items")
 						|| arg0.getCollaborationStep().getName().equalsIgnoreCase("01 Enrich Item Data")) {
-					
 
 					Collection<Category> itemCategories = item.getCategories();
 
@@ -464,7 +465,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 							}
 						}
 					}
-					
+
 					AttributeInstance barcodeInst = item.getAttributeInstance("Product_c/Barcodes");
 
 					if (barcodeInst != null) {
@@ -513,21 +514,19 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 							}
 						}
 					}
-					
+
 					Collection<Category> categories = item.getCategories();
 					ArrayList<String> hierNames = new ArrayList<>();
 					for (Category category : categories) {
-						
+
 						String hierName = category.getHierarchy().getName();
 						hierNames.add(hierName);
-						
+
 					}
-					
-					if(!hierNames.contains("Brand Hierarchy"))
-					{
+
+					if (!hierNames.contains("Brand Hierarchy")) {
 						arg0.addValidationError(item.getAttributeInstance("Product_c/Sys_PIM_item_ID"),
-								ValidationError.Type.VALIDATION_RULE,
-								"Brand Hierarchy is not mapped to the Item");
+								ValidationError.Type.VALIDATION_RULE, "Brand Hierarchy is not mapped to the Item");
 					}
 				}
 			}
@@ -545,39 +544,37 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 			if (arg0.getCollaborationStep() != null) {
 
 				if (arg0.getCollaborationStep().getName().equalsIgnoreCase("01 Enrich Item Data")) {
-				// Item Type mandatory validations
-				Object itemTypeValue = item.getAttributeValue("Product_c/Type/Type_item_type");
-				logger.info("itemTypeValue >> " + itemTypeValue);
+					// Item Type mandatory validations
+					Object itemTypeValue = item.getAttributeValue("Product_c/Type/Type_item_type");
+					logger.info("itemTypeValue >> " + itemTypeValue);
 
-				ArrayList<String> attrPaths = new ArrayList<String>();
+					ArrayList<String> attrPaths = new ArrayList<String>();
 
-				attrPaths.add("Product_c/Packaging/Pack_inner_pack_quantity");
-				attrPaths.add("Product_c/Packaging/Pack_inner_pack_height/Value");
-				attrPaths.add("Product_c/Packaging/Pack_inner_pack_height/UOM");
-				attrPaths.add("Product_c/Packaging/Pack_inner_pack_width/Value");
-				attrPaths.add("Product_c/Packaging/Pack_inner_pack_width/UOM");
-				attrPaths.add("Product_c/Packaging/Pack_inner_pack_depth/Value");
-				attrPaths.add("Product_c/Packaging/Pack_inner_pack_depth/UOM");
-				attrPaths.add("Product_c/Packaging/Pack_inner_pack_weight/Value");
-				attrPaths.add("Product_c/Packaging/Pack_inner_pack_weight/UOM");
+					attrPaths.add("Product_c/Packaging/Pack_inner_pack_quantity");
+					attrPaths.add("Product_c/Packaging/Pack_inner_pack_height/Value");
+					attrPaths.add("Product_c/Packaging/Pack_inner_pack_height/UOM");
+					attrPaths.add("Product_c/Packaging/Pack_inner_pack_width/Value");
+					attrPaths.add("Product_c/Packaging/Pack_inner_pack_width/UOM");
+					attrPaths.add("Product_c/Packaging/Pack_inner_pack_depth/Value");
+					attrPaths.add("Product_c/Packaging/Pack_inner_pack_depth/UOM");
+					attrPaths.add("Product_c/Packaging/Pack_inner_pack_weight/Value");
+					attrPaths.add("Product_c/Packaging/Pack_inner_pack_weight/UOM");
 
-				attrPaths.add("Product_c/Packaging/Pack_outer_pack_quantity");
-				attrPaths.add("Product_c/Packaging/Pack_outer_pack_height/Value");
-				attrPaths.add("Product_c/Packaging/Pack_outer_pack_height/UOM");
-				attrPaths.add("Product_c/Packaging/Pack_outer_pack_width/Value");
-				attrPaths.add("Product_c/Packaging/Pack_outer_pack_width/UOM");
-				attrPaths.add("Product_c/Packaging/Pack_outer_pack_depth/Value");
-				attrPaths.add("Product_c/Packaging/Pack_outer_pack_depth/UOM");
-				attrPaths.add("Product_c/Packaging/Pack_outer_pack_weight/Value");
-				attrPaths.add("Product_c/Packaging/Pack_outer_pack_weight/UOM");
+					attrPaths.add("Product_c/Packaging/Pack_outer_pack_quantity");
+					attrPaths.add("Product_c/Packaging/Pack_outer_pack_height/Value");
+					attrPaths.add("Product_c/Packaging/Pack_outer_pack_height/UOM");
+					attrPaths.add("Product_c/Packaging/Pack_outer_pack_width/Value");
+					attrPaths.add("Product_c/Packaging/Pack_outer_pack_width/UOM");
+					attrPaths.add("Product_c/Packaging/Pack_outer_pack_depth/Value");
+					attrPaths.add("Product_c/Packaging/Pack_outer_pack_depth/UOM");
+					attrPaths.add("Product_c/Packaging/Pack_outer_pack_weight/Value");
+					attrPaths.add("Product_c/Packaging/Pack_outer_pack_weight/UOM");
 
-				attrPaths.add("Product_c/Regulatory and Legal/Country_of_origin");
-				attrPaths.add("Product_c/Regulatory and Legal/Country_of_manufacture");
+					attrPaths.add("Product_c/Regulatory and Legal/Country_of_origin");
+					attrPaths.add("Product_c/Regulatory and Legal/Country_of_manufacture");
 
-				if (itemTypeValue != null) {
-					if (itemTypeValue.toString().equals("Item")) {
-
-						
+					if (itemTypeValue != null) {
+						if (itemTypeValue.toString().equals("Item")) {
 
 							for (String attrPath : attrPaths) {
 
@@ -595,193 +592,202 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 								}
 
 							}
-						
-
-					}
-				}
-				
-				// Legal Regulatory Attribute Validations
-				AttributeInstance legalAttributeInstance = item
-						.getAttributeInstance("Product_c/Regulatory and Legal/Legal_classification");
-
-				if (legalAttributeInstance != null) {
-					Object legalClassificationValue = item
-							.getAttributeValue("Product_c/Regulatory and Legal/Legal_classification");
-					logger.info("legalClassificationValue >> " + legalClassificationValue);
-					if (legalClassificationValue != null && (legalClassificationValue.equals("Cosmetics leave on")
-							|| legalClassificationValue.equals("Cosmetics wash off")
-							|| legalClassificationValue.equals("Aerosols") || legalClassificationValue.equals("Biocide")
-							|| legalClassificationValue.equals("Electrical"))) {
-
-						logger.info("legal parent path >> " + legalAttributeInstance.getParent().getPath());
-
-						String safetyDateSheetAttrPath = legalAttributeInstance.getParent().getPath()
-								+ "/Safety_data_sheet";
-
-						if (item.getAttributeValue(safetyDateSheetAttrPath) == null) {
-
-							arg0.addValidationError(item.getAttributeInstance(safetyDateSheetAttrPath),
-									ValidationError.Type.VALIDATION_RULE,
-									"Safety Data Sheet is mandatory for the legal classification value selected");
-							logger.info("Safety Data sheet error");
 
 						}
 					}
 
-					if (legalClassificationValue != null && (legalClassificationValue.equals("Cosmetics leave on")
-							|| legalClassificationValue.equals("Cosmetics wash off")
-							|| legalClassificationValue.equals("Aerosols") || legalClassificationValue.equals("Biocide")
-							|| legalClassificationValue.equals("Food supplements")
-							|| legalClassificationValue.equals("Detergents"))) {
+					// Legal Regulatory Attribute Validations
+					AttributeInstance legalAttributeInstance = item
+							.getAttributeInstance("Product_c/Regulatory and Legal/Legal_classification");
 
-						String ingredientPath = legalAttributeInstance.getParent().getPath()
-								+ "/Ingredients/Ingredient";
-						if (item.getAttributeInstance(ingredientPath) != null
-								&& item.getAttributeValue(ingredientPath) == null) {
+					if (legalAttributeInstance != null) {
+						Object legalClassificationValue = item
+								.getAttributeValue("Product_c/Regulatory and Legal/Legal_classification");
+						logger.info("legalClassificationValue >> " + legalClassificationValue);
+						if (legalClassificationValue != null && (legalClassificationValue.equals("Cosmetics leave on")
+								|| legalClassificationValue.equals("Cosmetics wash off")
+								|| legalClassificationValue.equals("Aerosols")
+								|| legalClassificationValue.equals("Biocide")
+								|| legalClassificationValue.equals("Electrical"))) {
 
-							arg0.addValidationError(item.getAttributeInstance(ingredientPath),
-									ValidationError.Type.VALIDATION_RULE,
-									"Expiry Type is mandatory for the legal classification value selected");
-							logger.info("Expiry Date PAO error");
-						}
-					}
+							logger.info("legal parent path >> " + legalAttributeInstance.getParent().getPath());
 
-					if (legalClassificationValue != null && (legalClassificationValue.equals("Cosmetics leave on")
-							|| legalClassificationValue.equals("Cosmetics wash off")
-							|| legalClassificationValue.equals("Aerosols") || legalClassificationValue.equals("Biocide")
-							|| legalClassificationValue.equals("Food supplements")
-							|| legalClassificationValue.equals("Medical device")
-							|| legalClassificationValue.equals("PPE"))) {
+							String safetyDateSheetAttrPath = legalAttributeInstance.getParent().getPath()
+									+ "/Safety_data_sheet";
 
-						String expiryDatePAOAttrPath = legalAttributeInstance.getParent().getPath() + "/Expiry_type";
-						if (item.getAttributeInstance(expiryDatePAOAttrPath) != null
-								&& item.getAttributeValue(expiryDatePAOAttrPath) == null) {
+							if (item.getAttributeValue(safetyDateSheetAttrPath) == null) {
 
-							arg0.addValidationError(item.getAttributeInstance(expiryDatePAOAttrPath),
-									ValidationError.Type.VALIDATION_RULE,
-									"Expiry Type is mandatory for the legal classification value selected");
-							logger.info("Expiry Date PAO error");
-						}
-					}
-				}
-
-				AttributeInstance legalQAttrInstance = item
-						.getAttributeInstance("Product_c/Regulatory and Legal/QPBUNMLGR");
-
-				if (legalQAttrInstance != null) {
-					Object legalQAttrValue = item.getAttributeValue("Product_c/Regulatory and Legal/QPBUNMLGR");
-
-					if (legalQAttrValue != null && (legalQAttrValue.equals("g") || legalQAttrValue.equals("ml"))) {
-
-						String legalQAttrPath = legalQAttrInstance.getParent().getPath() + "/QPBQTYMLGR";
-						if (item.getAttributeInstance(legalQAttrPath) != null
-								&& item.getAttributeValue(legalQAttrPath) == null) {
-
-							arg0.addValidationError(item.getAttributeInstance(legalQAttrPath),
-									ValidationError.Type.VALIDATION_RULE,
-									"This field is mandatory for the QPBUNMLGR value selected");
-							logger.info("Expiry Date PAO error");
-						}
-					}
-
-				}
-
-				// Packaging material validation
-
-				// Inner Packaging
-				AttributeInstance innerPackInstance = item
-						.getAttributeInstance("Product_c/Packaging/Pack_inner_packaging_material");
-
-				if (innerPackInstance != null) {
-					logger.info("Inner Pack Instance not null");
-					List<? extends AttributeInstance> innerPackChildren = innerPackInstance.getChildren();
-
-					HashSet<String> hs = new HashSet<String>();
-
-					for (AttributeInstance innerPackChildInst : innerPackChildren) {
-
-						Object materialTypeValue = item
-								.getAttributeValue(innerPackChildInst.getPath() + "/Material_type");
-
-						logger.info("materialTypeValue >> " + materialTypeValue);
-
-						if (materialTypeValue != null) {
-							if (!hs.contains(materialTypeValue.toString())) {
-								hs.add(materialTypeValue.toString());
-							}
-
-							else {
-								arg0.addValidationError(
-										item.getAttributeInstance(innerPackChildInst.getPath() + "/Material_type"),
+								arg0.addValidationError(item.getAttributeInstance(safetyDateSheetAttrPath),
 										ValidationError.Type.VALIDATION_RULE,
-										"Inner Packaging Material Type Cannot be duplicated");
-								logger.info("Inner Packaging Material Type Cannot be duplicated");
+										"Safety Data Sheet is mandatory for the legal classification value selected");
+								logger.info("Safety Data sheet error");
+
 							}
 						}
 
-					}
-				}
+						if (legalClassificationValue != null && (legalClassificationValue.equals("Cosmetics leave on")
+								|| legalClassificationValue.equals("Cosmetics wash off")
+								|| legalClassificationValue.equals("Aerosols")
+								|| legalClassificationValue.equals("Biocide")
+								|| legalClassificationValue.equals("Food supplements")
+								|| legalClassificationValue.equals("Detergents"))) {
 
-				// Outer Packaging
-				AttributeInstance outerPackInstance = item
-						.getAttributeInstance("Product_c/Packaging/Pack_outer_packaging_material");
+							String ingredientPath = legalAttributeInstance.getParent().getPath()
+									+ "/Ingredients/Ingredient";
+							if (item.getAttributeInstance(ingredientPath) != null
+									&& item.getAttributeValue(ingredientPath) == null) {
 
-				if (outerPackInstance != null) {
-					logger.info("Inner Pack Instance not null");
-					List<? extends AttributeInstance> outerPackChildren = outerPackInstance.getChildren();
-
-					HashSet<String> hs = new HashSet<String>();
-
-					for (AttributeInstance outerPackChildInst : outerPackChildren) {
-
-						Object materialTypeValue = item
-								.getAttributeValue(outerPackChildInst.getPath() + "/Material_type");
-
-						logger.info("materialTypeValue >> " + materialTypeValue);
-
-						if (materialTypeValue != null) {
-							if (!hs.contains(materialTypeValue.toString())) {
-								hs.add(materialTypeValue.toString());
-							}
-
-							else {
-								arg0.addValidationError(
-										item.getAttributeInstance(outerPackChildInst.getPath() + "/Material_type"),
+								arg0.addValidationError(item.getAttributeInstance(ingredientPath),
 										ValidationError.Type.VALIDATION_RULE,
-										"Outer Packaging Material Type Cannot be duplicated");
-								logger.info("Outer Packaging Material Type Cannot be duplicated");
+										"Expiry Type is mandatory for the legal classification value selected");
+								logger.info("Expiry Date PAO error");
+							}
+						}
+
+						if (legalClassificationValue != null && (legalClassificationValue.equals("Cosmetics leave on")
+								|| legalClassificationValue.equals("Cosmetics wash off")
+								|| legalClassificationValue.equals("Aerosols")
+								|| legalClassificationValue.equals("Biocide")
+								|| legalClassificationValue.equals("Food supplements")
+								|| legalClassificationValue.equals("Medical device")
+								|| legalClassificationValue.equals("PPE"))) {
+
+							String expiryDatePAOAttrPath = legalAttributeInstance.getParent().getPath()
+									+ "/Expiry_type";
+							if (item.getAttributeInstance(expiryDatePAOAttrPath) != null
+									&& item.getAttributeValue(expiryDatePAOAttrPath) == null) {
+
+								arg0.addValidationError(item.getAttributeInstance(expiryDatePAOAttrPath),
+										ValidationError.Type.VALIDATION_RULE,
+										"Expiry Type is mandatory for the legal classification value selected");
+								logger.info("Expiry Date PAO error");
+							}
+						}
+					}
+
+					AttributeInstance legalQAttrInstance = item
+							.getAttributeInstance("Product_c/Regulatory and Legal/QPBUNMLGR");
+
+					if (legalQAttrInstance != null) {
+						Object legalQAttrValue = item.getAttributeValue("Product_c/Regulatory and Legal/QPBUNMLGR");
+
+						if (legalQAttrValue != null && (legalQAttrValue.equals("g") || legalQAttrValue.equals("ml"))) {
+
+							String legalQAttrPath = legalQAttrInstance.getParent().getPath() + "/QPBQTYMLGR";
+							if (item.getAttributeInstance(legalQAttrPath) != null
+									&& item.getAttributeValue(legalQAttrPath) == null) {
+
+								arg0.addValidationError(item.getAttributeInstance(legalQAttrPath),
+										ValidationError.Type.VALIDATION_RULE,
+										"This field is mandatory for the QPBUNMLGR value selected");
+								logger.info("Expiry Date PAO error");
 							}
 						}
 
 					}
-				}
-				
-			}
 
-				
+					// Packaging material validation
+
+					// Inner Packaging
+					AttributeInstance innerPackInstance = item
+							.getAttributeInstance("Product_c/Packaging/Pack_inner_packaging_material");
+
+					if (innerPackInstance != null) {
+						logger.info("Inner Pack Instance not null");
+						List<? extends AttributeInstance> innerPackChildren = innerPackInstance.getChildren();
+
+						HashSet<String> hs = new HashSet<String>();
+
+						for (AttributeInstance innerPackChildInst : innerPackChildren) {
+
+							Object materialTypeValue = item
+									.getAttributeValue(innerPackChildInst.getPath() + "/Material_type");
+
+							logger.info("materialTypeValue >> " + materialTypeValue);
+
+							if (materialTypeValue != null) {
+								if (!hs.contains(materialTypeValue.toString())) {
+									hs.add(materialTypeValue.toString());
+								}
+
+								else {
+									arg0.addValidationError(
+											item.getAttributeInstance(innerPackChildInst.getPath() + "/Material_type"),
+											ValidationError.Type.VALIDATION_RULE,
+											"Inner Packaging Material Type Cannot be duplicated");
+									logger.info("Inner Packaging Material Type Cannot be duplicated");
+								}
+							}
+
+						}
+					}
+
+					// Outer Packaging
+					AttributeInstance outerPackInstance = item
+							.getAttributeInstance("Product_c/Packaging/Pack_outer_packaging_material");
+
+					if (outerPackInstance != null) {
+						logger.info("Inner Pack Instance not null");
+						List<? extends AttributeInstance> outerPackChildren = outerPackInstance.getChildren();
+
+						HashSet<String> hs = new HashSet<String>();
+
+						for (AttributeInstance outerPackChildInst : outerPackChildren) {
+
+							Object materialTypeValue = item
+									.getAttributeValue(outerPackChildInst.getPath() + "/Material_type");
+
+							logger.info("materialTypeValue >> " + materialTypeValue);
+
+							if (materialTypeValue != null) {
+								if (!hs.contains(materialTypeValue.toString())) {
+									hs.add(materialTypeValue.toString());
+								}
+
+								else {
+									arg0.addValidationError(
+											item.getAttributeInstance(outerPackChildInst.getPath() + "/Material_type"),
+											ValidationError.Type.VALIDATION_RULE,
+											"Outer Packaging Material Type Cannot be duplicated");
+									logger.info("Outer Packaging Material Type Cannot be duplicated");
+								}
+							}
+
+						}
+					}
+
+				}
+
 				if (arg0.getCollaborationStep().getName().equalsIgnoreCase("10 Validate and Review")) {
 
-					AttributeInstance funcAttrInst = item.getAttributeInstance("Sinelco_ss/Functional");
+					Collection<Spec> specs = item.getSpecs();
 
-					if (funcAttrInst != null) {
-						Object translationRequired = item
-								.getAttributeValue("Sinelco_ss/Functional/Func_modify_translation_required");
-						Object packagingRequired = item
-								.getAttributeValue("Sinelco_ss/Functional/Func_modify_packaging_required");
+					for (Spec seconSpec : specs) {
 
-						if (translationRequired == null && packagingRequired == null) {
-							arg0.addValidationError(
-									item.getAttributeInstance("Sinelco_ss/Functional/Func_modify_translation_required"),
-									ValidationError.Type.VALIDATION_RULE,
-									"Translation and Packaging cannot be blank");
-							logger.info("Either Translation or Packaging should be selected");
+						if (seconSpec.getName().contains("Sinelco_ss")) {
+
+							AttributeInstance funcAttrInst = item.getAttributeInstance("Sinelco_ss/Functional");
+
+							if (funcAttrInst != null) {
+								Object translationRequired = item
+										.getAttributeValue("Sinelco_ss/Functional/Func_modify_translation_required");
+								Object packagingRequired = item
+										.getAttributeValue("Sinelco_ss/Functional/Func_modify_packaging_required");
+
+								if (translationRequired == null && packagingRequired == null) {
+									arg0.addValidationError(
+											item.getAttributeInstance(
+													"Sinelco_ss/Functional/Func_modify_translation_required"),
+											ValidationError.Type.VALIDATION_RULE,
+											"Translation and Packaging cannot be blank");
+									logger.info("Either Translation or Packaging should be selected");
+								}
+
+							}
 						}
-
 					}
 
 				}
-
-			
 
 			}
 		}
@@ -1050,7 +1056,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
 		}
 	}
-	
+
 	public static void validateBarcodes(Context ctx, CollaborationItemPrePostProcessingFunctionArguments inArgs,
 			CollaborationItem collabItem, String barcode, String collabItemPath) {
 		logger.info("*** Start of function of validateBarcodes ***");
@@ -1083,9 +1089,10 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 			logger.info("flag : " + flag);
 			if (flag == false) {
 				inArgs.addValidationError(collabItem.getAttributeInstance(collabItemPath),
-						ValidationError.Type.VALIDATION_RULE,"Duplicate Barcode error : Barcode is already associated to another Item in Catalog");
-			}		
-		}else {
+						ValidationError.Type.VALIDATION_RULE,
+						"Duplicate Barcode error : Barcode is already associated to another Item in Catalog");
+			}
+		} else {
 			logger.info("** Creates new Entry in lookup **");
 			LookupTableEntry newEntry = barcodeLkp.createEntry();
 			newEntry.setAttributeValue(path, barcode);
