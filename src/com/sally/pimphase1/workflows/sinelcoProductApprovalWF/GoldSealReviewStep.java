@@ -4,6 +4,7 @@ package com.sally.pimphase1.workflows.sinelcoProductApprovalWF;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
@@ -579,12 +580,7 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 							.getAttributeValue(Constants.BARCODES + "#" + x + "/Pack_barcode_created_date");
 
 					if (barcodeCreatedDate != null) {
-						Calendar cal = Calendar.getInstance();
-						SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
-						SimpleDateFormat tdf = new SimpleDateFormat("dd/MM/yyyy");
-						cal.setTime(sdf.parse(barcodeCreatedDate.toString()));
-						Date dt = cal.getTime();
-						String newFormatBarcodeDt = tdf.format(dt);
+						String newFormatBarcodeDt = dateFormatting(barcodeCreatedDate);
 
 						xmlStreamWriter.writeCharacters(newFormatBarcodeDt);
 
@@ -718,11 +714,17 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 					xmlStreamWriter.writeEndElement();
 
 					xmlStreamWriter.writeStartElement("Date_added" + x);
-					xmlStreamWriter.writeCharacters(
-							((item.getAttributeValue(Constants.INGREDIENTS + "#" + x + "/Date_added") == null) ? ""
-									: item.getAttributeValue(Constants.INGREDIENTS + "#" + x + "/Date_added")
-											.toString()));
+
+					Object dateAdded = item.getAttributeValue(Constants.INGREDIENTS + "#" + x + "/Date_added");
+
+					if (dateAdded != null) {
+						String newFormatDt = dateFormatting(dateAdded);
+
+						xmlStreamWriter.writeCharacters(newFormatDt);
+
+					}
 					xmlStreamWriter.writeEndElement();
+					
 				}
 			}
 
@@ -802,8 +804,16 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 			xmlStreamWriter.writeEndElement();
 
 			xmlStreamWriter.writeStartElement("Approval_date_supply_chain");
-			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.APPROVAL_DATE_SUPPLY_CHAIN) == null) ? ""
-					: item.getAttributeValue(Constants.APPROVAL_DATE_SUPPLY_CHAIN).toString()));
+			
+			
+			Object approvalDtSupplyChain = item.getAttributeValue(Constants.APPROVAL_DATE_SUPPLY_CHAIN);
+
+			if (approvalDtSupplyChain != null) {
+				String newFormatDt = dateFormattingWithTime(approvalDtSupplyChain);
+
+				xmlStreamWriter.writeCharacters(newFormatDt);
+
+			}
 			xmlStreamWriter.writeEndElement();
 
 			xmlStreamWriter.writeStartElement("Approval_legal");
@@ -812,9 +822,17 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 			xmlStreamWriter.writeEndElement();
 
 			xmlStreamWriter.writeStartElement("Approval_date_legal");
-			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.APPROVAL_DATE_LEGAL) == null) ? ""
-					: item.getAttributeValue(Constants.APPROVAL_DATE_LEGAL).toString()));
+			
+			Object approvalDtLegal = item.getAttributeValue(Constants.APPROVAL_DATE_LEGAL);
+
+			if (approvalDtLegal != null) {
+				String newFormatLegalDt = dateFormattingWithTime(approvalDtLegal);
+
+				xmlStreamWriter.writeCharacters(newFormatLegalDt);
+
+			}
 			xmlStreamWriter.writeEndElement();
+			
 
 			xmlStreamWriter.writeStartElement("Approval_ECOM");
 			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.APPROVAL_ECOM) == null) ? ""
@@ -822,9 +840,17 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 			xmlStreamWriter.writeEndElement();
 
 			xmlStreamWriter.writeStartElement("Approval_date_ECOM");
-			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.APPROVAL_DATE_ECOM) == null) ? ""
-					: item.getAttributeValue(Constants.APPROVAL_DATE_ECOM).toString()));
+			
+			Object approvalDtECOM = item.getAttributeValue(Constants.APPROVAL_DATE_ECOM);
+
+			if (approvalDtECOM != null) {
+				String newFormatECOMDt = dateFormattingWithTime(approvalDtECOM);
+
+				xmlStreamWriter.writeCharacters(newFormatECOMDt);
+
+			}
 			xmlStreamWriter.writeEndElement();
+			
 
 			xmlStreamWriter.writeStartElement("Product_lifecycle_state");
 			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.PRODUCT_LIFECYCLE_STATE) == null) ? ""
@@ -943,14 +969,9 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 			Object webOnlineDate = item.getAttributeValue(Constants.WEB_ONLINE_DATE_TRADE);
 
 			if (webOnlineDate != null) {
-				Calendar cal = Calendar.getInstance();
-				SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
-				SimpleDateFormat tdf = new SimpleDateFormat("dd/MM/yyyy");
-				cal.setTime(sdf.parse(webOnlineDate.toString()));
-				Date dt = cal.getTime();
-				String newFormatWebDt = tdf.format(dt);
+				String webOnlineDt = dateFormatting(webOnlineDate);
 
-				xmlStreamWriter.writeCharacters(newFormatWebDt);
+				xmlStreamWriter.writeCharacters(webOnlineDt);
 
 			}
 			xmlStreamWriter.writeEndElement();
@@ -1792,6 +1813,26 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 			logger.info("Main Exception : " + e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+	private String dateFormatting(Object date) throws ParseException {
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+		SimpleDateFormat tdf = new SimpleDateFormat("dd/MM/yyyy");
+		cal.setTime(sdf.parse(date.toString()));
+		Date dt = cal.getTime();
+		String newFormatDt = tdf.format(dt);
+		return newFormatDt;
+	}
+	
+	private String dateFormattingWithTime(Object date) throws ParseException {
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+		SimpleDateFormat tdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		cal.setTime(sdf.parse(date.toString()));
+		Date dt = cal.getTime();
+		String newFormatDt = tdf.format(dt);
+		return newFormatDt;
 	}
 
 	@Override
