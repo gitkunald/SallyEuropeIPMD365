@@ -96,9 +96,9 @@ public class SallyEuropeCtgInitialLoadImport implements ImportFunction {
 
 			String timeStamp = new SimpleDateFormat("HH.mm.ss").format(calendar.getTime());
 
-			resultsFile = "temp_reports/SallyImport/" + todaysDate + "_" + timeStamp + "_success.csv";
-			debugFile = "temp_reports/SallyImport/" + todaysDate + "_" + timeStamp + "_failure" + ".csv";
-			stackFile = "temp_reports/SallyImport/" + todaysDate + "_" + timeStamp + "_debug" + ".csv";
+			resultsFile = "temp_reports/SallyEuropeImport/Success/" + todaysDate + "_" + timeStamp + "_success.csv";
+			debugFile = "temp_reports/SallyEuropeImport/Failure/" + todaysDate + "_" + timeStamp + "_failure" + ".csv";
+			stackFile = "temp_reports/SallyEuropeImport/Debug/" + todaysDate + "_" + timeStamp + "_debug" + ".csv";
 
 			scriptStats = arg0.getScriptStats();
 			writer = arg0.getErrors().getWriter();
@@ -1028,12 +1028,15 @@ public class SallyEuropeCtgInitialLoadImport implements ImportFunction {
 		sbResults.append("Time Taken: " + timeTaken);
 		writeToResultsFile();
 
+		if ((totalRecordsProcessed - successRecords) > 0)
+		{
 		sbDebug.append("\n");
 		sbDebug.append("Total records processed: " + totalRecordsProcessed + "\n");
 		sbDebug.append("Success records: " + successRecords + "\n");
 		sbDebug.append("Failed records: " + (totalRecordsProcessed - successRecords) + "\n");
 		sbDebug.append("Job ended at: " + jobEndTime + "\n");
 		writeToDebugFile();
+		}
 
 	}
 
