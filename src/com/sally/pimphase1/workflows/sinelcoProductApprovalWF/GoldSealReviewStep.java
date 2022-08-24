@@ -471,6 +471,17 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 											Constants.PACKAGING_INNER_PACKAGING_MATERIAL + "#" + x + "/Material_type")
 											.toString()));
 					xmlStreamWriter.writeEndElement();
+					// Adding the Value attribute
+					
+					xmlStreamWriter.writeStartElement("Value" + x);
+					xmlStreamWriter.writeCharacters(((item.getAttributeValue(
+							Constants.PACKAGING_INNER_PACKAGING_MATERIAL + "#" + x + "/Value") == null)
+									? ""
+									: item.getAttributeValue(
+											Constants.PACKAGING_INNER_PACKAGING_MATERIAL + "#" + x + "/Value")
+											.toString()));
+					xmlStreamWriter.writeEndElement();
+					
 
 				}
 			}
@@ -552,6 +563,16 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 											Constants.PACKAGING_OUTER_PACKAGING_MATERIAL + "#" + x + "/Material_type")
 											.toString()));
 					xmlStreamWriter.writeEndElement();
+					// Adding for Value attribute
+					xmlStreamWriter.writeStartElement("Value" + x);
+					xmlStreamWriter.writeCharacters(((item.getAttributeValue(
+							Constants.PACKAGING_OUTER_PACKAGING_MATERIAL + "#" + x + "/Value") == null)
+									? ""
+									: item.getAttributeValue(
+											Constants.PACKAGING_OUTER_PACKAGING_MATERIAL + "#" + x + "/Value")
+											.toString()));
+					xmlStreamWriter.writeEndElement();
+					
 
 				}
 			}
