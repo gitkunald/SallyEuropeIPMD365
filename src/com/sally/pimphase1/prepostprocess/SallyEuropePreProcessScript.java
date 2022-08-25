@@ -788,6 +788,63 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 					}
 
 				}
+				
+				if (arg0.getCollaborationStep().getName().equalsIgnoreCase("04 Supply Chain review")) {
+						
+					String exitValue = arg0.getExitValueForItem();
+					logger.info("exitValue "+exitValue);
+					
+					if (exitValue!= null &&  exitValue.equalsIgnoreCase("Reject")) {
+						
+						Object scRejectComments = item.getAttributeValue("Product_c/Status Attributes/SC_Rejection_Comments");
+								
+						if(scRejectComments == null)
+						{
+						arg0.addValidationError(item.getAttributeInstance("Product_c/Status Attributes/SC_Rejection_Comments"),
+											ValidationError.Type.VALIDATION_RULE,"Rejection comment is mandatory when exit value is Reject");
+									logger.info("Either Translation or Packaging should be selected");
+						}
+					}
+
+				}
+				
+				if (arg0.getCollaborationStep().getName().equalsIgnoreCase("05 Legal Review")) {
+					
+					String exitValue = arg0.getExitValueForItem();
+					logger.info("exitValue "+exitValue);
+					
+					if (exitValue != null &&  exitValue.equalsIgnoreCase("Reject")) {
+						
+						Object legalRejectComments = item.getAttributeValue("Product_c/Status Attributes/Legal_Rejection_Comments");
+								
+						if(legalRejectComments == null)
+						{
+						arg0.addValidationError(item.getAttributeInstance("Product_c/Status Attributes/Legal_Rejection_Comments"),
+											ValidationError.Type.VALIDATION_RULE,"Rejection comment is mandatory when exit value is Reject");
+									logger.info("Either Translation or Packaging should be selected");
+						}
+					}
+
+				}
+				
+				if (arg0.getCollaborationStep().getName().equalsIgnoreCase("06 Marketing Review")) {
+					
+					String exitValue = arg0.getExitValueForItem();
+					logger.info("exitValue "+exitValue);
+					
+					if (exitValue != null &&  exitValue.equalsIgnoreCase("Reject")) {
+						
+						Object eCOMRejectComments = item.getAttributeValue("Product_c/Status Attributes/ECOM_Rejection_Comments");
+								
+						if(eCOMRejectComments == null)
+						{
+						arg0.addValidationError(item.getAttributeInstance("Product_c/Status Attributes/ECOM_Rejection_Comments"),
+											ValidationError.Type.VALIDATION_RULE,"Rejection comment is mandatory when exit value is Reject");
+									logger.info("Either Translation or Packaging should be selected");
+						}
+					}
+
+				}
 
 			}
 		}

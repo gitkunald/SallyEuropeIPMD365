@@ -18,7 +18,21 @@ public class LegalReviewStep implements WorkflowStepFunction {
 
 	@Override
 	public void in(WorkflowStepFunctionArguments arg0) {
-		// TODO Auto-generated method stub
+		PIMCollection<CollaborationItem> objPIMCollection = arg0.getItems();
+		for (CollaborationItem item : objPIMCollection) {
+			Object legalRejectionComments = item.getAttributeValue("Product_c/Status Attributes/Legal_Rejection_Comments");
+			
+			if (legalRejectionComments != null) {
+
+				item.setAttributeValue("Product_c/Status Attributes/Legal_Rejection_Comments", "");
+				logger.info("clear Legal Rejection comment attribute");
+
+			}
+			
+			item.getCollaborationArea().getProcessingOptions().setAllProcessingOptions(false);
+			item.save();
+			item.getCollaborationArea().getProcessingOptions().resetProcessingOptions();
+		}
 
 	}
 

@@ -19,7 +19,21 @@ public class SCReviewStep implements WorkflowStepFunction {
 	@Override
 	public void in(WorkflowStepFunctionArguments arg0) {
 		
+		PIMCollection<CollaborationItem> objPIMCollection = arg0.getItems();
+		for (CollaborationItem item : objPIMCollection) {
+			Object scRejectionComments = item.getAttributeValue("Product_c/Status Attributes/SC_Rejection_Comments");
+			
+			if (scRejectionComments != null) {
 
+				item.setAttributeValue("Product_c/Status Attributes/SC_Rejection_Comments", "");
+				logger.info("clear SC Rejection comment attribute");
+
+			}
+			
+			item.getCollaborationArea().getProcessingOptions().setAllProcessingOptions(false);
+			item.save();
+			item.getCollaborationArea().getProcessingOptions().resetProcessingOptions();
+		}
 	}
 
 	@Override

@@ -18,7 +18,21 @@ public class ECOMReviewStep implements WorkflowStepFunction {
 
 	@Override
 	public void in(WorkflowStepFunctionArguments arg0) {
-		// TODO Auto-generated method stub
+		PIMCollection<CollaborationItem> objPIMCollection = arg0.getItems();
+		for (CollaborationItem item : objPIMCollection) {
+			Object ecomRejectionComments = item.getAttributeValue("Product_c/Status Attributes/ECOM_Rejection_Comments");
+			
+			if (ecomRejectionComments != null) {
+
+				item.setAttributeValue("Product_c/Status Attributes/ECOM_Rejection_Comments", "");
+				logger.info("clear ECOM Rejection comment attribute");
+
+			}
+			
+			item.getCollaborationArea().getProcessingOptions().setAllProcessingOptions(false);
+			item.save();
+			item.getCollaborationArea().getProcessingOptions().resetProcessingOptions();
+		}
 
 	}
 
