@@ -365,7 +365,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
 								logger.info("currentUserName >> " + currentUserName);
 
-								if (currentUserName.equals("BrandBuilder")) {
+								if (currentUserName.equals("BrandBuilder") || currentUserName.equals("Admin")) {
 
 									if (bannerHierarchy != null) {
 

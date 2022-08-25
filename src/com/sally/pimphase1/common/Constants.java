@@ -149,6 +149,8 @@ public class Constants {
 	public static final String SERIAL_TRACKED_ITEM = "Product_c/Vendors/Serial_tracked_item";
 	public static final String VENDOR_PRODUCT_ID = "Product_c/Vendors/Vendor_product_ID";
 	public static final String SUPPLIER_LEAD_TIME = "Product_c/Vendors/Supplier_lead_time";
+	public static final String PRODUCTION_LEAD_TIME = "Product_c/Vendors/Production_lead_time";
+	public static final String TRANSIT_LEAD_TIME = "Product_c/Vendors/Transit_lead_time";
 	
 	//Web
 	public static final String WEB_PRODUCT_TITLE = "Product_c/Web/Web_product_title";

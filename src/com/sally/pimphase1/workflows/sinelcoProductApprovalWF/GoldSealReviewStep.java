@@ -966,9 +966,19 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 					: item.getAttributeValue(Constants.VENDOR_PRODUCT_ID).toString()));
 			xmlStreamWriter.writeEndElement();
 
-			xmlStreamWriter.writeStartElement("Supplier_lead_time");
+			xmlStreamWriter.writeStartElement("Total_lead_time");
 			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.SUPPLIER_LEAD_TIME) == null) ? ""
 					: item.getAttributeValue(Constants.SUPPLIER_LEAD_TIME).toString()));
+			xmlStreamWriter.writeEndElement();
+			
+			xmlStreamWriter.writeStartElement("Production_lead_time");
+			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.PRODUCTION_LEAD_TIME) == null) ? ""
+					: item.getAttributeValue(Constants.PRODUCTION_LEAD_TIME).toString()));
+			xmlStreamWriter.writeEndElement();
+			
+			xmlStreamWriter.writeStartElement("Transit_lead_time");
+			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.TRANSIT_LEAD_TIME) == null) ? ""
+					: item.getAttributeValue(Constants.TRANSIT_LEAD_TIME).toString()));
 			xmlStreamWriter.writeEndElement();
 
 			xmlStreamWriter.writeEndElement();// Vendors end
@@ -983,23 +993,6 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 			xmlStreamWriter.writeStartElement("Web_long_description");
 			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.WEB_LONG_DESCRIPTION) == null) ? ""
 					: item.getAttributeValue(Constants.WEB_LONG_DESCRIPTION).toString()));
-			xmlStreamWriter.writeEndElement();
-
-			xmlStreamWriter.writeStartElement("Web_online_date_trade");
-
-			Object webOnlineDate = item.getAttributeValue(Constants.WEB_ONLINE_DATE_TRADE);
-
-			if (webOnlineDate != null) {
-				String webOnlineDt = dateFormatting(webOnlineDate);
-
-				xmlStreamWriter.writeCharacters(webOnlineDt);
-
-			}
-			xmlStreamWriter.writeEndElement();
-
-			xmlStreamWriter.writeStartElement("Web_searchable");
-			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.WEB_SEARCHABLE) == null) ? ""
-					: item.getAttributeValue(Constants.WEB_SEARCHABLE).toString()));
 			xmlStreamWriter.writeEndElement();
 
 			xmlStreamWriter.writeEndElement();// Web End tag
