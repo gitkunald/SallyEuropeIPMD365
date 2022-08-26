@@ -110,11 +110,12 @@ public class Constants {
 	
 		//Ingredients grouping multi occurring
 	public static final String INGREDIENTS = "Product_c/Regulatory and Legal/Ingredients";
+	public static final String INSTRUCTION_LANGUAGES = "Product_c/Regulatory and Legal/Instructions_languages";
 	
 	public static final String LEGAL_EXPIRY_TYPE = "Product_c/Regulatory and Legal/Expiry_type";
 	public static final String UK_RESTRICTED_TO_PROF_USE = "Product_c/Regulatory and Legal/UK_restricted_to_professional_use";
 	public static final String EU_RESTRICTED_TO_PROF_USE = "Product_c/Regulatory and Legal/EU_restricted_to_professional_use";
-	public static final String INSTRUCTION_LANGUAGES = "Product_c/Regulatory and Legal/Instructions_languages";
+	
 	public static final String WARNINGS = "Product_c/Regulatory and Legal/Warnings";
 	public static final String UN_NUMBER = "Product_c/Regulatory and Legal/UN_number";
 	public static final String UN_NAME = "Product_c/Regulatory and Legal/UN_name";

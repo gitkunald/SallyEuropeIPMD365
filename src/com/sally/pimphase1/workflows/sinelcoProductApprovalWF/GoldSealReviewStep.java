@@ -167,9 +167,8 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 					}
 				}
 
-				item.getCollaborationArea().getProcessingOptions().setAllProcessingOptions(false);
 				item.save();
-				item.getCollaborationArea().getProcessingOptions().resetProcessingOptions();
+				
 
 			} catch (Exception e) {
 				logger.info("Error in XML : " + e);
@@ -782,6 +781,7 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 				}
 			}
 
+			xmlStreamWriter.writeEndElement();// Ingredients end
 
 			xmlStreamWriter.writeStartElement("Expiry_type");
 			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.LEGAL_EXPIRY_TYPE) == null) ? ""
@@ -813,17 +813,16 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 							for (int x = 0; x < instructionlanguageInst.getChildren().size(); x++) {
 								xmlStreamWriter.writeStartElement("Instructions_language" + x);
 								xmlStreamWriter.writeCharacters(
-										((item.getAttributeValue(Constants.INGREDIENTS + "#" + x) == null) ? ""
-												: item.getAttributeValue(Constants.INGREDIENTS + "#" + x)
+										((item.getAttributeValue(Constants.INSTRUCTION_LANGUAGES + "#" + x) == null) ? ""
+												: item.getAttributeValue(Constants.INSTRUCTION_LANGUAGES + "#" + x)
 														.toString()));
 								xmlStreamWriter.writeEndElement();
 
 								}
-								xmlStreamWriter.writeEndElement();
 								
 							}						
 
-						xmlStreamWriter.writeEndElement();// Ingredients end
+						xmlStreamWriter.writeEndElement();// Instructions_Languages end
 
 
 			xmlStreamWriter.writeStartElement("Warnings");
