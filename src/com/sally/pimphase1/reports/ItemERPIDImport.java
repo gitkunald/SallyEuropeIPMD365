@@ -68,12 +68,12 @@ public class ItemERPIDImport implements ReportGenerateFunction {
 			e1.printStackTrace();
 		}
 
-		String baseItemSearchQuery = "select item from collaboration_area('Product Initiation Collaboration Area') where item['Product_c/Sys_PIM_MDM_ID'] is not null  and item.step.path = '02 D365 GenerateItemID'";
+		String baseItemSearchQuery = "select item from collaboration_area('01 Product Initiation Collaboration Area') where item['Product_c/Sys_PIM_MDM_ID'] is not null  and item.step.path = '02 D365 GenerateItemID'";
 		SearchQuery selectSearchQuery = ctx.createSearchQuery(baseItemSearchQuery);
 		SearchResultSet selectResultSet = selectSearchQuery.execute();
 
 		CollaborationArea productInitiationCollabArea = ctx.getCollaborationAreaManager()
-				.getCollaborationArea("Product Initiation Collaboration Area");
+				.getCollaborationArea("01 Product Initiation Collaboration Area");
 
 		while (selectResultSet.next()) {
 			try {

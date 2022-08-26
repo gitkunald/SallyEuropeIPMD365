@@ -41,6 +41,7 @@ public class Constants {
 	public static final String BASE_COST_CURRENCY = "Product_c/ERP Operational/Base_cost/Currency";
 	
 	public static final String ERP_BATCH_TRACKED_ITEM = "Product_c/ERP Operational/ERP_batch_tracked_item";
+	public static final String ERP_LEGACY_ITEM_ID = "Product_c/ERP Operational/Legacy_item_ID";
 	public static final String ERP_LEGAL_ENTITIES = "Product_c/ERP Operational/ERP_legal_entities";
 	
 	
@@ -122,6 +123,7 @@ public class Constants {
 	public static final String COUNTRY_OF_ORIGIN = "Product_c/Regulatory and Legal/Country_of_origin";
 	public static final String COUNTRY_OF_MANUFACTURE = "Product_c/Regulatory and Legal/Country_of_manufacture";
 	public static final String HAZARDOUS = "Product_c/Regulatory and Legal/Hazardous";
+	public static final String PACKAGING_MIN_PERCENT = "Product_c/Regulatory and Legal/Packaging_minimum_30_pct_recycled";
 	
 	//Status Attributes
 	

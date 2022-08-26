@@ -344,6 +344,38 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.ERP_BATCH_TRACKED_ITEM) == null) ? ""
 					: item.getAttributeValue(Constants.ERP_BATCH_TRACKED_ITEM).toString()));
 			xmlStreamWriter.writeEndElement();
+			
+			// Legacy Item ID multi occuring
+			xmlStreamWriter.writeStartElement("Legacy_Items_ID");
+			AttributeInstance legacyItemIdInst = item.getAttributeInstance(Constants.ERP_LEGACY_ITEM_ID);
+
+			if (legacyItemIdInst != null) {
+				for (int x = 0; x < legacyItemIdInst.getChildren().size(); x++) {
+					xmlStreamWriter.writeStartElement("Legacy_item_id" + x);
+					xmlStreamWriter.writeCharacters(
+							((item.getAttributeValue(Constants.ERP_LEGACY_ITEM_ID + "#" + x + "/Legacy_item_ID") == null) ? ""
+									: item.getAttributeValue(Constants.ERP_LEGACY_ITEM_ID + "#" + x + "/Legacy_item_ID")
+											.toString()));
+					xmlStreamWriter.writeEndElement();
+
+					xmlStreamWriter.writeStartElement("Legacy_ERP" + x);
+
+					Object legacyERP = item.getAttributeValue(Constants.ERP_LEGACY_ITEM_ID + "#" + x + "/Legacy_ERP");
+
+					if (legacyERP != null) {
+						xmlStreamWriter.writeCharacters(legacyERP.toString());
+					}
+					else {
+						xmlStreamWriter.writeCharacters("");
+					}
+						
+					xmlStreamWriter.writeEndElement();
+					
+				}
+			}
+
+			xmlStreamWriter.writeEndElement();// Legacy Item ID end
+
 
 			AttributeInstance legalAttrInst = item.getAttributeInstance(Constants.ERP_LEGAL_ENTITIES);
 
@@ -721,7 +753,8 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 					: item.getAttributeValue(Constants.PRODUCT_COMPLIANCE).toString()));
 			xmlStreamWriter.writeEndElement();
 
-			// Ingredients multi occuring
+						
+			// Ingredient multi occuring
 			xmlStreamWriter.writeStartElement("Ingredients");
 			AttributeInstance ingredientsInst = item.getAttributeInstance(Constants.INGREDIENTS);
 
@@ -749,7 +782,6 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 				}
 			}
 
-			xmlStreamWriter.writeEndElement();// Ingredients end
 
 			xmlStreamWriter.writeStartElement("Expiry_type");
 			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.LEGAL_EXPIRY_TYPE) == null) ? ""
@@ -766,10 +798,33 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 					: item.getAttributeValue(Constants.EU_RESTRICTED_TO_PROF_USE).toString()));
 			xmlStreamWriter.writeEndElement();
 
+			/*
 			xmlStreamWriter.writeStartElement("Instructions_languages");
 			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.INSTRUCTION_LANGUAGES) == null) ? ""
 					: item.getAttributeValue(Constants.INSTRUCTION_LANGUAGES).toString()));
 			xmlStreamWriter.writeEndElement();
+			*/
+			
+			// Instruction Languages multi occuring
+						xmlStreamWriter.writeStartElement("Instructions_Languages");
+						AttributeInstance instructionlanguageInst = item.getAttributeInstance(Constants.INSTRUCTION_LANGUAGES);
+
+						if (instructionlanguageInst != null) {
+							for (int x = 0; x < instructionlanguageInst.getChildren().size(); x++) {
+								xmlStreamWriter.writeStartElement("Instructions_language" + x);
+								xmlStreamWriter.writeCharacters(
+										((item.getAttributeValue(Constants.INGREDIENTS + "#" + x) == null) ? ""
+												: item.getAttributeValue(Constants.INGREDIENTS + "#" + x)
+														.toString()));
+								xmlStreamWriter.writeEndElement();
+
+								}
+								xmlStreamWriter.writeEndElement();
+								
+							}						
+
+						xmlStreamWriter.writeEndElement();// Ingredients end
+
 
 			xmlStreamWriter.writeStartElement("Warnings");
 			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.WARNINGS) == null) ? ""
@@ -813,6 +868,11 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 			xmlStreamWriter.writeStartElement("Hazardous");
 			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.HAZARDOUS) == null) ? ""
 					: item.getAttributeValue(Constants.HAZARDOUS).toString()));
+			xmlStreamWriter.writeEndElement();
+			
+			xmlStreamWriter.writeStartElement("Packaging_minimum_30_percent_recycled");
+			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.PACKAGING_MIN_PERCENT) == null) ? ""
+					: item.getAttributeValue(Constants.PACKAGING_MIN_PERCENT).toString()));
 			xmlStreamWriter.writeEndElement();
 
 			xmlStreamWriter.writeEndElement();// Legal end
