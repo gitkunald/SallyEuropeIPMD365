@@ -394,6 +394,11 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 
 				}
 			}
+			
+			xmlStreamWriter.writeStartElement("ERP_purchasing_unit");
+			xmlStreamWriter.writeCharacters(((item.getAttributeValue(Constants.ERP_PURCHASING_UNIT) == null) ? ""
+					: item.getAttributeValue(Constants.ERP_PURCHASING_UNIT).toString()));
+			xmlStreamWriter.writeEndElement();
 
 			xmlStreamWriter.writeEndElement();// ERP Operational End
 

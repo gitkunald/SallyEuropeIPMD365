@@ -41,6 +41,7 @@ public class Constants {
 	public static final String BASE_COST_CURRENCY = "Product_c/ERP Operational/Base_cost/Currency";
 	
 	public static final String ERP_BATCH_TRACKED_ITEM = "Product_c/ERP Operational/ERP_batch_tracked_item";
+	public static final String ERP_PURCHASING_UNIT = "Product_c/ERP Operational/ERP_purchasing_unit";
 	public static final String ERP_LEGACY_ITEM_ID = "Product_c/ERP Operational/Legacy_item_ID";
 	public static final String ERP_LEGAL_ENTITIES = "Product_c/ERP Operational/ERP_legal_entities";
 	
