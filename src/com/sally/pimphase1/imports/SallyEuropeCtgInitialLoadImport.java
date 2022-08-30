@@ -61,8 +61,6 @@ public class SallyEuropeCtgInitialLoadImport implements ImportFunction {
 	String stackFile = StringUtils.EMPTY;
 	ScriptStatistics scriptStats = null;
 	Writer writer = null;
-	
-	
 
 	@Override
 	public void doImport(ImportFunctionArguments arg0) {
@@ -121,7 +119,7 @@ public class SallyEuropeCtgInitialLoadImport implements ImportFunction {
 			sbStack.append("Sally Products Catalog" + "\n");
 			sbStack.append("\n");
 			sbStack.append("ROW-NUMBER" + "," + "ITEM-ID" + "," + "Result" + "," + "Reason for failure" + "\n");
-			
+
 			LookupTable vendorLkpTable = ctx.getLookupTableManager().getLookupTable("Vendor Lookup Table");
 			PIMCollection<LookupTableEntry> vendorLkpEntries = vendorLkpTable.getLookupTableEntries();
 			Map<String, String> vendorLkpKeyValues = new HashMap<String, String>();
@@ -135,7 +133,6 @@ public class SallyEuropeCtgInitialLoadImport implements ImportFunction {
 					vendorLkpKeyValues.put(vendorID.toString(), vendorName);
 				}
 			}
-
 
 			if (doc != null) {
 
@@ -232,7 +229,9 @@ public class SallyEuropeCtgInitialLoadImport implements ImportFunction {
 									|| sheet.getRow(0).getCell(z).getStringCellValue().contains("Sys_updated_date")
 									|| sheet.getRow(0).getCell(z).getStringCellValue().contains("Sys_updated_by")
 									|| sheet.getRow(0).getCell(z).getStringCellValue()
-											.contains("Artwork_and_packaging_images")) {
+											.contains("Artwork_and_packaging_images")
+									|| sheet.getRow(0).getCell(z).getStringCellValue()
+											.contains("Vendors/Supplier_lead_time")) {
 								continue;
 								// Skipping auto populated attributes
 							}
@@ -345,7 +344,9 @@ public class SallyEuropeCtgInitialLoadImport implements ImportFunction {
 									|| sheet.getRow(0).getCell(z).getStringCellValue()
 											.contains("Vendors/Minimum_order_quantity")
 									|| sheet.getRow(0).getCell(z).getStringCellValue()
-											.contains("Vendors/Supplier_lead_time")
+											.contains("Vendors/Production_lead_time")
+									|| sheet.getRow(0).getCell(z).getStringCellValue()
+											.contains("Vendors/Transit_lead_time")
 									|| sheet.getRow(0).getCell(z).getStringCellValue()
 											.contains("Usage/Use_period_after_opening")) {
 								Double cellValue = sheet.getRow(i).getCell(z).getNumericCellValue();
@@ -391,20 +392,21 @@ public class SallyEuropeCtgInitialLoadImport implements ImportFunction {
 											sheet.getRow(i).getCell(z).getRawValue());
 								}
 							}
-							
+
 							else if (sheet.getRow(0).getCell(z).getStringCellValue()
 									.contains("Product_c/Vendors/Primary_vendor_ID")) {
 								logger.info("Primary Vendor ID Attribute");
 								String vendorID = sheet.getRow(i).getCell(z).getStringCellValue();
-								logger.info("vendorID : " +vendorID);
+								logger.info("vendorID : " + vendorID);
 								if (vendorID != null && !vendorID.isEmpty()) {
-									
+
 									String vendorNamePK = vendorLkpKeyValues.get(vendorID);
-									logger.info("vendorNamePK : " +vendorNamePK);
-									item.setAttributeValue(sheet.getRow(0).getCell(z).getStringCellValue(),vendorNamePK);
+									logger.info("vendorNamePK : " + vendorNamePK);
+									item.setAttributeValue(sheet.getRow(0).getCell(z).getStringCellValue(),
+											vendorNamePK);
 								}
 							}
-							
+
 							else if (sheet.getRow(0).getCell(z).getStringCellValue()
 									.contains("Product_c/Packaging/Pack_inner_packaging_material/Material_type")) {
 
@@ -430,6 +432,30 @@ public class SallyEuropeCtgInitialLoadImport implements ImportFunction {
 							}
 
 							else if (sheet.getRow(0).getCell(z).getStringCellValue()
+									.contains("Product_c/Packaging/Pack_inner_packaging_material/Value")) {
+
+								String innermValues = sheet.getRow(i).getCell(z).getStringCellValue();
+								if (!innermValues.isEmpty()) {
+
+									if (innermValues.contains("|")) {
+										String[] innermsValue = innermValues.split("\\|");
+
+										for (int jj = 0; jj < innermsValue.length; jj++) {
+
+											item.setAttributeValue("Product_c/Packaging/Pack_inner_packaging_material#"
+													+ jj + "/Value", innermsValue[jj]);
+										}
+									}
+
+									else {
+										item.setAttributeValue(
+												"Product_c/Packaging/Pack_inner_packaging_material#0/Value",
+												innermValues);
+									}
+								}
+							}
+
+							else if (sheet.getRow(0).getCell(z).getStringCellValue()
 									.contains("Product_c/Packaging/Pack_outer_packaging_material/Material_type")) {
 
 								String outerm = sheet.getRow(i).getCell(z).getStringCellValue();
@@ -447,6 +473,28 @@ public class SallyEuropeCtgInitialLoadImport implements ImportFunction {
 										item.setAttributeValue(
 												"Product_c/Packaging/Pack_outer_packaging_material#0/Material_type",
 												outerm);
+									}
+								}
+							}
+
+							else if (sheet.getRow(0).getCell(z).getStringCellValue()
+									.contains("Product_c/Packaging/Pack_outer_packaging_material/Value")) {
+
+								String outermValues = sheet.getRow(i).getCell(z).getStringCellValue();
+								if (!outermValues.isEmpty()) {
+
+									if (outermValues.contains("|")) {
+										String[] outermsValue = outermValues.split("\\|");
+
+										for (int jj = 0; jj < outermsValue.length; jj++) {
+
+											item.setAttributeValue("Product_c/Packaging/Pack_outer_packaging_material#"
+													+ jj + "/Material_type", outermsValue[jj]);
+										}
+									} else {
+										item.setAttributeValue(
+												"Product_c/Packaging/Pack_outer_packaging_material#0/Material_type",
+												outermValues);
 									}
 								}
 							}
@@ -646,6 +694,76 @@ public class SallyEuropeCtgInitialLoadImport implements ImportFunction {
 								}
 							}
 
+							else if (sheet.getRow(0).getCell(z).getStringCellValue()
+									.contains("Product_c/Regulatory and Legal/Instructions_languages")) {
+
+								String inst_lang_values = sheet.getRow(i).getCell(z).getStringCellValue();
+								if (!inst_lang_values.isEmpty()) {
+
+									if (inst_lang_values.contains("|")) {
+										String[] inst_lang_value = inst_lang_values.split("\\|");
+
+										for (int c = 0; c < inst_lang_value.length; c++) {
+											item.setAttributeValue(
+													"Product_c/Regulatory and Legal/Instructions_languages#" + c,
+													inst_lang_value[c]);
+										}
+									}
+
+									else {
+										item.setAttributeValue(
+												"Product_c/Regulatory and Legal/Instructions_languages#0",
+												inst_lang_values);
+									}
+								}
+							}
+
+							else if (sheet.getRow(0).getCell(z).getStringCellValue()
+									.contains("Product_c/ERP Operational/Legacy_item_ID/Legacy_item_ID")) {
+
+								String legacyItemIds = sheet.getRow(i).getCell(z).getRawValue();
+								if (!legacyItemIds.isEmpty()) {
+
+									if (legacyItemIds.contains("|")) {
+										String[] legacyItemId = legacyItemIds.split("\\|");
+
+										for (int jj = 0; jj < legacyItemId.length; jj++) {
+
+											item.setAttributeValue("Product_c/ERP Operational/Legacy_item_ID#"
+													+ jj + "/Legacy_item_ID", legacyItemId[jj]);
+										}
+									}
+
+									else {
+										item.setAttributeValue(
+												"Product_c/ERP Operational/Legacy_item_ID#0/Legacy_item_ID",legacyItemIds);
+									}
+								}
+							}
+							
+							else if (sheet.getRow(0).getCell(z).getStringCellValue()
+									.contains("Product_c/ERP Operational/Legacy_item_ID/Legacy_ERP")) {
+
+								String legacyERPs = sheet.getRow(i).getCell(z).getRawValue();
+								if (!legacyERPs.isEmpty()) {
+
+									if (legacyERPs.contains("|")) {
+										String[] legacyERP = legacyERPs.split("\\|");
+
+										for (int jj = 0; jj < legacyERP.length; jj++) {
+
+											item.setAttributeValue("Product_c/ERP Operational/Legacy_item_ID#"
+													+ jj + "/Legacy_ERP", legacyERP[jj]);
+										}
+									}
+
+									else {
+										item.setAttributeValue(
+												"Product_c/ERP Operational/Legacy_item_ID#0/Legacy_ERP",legacyERPs);
+									}
+								}
+							}
+							
 							else if (sheet.getRow(0).getCell(z).getStringCellValue()
 									.contains("Sinelco_ss/USPs/USP_bullet_points/en_GB")) {
 
@@ -934,8 +1052,6 @@ public class SallyEuropeCtgInitialLoadImport implements ImportFunction {
 							}
 
 							else if (sheet.getRow(0).getCell(z).getStringCellValue()
-									.contains("Product_c/Web/Web_online_date_trade")
-									|| sheet.getRow(0).getCell(z).getStringCellValue()
 											.contains("Product_c/Status Attributes/Approval_date_supply_chain")
 									|| sheet.getRow(0).getCell(z).getStringCellValue()
 											.contains("Product_c/Status Attributes/Approval_date_legal")
@@ -1028,14 +1144,13 @@ public class SallyEuropeCtgInitialLoadImport implements ImportFunction {
 		sbResults.append("Time Taken: " + timeTaken);
 		writeToResultsFile();
 
-		if ((totalRecordsProcessed - successRecords) > 0)
-		{
-		sbDebug.append("\n");
-		sbDebug.append("Total records processed: " + totalRecordsProcessed + "\n");
-		sbDebug.append("Success records: " + successRecords + "\n");
-		sbDebug.append("Failed records: " + (totalRecordsProcessed - successRecords) + "\n");
-		sbDebug.append("Job ended at: " + jobEndTime + "\n");
-		writeToDebugFile();
+		if ((totalRecordsProcessed - successRecords) > 0) {
+			sbDebug.append("\n");
+			sbDebug.append("Total records processed: " + totalRecordsProcessed + "\n");
+			sbDebug.append("Success records: " + successRecords + "\n");
+			sbDebug.append("Failed records: " + (totalRecordsProcessed - successRecords) + "\n");
+			sbDebug.append("Job ended at: " + jobEndTime + "\n");
+			writeToDebugFile();
 		}
 
 	}
