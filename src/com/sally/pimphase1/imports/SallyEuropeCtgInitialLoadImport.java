@@ -332,8 +332,6 @@ public class SallyEuropeCtgInitialLoadImport implements ImportFunction {
 									|| sheet.getRow(0).getCell(z).getStringCellValue()
 											.contains("Pack_outer_pack_weight/Value")
 									|| sheet.getRow(0).getCell(z).getStringCellValue()
-											.contains("Packaging/Pack_case_size")
-									|| sheet.getRow(0).getCell(z).getStringCellValue()
 											.contains("Warehouse Attributes/Outers_per_layer")
 									|| sheet.getRow(0).getCell(z).getStringCellValue()
 											.contains("Warehouse Attributes/Layers_per_pallet")
@@ -489,12 +487,11 @@ public class SallyEuropeCtgInitialLoadImport implements ImportFunction {
 										for (int jj = 0; jj < outermsValue.length; jj++) {
 
 											item.setAttributeValue("Product_c/Packaging/Pack_outer_packaging_material#"
-													+ jj + "/Material_type", outermsValue[jj]);
+													+ jj + "/Value", outermsValue[jj]);
 										}
 									} else {
 										item.setAttributeValue(
-												"Product_c/Packaging/Pack_outer_packaging_material#0/Material_type",
-												outermValues);
+												"Product_c/Packaging/Pack_outer_packaging_material#0/Value",outermValues);
 									}
 								}
 							}
@@ -721,7 +718,7 @@ public class SallyEuropeCtgInitialLoadImport implements ImportFunction {
 							else if (sheet.getRow(0).getCell(z).getStringCellValue()
 									.contains("Product_c/ERP Operational/Legacy_item_ID/Legacy_item_ID")) {
 
-								String legacyItemIds = sheet.getRow(i).getCell(z).getRawValue();
+								String legacyItemIds = sheet.getRow(i).getCell(z).getStringCellValue();
 								if (!legacyItemIds.isEmpty()) {
 
 									if (legacyItemIds.contains("|")) {
@@ -744,7 +741,7 @@ public class SallyEuropeCtgInitialLoadImport implements ImportFunction {
 							else if (sheet.getRow(0).getCell(z).getStringCellValue()
 									.contains("Product_c/ERP Operational/Legacy_item_ID/Legacy_ERP")) {
 
-								String legacyERPs = sheet.getRow(i).getCell(z).getRawValue();
+								String legacyERPs = sheet.getRow(i).getCell(z).getStringCellValue();
 								if (!legacyERPs.isEmpty()) {
 
 									if (legacyERPs.contains("|")) {
@@ -1385,6 +1382,8 @@ public class SallyEuropeCtgInitialLoadImport implements ImportFunction {
 		logger.info("Barcode : " + barcode);
 		logger.info("barcodeType : " + barcodeType);
 
+		if (barcodeType != null)
+		{
 		if (barcodeType.equalsIgnoreCase("EAN8")) {
 			if (barcode.length() != 8) { // check to see if the input is 13 digits
 
@@ -1413,6 +1412,7 @@ public class SallyEuropeCtgInitialLoadImport implements ImportFunction {
 
 				return true;
 			}
+		}
 		}
 
 		logger.info("*** End of function of validateCheckDigitOfBarcodes ***");
