@@ -240,54 +240,59 @@ public class ItemERPIDImport implements ReportGenerateFunction {
             	logger.info("Cloud File exists : "+cloudFile.exists());
             	DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             	DocumentBuilder documentBuilder = null;
-            	try {
-            		documentBuilder = dbFactory.newDocumentBuilder();
-            	    try {
-            	        Document doc = documentBuilder.parse(new InputSource(new StringReader(cloudFile.downloadText())));
-            	        doc.getDocumentElement().normalize();
-            	        NodeList nList = doc.getElementsByTagName("Product");
-            	        logger.info("Nlist len : "+nList.getLength());
-        				for (int temp = 0; temp < nList.getLength(); temp++) {
-        					logger.info("Inside nList loop ..");
-        					Node nNode = nList.item(temp);
-        					logger.info("node type "+nNode.getNodeType());
-        					HashMap<String, String> hmValues = new HashMap<>();
-        					if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-        						Element eElement = (Element) nNode;
-        						String pimId = eElement.getElementsByTagName("PIM_ID").item(0).getTextContent();
+            	
+        		documentBuilder = dbFactory.newDocumentBuilder();
+        	    
+    	    	logger.info("Cloud file text download ************ ");
+    	    	logger.info(cloudFile.downloadText());
+    	    	String strXML = cloudFile.downloadText();
+        	    	
+    	    	logger.info("************** "+strXML);
+    	    	Document doc = documentBuilder.parse(new InputSource(new StringReader(strXML)));
+    	        doc.getDocumentElement().normalize();
+    	        NodeList nList = doc.getElementsByTagName("Product");
+    	        if(nList != null) {
+        	        logger.info("Nlist len : "+nList.getLength());
+    				for (int temp = 0; temp < nList.getLength(); temp++) {
+    					logger.info("Inside nList loop ..");
+    					Node nNode = nList.item(temp);
+    					logger.info("node type "+nNode.getNodeType());
+    					HashMap<String, String> hmValues = new HashMap<>();
+    					if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+    						Element eElement = (Element) nNode;
+    						String pimId = eElement.getElementsByTagName("PIM_ID").item(0).getTextContent();
 
-        						String erpID = eElement.getElementsByTagName("ERP_Item_ID").item(0).getTextContent();
-        						String source = eElement.getElementsByTagName("Source").item(0).getTextContent();
-        						String lifeCycleStatus = eElement.getElementsByTagName("LifeCycleStatus").item(0).getTextContent();
+    						String erpID = eElement.getElementsByTagName("ERP_Item_ID").item(0).getTextContent();
+    						String source = eElement.getElementsByTagName("Source").item(0).getTextContent();
+    						String lifeCycleStatus = eElement.getElementsByTagName("LifeCycleStatus").item(0).getTextContent();
 
-        						hmValues.put("ERPID", erpID);
-        						hmValues.put("Source", source);
-        						hmValues.put("LifeCycleStatus", lifeCycleStatus);
+    						hmValues.put("ERPID", erpID);
+    						hmValues.put("Source", source);
+    						hmValues.put("LifeCycleStatus", lifeCycleStatus);
 
-        						logger.info("hmValues : " + hmValues);
-        						xmlValuesHashMap.put(pimId, hmValues);
+    						logger.info("hmValues : " + hmValues);
+    						xmlValuesHashMap.put(pimId, hmValues);
 
-        						logger.info("xmlValuesHashMap: " + xmlValuesHashMap);        						
-        						logger.info("Inbound archive dir : "+inboundArchiveDirectory+"/"+fileName.substring(fileName.lastIndexOf("/") + 1));
-        					}
-        					CloudFileDirectory archiveDirectory = rootDir.getDirectoryReference(inboundArchiveDirectory);
-    						CloudFile archiveFile = archiveDirectory.getFileReference(fileName.substring(fileName.lastIndexOf("/") + 1));
-    						archiveFile.startCopy(cloudFile);
-    						logger.info("File archived successfully"); 
-    						cloudFile.delete();
-        				}
-            	    } catch (SAXException e) {
-            	        // handle SAXException
-            	    } catch (IOException e) {
-            	        // handle IOException
-            	    }
-            	} catch (ParserConfigurationException e1) {
-            	    // handle ParserConfigurationException
-            	}
-            } 
+    						logger.info("xmlValuesHashMap: " + xmlValuesHashMap);        						
+    						logger.info("Inbound archive dir : "+inboundArchiveDirectory+"/"+fileName.substring(fileName.lastIndexOf("/") + 1));
+    					}
+    					CloudFileDirectory archiveDirectory = rootDir.getDirectoryReference(inboundArchiveDirectory);
+						CloudFile archiveFile = archiveDirectory.getFileReference(fileName.substring(fileName.lastIndexOf("/") + 1));
+						archiveFile.startCopy(cloudFile);
+						logger.info("File archived successfully"); 
+						cloudFile.delete();
+    				}
+    	        }
+        	     
+        	}          
                    
-        }
-        catch(Exception e) {
+        } catch (SAXException e) {
+	        // handle SAXException
+	    } catch (IOException e) {
+	        // handle IOException
+	    } catch (ParserConfigurationException e1) {
+    	    // handle ParserConfigurationException
+    	} catch(Exception e) {
         	logger.info("Exception : "+e.getMessage());
             e.printStackTrace();
         }

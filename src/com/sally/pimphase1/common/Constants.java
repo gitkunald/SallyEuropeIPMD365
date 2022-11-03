@@ -1,8 +1,5 @@
 package com.sally.pimphase1.common;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import com.ibm.pim.context.Context;
 import com.ibm.pim.context.PIMContextFactory;
@@ -12,6 +9,17 @@ public class Constants {
 	public static final Context context = PIMContextFactory.getCurrentContext();
 	
 	public static final String PIM_MDM_ID = "Product_c/Sys_PIM_MDM_ID";
+	
+	public static final String PRODUCT_ATTRIBUTES_XML = "Product_Attributes_XML";
+	public static final String PRODUCT = "Product";
+	
+	public static final String REF_DOC_DIR = "utils/";
+	public static final String REF_ATTRIBUTES_DOC = "/utils/DynamicAttributes.xlsx";
+	
+	//Category Info
+	public static final String CATEGORY_INFO = "Category_Info";
+	public static final String BANNER_HIERARCHY = "Banner Hierarchy";
+	public static final String CATEGORY_NAME = "Product_h/category_name";
 	
 	//Descriptions
 	public static final String PRODUCT_NAME = "Product_c/Descriptions/Product_name";
@@ -191,5 +199,16 @@ public class Constants {
 	public static final String LOCAL_PRODUCT_DESCRIPTION_FR_FR = "Sinelco_ss/Descriptions/Local_product_description/fr_FR";
 	public static final String LOCAL_PRODUCT_DESCRIPTION_DE_DE = "Sinelco_ss/Descriptions/Local_product_description/de_DE";
 	
+	//Functional Attributes
+	
+	public static final String IS_ECOM_APPROVED = "Product_c/is_ECOM_Approved";
+	public static final String IS_SC_APPROVED = "Product_c/is_SC_Approved";
+	public static final String IS_LEGAL_APPROVED = "Product_c/is_Legal_Approved";
+	public static final String FUNC_REJECT_ON_CREATE = ("Product_c/Functional/Func_reject_on_create");
+	
+	public static final String FUNCTIONAL = ("Sinelco_ss/Functional");
+	public static final String FUNC_MODIFY_TRANSLATION_REQUIRED = ("Sinelco_ss/Functional/Func_modify_translation_required");
+	public static final String FUNC_MODIFY_PACKAGING_REQUIRED = ("Sinelco_ss/Functional/Func_modify_packaging_required");
+
 
 }
