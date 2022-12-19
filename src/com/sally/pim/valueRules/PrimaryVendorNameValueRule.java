@@ -13,6 +13,7 @@ import com.ibm.pim.extensionpoints.RunValueRuleFunction;
 import com.ibm.pim.lookuptable.LookupTableEntry;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,10 +52,22 @@ public class PrimaryVendorNameValueRule implements RunValueRuleFunction{
 		// TODO Auto-generated method stub
 		logger.info("Entered collab Item Value rule func for Primary vendor name");
 		CollaborationItem collaborationItem = arg0.getCollaborationItem();
+		logger.info("Item Primary key :: " + collaborationItem.getPrimaryKey());
+		String primaryVendorId = collaborationItem.getAttributeValue("Product_c/Vendors/Primary_vendor_ID").toString();
+		Object returnVal = null;
+		if(primaryVendorId != null) 
+			returnVal = primaryVendorId;
+		else
+			returnVal = "";
+		/*
 		PIMCollection<LookupTableEntry> vendorLkpEntries = context.getLookupTableManager()
 				.getLookupTable("Vendor Lookup Table").getLookupTableEntries();
+		
+		String venId = collaborationItem.getAttributeValue("Product_c/Vendors/Primary_vendor_ID").toString();
+		List<Object> lkpValues = context.getLookupTableManager().getLookupTable("Vendor Lookup Table").getLookupEntryValues(venId);
+		
 		logger.info("vendorLkpEntries size : " + vendorLkpEntries.size());
-		Object returnVal = null;
+		
 		for (Iterator<LookupTableEntry> iterator = vendorLkpEntries.iterator(); iterator.hasNext();) {
 			LookupTableEntry lookupTableEntry = (LookupTableEntry) iterator.next();
 			logger.info("lookupTableEntry.getValues() : " + lookupTableEntry.getAttributeValue("Vendor Lookup Spec/primaryvendor_id"));
@@ -66,7 +79,7 @@ public class PrimaryVendorNameValueRule implements RunValueRuleFunction{
 				returnVal = lookupTableEntry.getAttributeValue("Vendor Lookup Spec/name"); 
 				logger.info("RET VAL : "+returnVal);
 			}
-		}
+		}*/
 		logger.info("Return Value : "+returnVal);
 		return returnVal;
 	}

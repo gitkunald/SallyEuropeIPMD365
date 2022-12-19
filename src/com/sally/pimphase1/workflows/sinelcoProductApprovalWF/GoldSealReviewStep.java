@@ -209,7 +209,7 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 						logger.info("Number of Rows : " + sheet.getPhysicalNumberOfRows());
 						logger.info("Number of Columns : " + sheet.getRow(0).getPhysicalNumberOfCells());
 						for (int row = 1; row < sheet.getPhysicalNumberOfRows(); row++) 
-							createProductXML(row,sheet,xmlStreamWriter,item);	// Function for creating the xml based on the attributes mentioned in excel.
+							createProductXML(ctx,row,sheet,xmlStreamWriter,item);	// Function for creating the xml based on the attributes mentioned in excel.
 					}
 				}									
 			}
@@ -318,7 +318,7 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 		return sSystemFilePath;
 	}
 	
-	private void createProductXML(int row,XSSFSheet sheet,XMLStreamWriter xmlStreamWriter,CollaborationItem item) {
+	private void createProductXML(Context ctx,int row,XSSFSheet sheet,XMLStreamWriter xmlStreamWriter,CollaborationItem item) {
 		String attributesPath = null;
 		String occurrance = null;
 		String grouping = null;
@@ -348,8 +348,21 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 										: dateFormatting(item.getAttributeValue(attributesPath)).toString()));
 								}							
 							}else {
-								xmlStreamWriter.writeCharacters(((item.getAttributeValue(attributesPath) == null) ? ""
-									: item.getAttributeValue(attributesPath).toString()));
+								if(attributesPath.contains("Primary_vendor_ID")){
+									logger.info("Attribute..Primary_vendor_Name"+item.getAttributeValue(attributesPath).toString());
+									
+									String pVendorID=item.getAttributeValue(attributesPath) == null ? "": item.getAttributeValue(attributesPath).toString();
+									if(pVendorID !=""){
+										
+										LookupTable vendorLkp = ctx.getLookupTableManager().getLookupTable("Vendor Lookup Table");
+										String vendorID=(String) vendorLkp.getLookupEntryValues(pVendorID).get(0);
+										logger.info("Attribute..Primary_vendor_ID"+vendorID);
+										xmlStreamWriter.writeCharacters(vendorID);
+									}										
+								}else {
+									xmlStreamWriter.writeCharacters(((item.getAttributeValue(attributesPath) == null) ? ""
+										: item.getAttributeValue(attributesPath).toString()));
+								}
 							}
 						}							
 						xmlStreamWriter.writeEndElement(); // end tag for attribute					
