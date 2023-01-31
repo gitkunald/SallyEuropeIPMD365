@@ -69,7 +69,6 @@
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/opencsv-2.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/Owasp.CsrfGuard-1.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/persistence-1.4.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/poi-4.0.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/unboundid-ldapsdk-4.0.7.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/velocity-api-1.5.7.jar"/>
 	<classpathentry kind="lib" path="C:/Users/jump2_bckp/Kunal/Kunal bkp/PIM Library/xalan-2.7.5.jar"/>

@@ -13,13 +13,69 @@ public class Constants {
 	public static final String PRODUCT_ATTRIBUTES_XML = "Product_Attributes_XML";
 	public static final String PRODUCT = "Product";
 	
-	public static final String REF_DOC_DIR = "utils/";
-	public static final String REF_ATTRIBUTES_DOC = "/utils/DynamicAttributes.xlsx";
+	public static final String REF_DOC_DIR = "utils/CreateItems/";
+	public static final String REF_ATTRIBUTES_DOC = "/utils/CreateItems/DynamicAttributes.xlsx";
+	
+	
+	public static final String REF_DOC_DIR_NEW = "utils/ItemInitiation/";
+	public static final String REF_ATTRIBUTES_DOC_NEW = "/utils/ItemInitiation/ERP_id_Dynamic_Attributes.xlsx";
+	public static final String REF_DOC_UPDATE = "utils/ItemUpdate/";
+	public static final String USER = "user1";
+	public static final String DELETE_FALG = "Delete_Flag";
+	
+	//Catalog
+	public static final String SALLY_EU = "Sally Europe";
+	
+	//Dynamic Excel
+	public static final String GS = "GS";
+	public static final String S = "S";
+	public static final String Attribute = "Attribute";
+	public static final String M = "M";
+	public static final String GM = "GM";
+	public static final String DATE = "Date";
+	public static final String 	date = "date";
+	public static final String 	APPROVAL_DATE = "Approval_date";
+	public static final String 	P_VENDOR_ID = "Primary_vendor_ID";
+	public static final String 	RELATIONSHIP = "RELATIONSHIP";
+	public static final String 	Hazardous_UN = "Hazardous_UN";
+	public static final String 	P_VENDOR_NAME = "Primary_vendor_name";
+	
+	
+	//Lookup table
+	public static final String VENDOR_LOOKUPTABLE = "Vendor Lookup Table";
+	public static final String PIM_CONFIGURATION = "PIM_Configuration";
+	public static final String FILEREADER_KEY = "FilereaderLookupSpec/key";
+	public static final String FILEREADER_VALUE = "FilereaderLookupSpec/value";
+	public static final String AZURE_LOOKUPTABLE = "AzureConstantsLookup";
+	public static final String AZURE_KEY = "AzureConstantsLookupSpecs/key";
+	public static final String AZURE_VALUE = "AzureConstantsLookupSpecs/value";
+	public static final String STORAGE_CONNECTION = "storageConnectionString";
+	public static final String OUTBOUND_FILEPATH = "OutboundLocalFilePath";
+	public static final String FILE_SHARE = "fileShare";
+	public static final String OUTBOUND_WORKING_DIR = "OutboundWorkingDirectory";
+	public static final String INBOUND_PRODUCT = "InboundProductExport";
+	public static final String OUTBOUND_PRODUCT = "OutboundProductExport";
+	public static final String OUTBOUND_ERROR = "OutboundProductError";
+	public static final String VENDOR_INBOUND = "VendorInbound";
+	public static final String VENDOR_OUTBOUND = "VendorOutbound";
+	public static final String VENDOR_ERROR = "VendorError";
+	public static final String VENDORID_LOOKUP = "Vendor Lookup Spec/primaryvendor_id";
+	public static final String VENDORNAME_LOOKUP = "Vendor Lookup Spec/name";
+	public static final String VENDOR_TYPE_LOOKUP = "Vendor Lookup Spec/type";
+	public static final String EXTERNAL = "External";
+	
 	
 	//Category Info
 	public static final String CATEGORY_INFO = "Category_Info";
 	public static final String BANNER_HIERARCHY = "Banner Hierarchy";
+	public static final String BRAND_HIERARCHY = "Brand Hierarchy";
+	public static final String PRODUCT_HIERARCHY = "Product Hierarchy";
 	public static final String CATEGORY_NAME = "Product_h/category_name";
+	public static final String CATEGORY_CODE = "Product_h/category_code";
+	public static final String ADMIN = "Admin";
+	public static final String CATEGORY_MANAGER = "Category Manager";
+	public static final String SPC = "SPC";
+	public static final String BRANDBUILDER = "BrandBuilder";
 	
 	//Descriptions
 	public static final String PRODUCT_NAME = "Product_c/Descriptions/Product_name";
@@ -38,6 +94,7 @@ public class Constants {
 	public static final String DIM_GROSS_DEPTH_UOM = "Product_c/Dimensions/Dim_gross_depth/UOM";
 	
 	//ERP Operational
+	public static final String ERP_OPERATIONAL = "Product_c/ERP Operational";
 	public static final String ERP_CATEGORY_CODE = "Product_c/ERP Operational/Category_code";
 	public static final String ERP_CATEGORY_NAME = "Product_c/ERP Operational/Category_name";
 	public static final String ERP_ITEM_ID = "Product_c/ERP Operational/ERP_item_ID/Item_ID";
@@ -203,8 +260,12 @@ public class Constants {
 	
 	public static final String IS_ECOM_APPROVED = "Product_c/is_ECOM_Approved";
 	public static final String IS_SC_APPROVED = "Product_c/is_SC_Approved";
+	public static final String IS_SC_REJECTION = "Product_c/Status Attributes/SC_Rejection_Comments";
 	public static final String IS_LEGAL_APPROVED = "Product_c/is_Legal_Approved";
+	public static final String IS_LEGAL_REJECTED = "Product_c/Status Attributes/Legal_Rejection_Comments";
 	public static final String FUNC_REJECT_ON_CREATE = ("Product_c/Functional/Func_reject_on_create");
+	public static final String ECOM_REJECT = ("Product_c/Status Attributes/ECOM_Rejection_Comments");
+	public static final String SYSTEM_PIM_ID = ("Product_c/Sys_PIM_item_ID");
 	
 	public static final String FUNCTIONAL = ("Sinelco_ss/Functional");
 	public static final String FUNC_MODIFY_TRANSLATION_REQUIRED = ("Sinelco_ss/Functional/Func_modify_translation_required");

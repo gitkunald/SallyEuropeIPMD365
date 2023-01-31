@@ -27,9 +27,11 @@ import com.ibm.pim.hierarchy.Hierarchy;
 import com.ibm.pim.hierarchy.category.Category;
 import com.ibm.pim.lookuptable.LookupTable;
 import com.ibm.pim.lookuptable.LookupTableEntry;
+import com.ibm.pim.organization.Role;
 import com.ibm.pim.search.SearchQuery;
 import com.ibm.pim.search.SearchResultSet;
 import com.ibm.pim.spec.Spec;
+import com.sally.pimphase1.common.Constants;
 import com.vivisimo.gelato.stubs.ForEach;
 
 public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
@@ -37,15 +39,31 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 	private static Logger logger = LogManager.getLogger(SallyEuropePreProcessScript.class);
 	Context ctx = PIMContextFactory.getCurrentContext();
 
+	String user = null;
+
 	@Override
 	public void prePostProcessing(ItemPrePostProcessingFunctionArguments arg0) {
-		logger.info("Inside item preprocess");
+		logger.info("Inside item preprocess***");
 		Item item = arg0.getItem();
+
+		LookupTable fileReaderLkpTable = ctx.getLookupTableManager().getLookupTable(Constants.PIM_CONFIGURATION);
+		PIMCollection<LookupTableEntry> fileLkpEntries = fileReaderLkpTable.getLookupTableEntries();
+		for (Iterator<LookupTableEntry> fileItr = fileLkpEntries.iterator(); fileItr.hasNext();) {
+			LookupTableEntry fileLookupTableEntry = (LookupTableEntry) fileItr.next();
+			if (fileLookupTableEntry.getAttributeValue(Constants.FILEREADER_KEY).toString()
+					.equalsIgnoreCase(Constants.USER)) {
+				user = fileLookupTableEntry.getAttributeValue(Constants.FILEREADER_VALUE).toString();
+			}
+		}
 
 		if (item != null) {
 
-			AttributeInstance attributeInstance = item.getAttributeInstance("Product_c/Regulatory and Legal/UN_number");
-			AttributeInstance unNameInstance = item.getAttributeInstance("Product_c/Regulatory and Legal/UN_name");
+			// AttributeInstance attributeInstance =
+			// item.getAttributeInstance("Product_c/Regulatory and Legal/UN_number");
+			AttributeInstance attributeInstance = item.getAttributeInstance(Constants.UN_NUMBER);
+			// AttributeInstance unNameInstance =
+			// item.getAttributeInstance("Product_c/Regulatory and Legal/UN_name");
+			AttributeInstance unNameInstance = item.getAttributeInstance(Constants.UN_NAME);
 			int size = attributeInstance.getChildren().size() - unNameInstance.getChildren().size();
 			if (size > 0) {
 				for (int z = 0; z < size; z++) {
@@ -67,7 +85,8 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 						if (attributeInstance.getChildren().get(x).getValue() != null && attributeInstance.getChildren()
 								.get(x).getValue().toString().equalsIgnoreCase(lookupTableEntry
 										.getAttributeValue("Hazardous_Lookup_Spec/un_number").toString())) {
-							item.setAttributeValue("Product_c/Regulatory and Legal/UN_name#" + x,
+							// item.setAttributeValue("Product_c/Regulatory and Legal/UN_name#" + x,
+							item.setAttributeValue(Constants.UN_NAME + "#" + x,
 									lookupTableEntry.getAttributeValue("Hazardous_Lookup_Spec/un_name"));
 							break;
 						}
@@ -83,22 +102,30 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 					String hierName = category.getHierarchy().getName();
 					logger.info("hierName >> " + hierName);
 
-					if (hierName.equals("Product Hierarchy")) {
-						Object catCode = category.getAttributeValue("Product_h/category_code");
-						Object catName = category.getAttributeValue("Product_h/category_name");
+					// if (hierName.equals("Product Hierarchy")) {
+					if (hierName.equals(Constants.PRODUCT_HIERARCHY)) {
+						// Object catCode = category.getAttributeValue("Product_h/category_code");
+						// Object catName = category.getAttributeValue("Product_h/category_name");
+						Object catCode = category.getAttributeValue(Constants.CATEGORY_CODE);
+						Object catName = category.getAttributeValue(Constants.CATEGORY_NAME);
 
 						logger.info("catCode >> " + catCode);
 						logger.info("catName >> " + catName);
 
 						if (catCode != null) {
 
-							AttributeInstance ERPOperationalInst = item
-									.getAttributeInstance("Product_c/ERP Operational");
+							// AttributeInstance ERPOperationalInst = item
+							// .getAttributeInstance("Product_c/ERP Operational");
+							AttributeInstance ERPOperationalInst = item.getAttributeInstance(Constants.ERP_OPERATIONAL);
 
 							if (ERPOperationalInst != null) {
 
-								item.setAttributeValue("Product_c/ERP Operational/Category_code", catCode.toString());
-								item.setAttributeValue("Product_c/ERP Operational/Category_name", catName.toString());
+								// item.setAttributeValue("Product_c/ERP Operational/Category_code",
+								// catCode.toString());
+								// item.setAttributeValue("Product_c/ERP Operational/Category_name",
+								// catName.toString());
+								item.setAttributeValue(Constants.ERP_CATEGORY_CODE, catCode.toString());
+								item.setAttributeValue(Constants.ERP_CATEGORY_NAME, catName.toString());
 
 								logger.info("Product Category values set");
 
@@ -107,22 +134,30 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 						}
 					}
 
-					if (hierName.equals("Brand Hierarchy")) {
-						Object catCode = category.getAttributeValue("Product_h/category_code");
-						Object catName = category.getAttributeValue("Product_h/category_name");
+					// if (hierName.equals("Brand Hierarchy")) {
+					if (hierName.equals(Constants.BRAND_HIERARCHY)) {
+						// Object catCode = category.getAttributeValue("Product_h/category_code");
+						// Object catName = category.getAttributeValue("Product_h/category_name");
+						Object catCode = category.getAttributeValue(Constants.CATEGORY_CODE);
+						Object catName = category.getAttributeValue(Constants.CATEGORY_NAME);
 
 						logger.info("catCode >> " + catCode);
 						logger.info("catName >> " + catName);
 
 						if (catCode != null) {
 
-							AttributeInstance ERPOperationalInst = item
-									.getAttributeInstance("Product_c/ERP Operational");
+							// AttributeInstance ERPOperationalInst = item
+							// .getAttributeInstance("Product_c/ERP Operational");
+							AttributeInstance ERPOperationalInst = item.getAttributeInstance(Constants.ERP_OPERATIONAL);
 
 							if (ERPOperationalInst != null) {
 
-								item.setAttributeValue("Product_c/ERP Operational/Brand_code", catCode.toString());
-								item.setAttributeValue("Product_c/ERP Operational/Brand_name", catName.toString());
+								// item.setAttributeValue("Product_c/ERP Operational/Brand_code",
+								// catCode.toString());
+								// item.setAttributeValue("Product_c/ERP Operational/Brand_name",
+								// catName.toString());
+								item.setAttributeValue(Constants.BRAND_CODE, catCode.toString());
+								item.setAttributeValue(Constants.BRAND_NAME, catCode.toString());
 
 								logger.info("Brand Category values set");
 
@@ -131,32 +166,39 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 						}
 					}
 
-					if (!(hierName.equals("Banner Hierarchy"))) {
+					// if (!(hierName.equals("Banner Hierarchy"))) {
+					if (!(hierName.equals(Constants.BANNER_HIERARCHY))) {
 
-						logger.info("Hierarchy name is not banner hier so map it");
+						logger.info("Hierarchy name is not banner hier so map it catalog");
 
-						Hierarchy bannerHierarchy = ctx.getHierarchyManager().getHierarchy("Banner Hierarchy");
+						Hierarchy bannerHierarchy = ctx.getHierarchyManager().getHierarchy(Constants.BANNER_HIERARCHY);
+						// Hierarchy bannerHierarchy = ctx.getHierarchyManager().getHierarchy("Banner
+						// Hierarchy");
+						// String currentUserName = ctx.getCurrentUser().getName();
+						// String currentUserRoles = ctx.getCurrentUser().getName();
+
+						PIMCollection<Role> currentUserRoles = ctx.getCurrentUser().getRoles();
 						String currentUserName = ctx.getCurrentUser().getName();
 
-						logger.info("currentUserName >> " + currentUserName);
+						for (Role role : currentUserRoles) {
+							// if((role.getName().equals("Category Manager")) ||
+							// (currentUserName.equals("Admin"))) {
+							if ((role.getName().equals(Constants.CATEGORY_MANAGER)) || (currentUserName.equals(user))) {
 
-						if (currentUserName.equals("BrandBuilder")) {
+								if (bannerHierarchy != null) {
+									// Category sinelcoCategory = bannerHierarchy.getCategoryByPrimaryKey("SPC");
+									Category sinelcoCategory = bannerHierarchy.getCategoryByPrimaryKey(Constants.SPC);
+									try {
+										item.mapToCategory(sinelcoCategory);
+									} catch (PIMInvalidOperationException e) {
+										// TODO Auto-generated catch block
+										logger.info("Exception : " + e.getMessage());
+										e.printStackTrace();
+									}
 
-							if (bannerHierarchy != null) {
-
-								Category sinelcoCategory = bannerHierarchy.getCategoryByPrimaryKey("SPC");
-
-								logger.info("Map to Banner Hierarchy");
-								try {
-									item.mapToCategory(sinelcoCategory);
-								} catch (PIMInvalidOperationException e) {
-									// TODO Auto-generated catch block
-									logger.info("Exception : " + e.getMessage());
-									e.printStackTrace();
 								}
 
 							}
-
 						}
 					}
 
@@ -167,12 +209,15 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 			else {
 
 				// Map to Banner Hierarchy Sinelco when User is brandBuilder
-				Hierarchy bannerHierarchy = ctx.getHierarchyManager().getHierarchy("Banner Hierarchy");
+				// Hierarchy bannerHierarchy = ctx.getHierarchyManager().getHierarchy("Banner
+				// Hierarchy");
+				Hierarchy bannerHierarchy = ctx.getHierarchyManager().getHierarchy(Constants.BANNER_HIERARCHY);
 				String currentUserName = ctx.getCurrentUser().getName();
 
 				logger.info("currentUserName >> " + currentUserName);
 
-				if (currentUserName.equals("BrandBuilder")) {
+				// if (currentUserName.equals("BrandBuilder")) {
+				if (currentUserName.equals(Constants.BRANDBUILDER)) {
 
 					if (bannerHierarchy != null) {
 
@@ -192,14 +237,20 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 				}
 
 				// Map to Product Hierarchy based on Category code Attribute Value
-				Object catCode = item.getAttributeValue("Product_c/ERP Operational/Category_code");
+				// Object catCode = item.getAttributeValue("Product_c/ERP
+				// Operational/Category_code");
+				Object catCode = item.getAttributeValue(Constants.ERP_CATEGORY_CODE);
 
 				if (catCode != null) {
-					Hierarchy productHierarchy = ctx.getHierarchyManager().getHierarchy("Product Hierarchy");
+					// Hierarchy productHierarchy = ctx.getHierarchyManager().getHierarchy("Product
+					// Hierarchy");
+					Hierarchy productHierarchy = ctx.getHierarchyManager().getHierarchy(Constants.PRODUCT_HIERARCHY);
 					Category productCategoryObj = productHierarchy.getCategoryByPrimaryKey(catCode.toString());
 
 					if (productCategoryObj != null) {
-						Object catName = productCategoryObj.getAttributeValue("Product_h/category_name");
+						// Object catName =
+						// productCategoryObj.getAttributeValue("Product_h/category_name");
+						Object catName = productCategoryObj.getAttributeValue(Constants.CATEGORY_NAME);
 
 						try {
 							item.mapToCategory(productCategoryObj);
@@ -208,18 +259,25 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 							e.printStackTrace();
 						}
 
-						Object itemCategoryName = item.getAttributeValue("Product_c/ERP Operational/Category_name");
+						// Object itemCategoryName = item.getAttributeValue("Product_c/ERP
+						// Operational/Category_name");
+						Object itemCategoryName = item.getAttributeValue(Constants.ERP_CATEGORY_NAME);
 						if (itemCategoryName == null) {
-							item.setAttributeValue("Product_c/ERP Operational/Category_name", catName);
+							// item.setAttributeValue("Product_c/ERP Operational/Category_name", catName);
+							item.setAttributeValue(Constants.ERP_CATEGORY_NAME, catName);
 						}
 					}
 				}
 
 				// Map to Brand Hierarchy based on brand code Attribute Value
-				Object brandCode = item.getAttributeValue("Product_c/ERP Operational/Brand_code");
+				// Object brandCode = item.getAttributeValue("Product_c/ERP
+				// Operational/Brand_code");
+				Object brandCode = item.getAttributeValue(Constants.BRAND_CODE);
 
 				if (brandCode != null) {
-					Hierarchy brandHierarchy = ctx.getHierarchyManager().getHierarchy("Brand Hierarchy");
+					// Hierarchy brandHierarchy = ctx.getHierarchyManager().getHierarchy("Brand
+					// Hierarchy");
+					Hierarchy brandHierarchy = ctx.getHierarchyManager().getHierarchy(Constants.BRAND_HIERARCHY);
 					Category brandCategoryObj = brandHierarchy.getCategoryByPrimaryKey(brandCode.toString());
 
 					if (brandCategoryObj != null) {
@@ -231,10 +289,11 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 							e.printStackTrace();
 						}
 
-						Object brandCatName = brandCategoryObj.getAttributeValue("Product_h/category_name");
-						Object itemBrandName = item.getAttributeValue("Product_c/ERP Operational/Brand_name");
+						Object brandCatName = brandCategoryObj.getAttributeValue(Constants.CATEGORY_NAME);
+						Object itemBrandName = item.getAttributeValue(Constants.BRAND_NAME);
+
 						if (itemBrandName == null) {
-							item.setAttributeValue("Product_c/ERP Operational/Brand_name", brandCatName);
+							item.setAttributeValue(Constants.BRAND_NAME, brandCatName);
 						}
 					}
 				}
@@ -257,10 +316,21 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 	public void prePostProcessing(CollaborationItemPrePostProcessingFunctionArguments arg0) {
 		CollaborationItem item = arg0.getCollaborationItem();
 
+		LookupTable fileReaderLkpTable = ctx.getLookupTableManager().getLookupTable(Constants.PIM_CONFIGURATION);
+		PIMCollection<LookupTableEntry> fileLkpEntries = fileReaderLkpTable.getLookupTableEntries();
+		for (Iterator<LookupTableEntry> fileItr = fileLkpEntries.iterator(); fileItr.hasNext();) {
+			LookupTableEntry fileLookupTableEntry = (LookupTableEntry) fileItr.next();
+			if (fileLookupTableEntry.getAttributeValue(Constants.FILEREADER_KEY).toString()
+					.equalsIgnoreCase(Constants.USER)) {
+				user = fileLookupTableEntry.getAttributeValue(Constants.FILEREADER_VALUE).toString();
+			}
+		}
+
 		if (item != null) {
 
-			AttributeInstance attributeInstance = item.getAttributeInstance("Product_c/Regulatory and Legal/UN_number");
-			AttributeInstance unNameInstance = item.getAttributeInstance("Product_c/Regulatory and Legal/UN_name");
+			AttributeInstance attributeInstance = item.getAttributeInstance(Constants.UN_NUMBER);
+			AttributeInstance unNameInstance = item.getAttributeInstance(Constants.UN_NAME);
+
 			int size = attributeInstance.getChildren().size() - unNameInstance.getChildren().size();
 			if (size > 0) {
 				for (int z = 0; z < size; z++) {
@@ -283,7 +353,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 						if (attributeInstance.getChildren().get(x).getValue() != null && attributeInstance.getChildren()
 								.get(x).getValue().toString().equalsIgnoreCase(lookupTableEntry
 										.getAttributeValue("Hazardous_Lookup_Spec/un_number").toString())) {
-							item.setAttributeValue("Product_c/Regulatory and Legal/UN_name#" + x,
+							item.setAttributeValue(Constants.UN_NAME + "#" + x,
 									lookupTableEntry.getAttributeValue("Hazardous_Lookup_Spec/un_name"));
 							break;
 						}
@@ -302,11 +372,10 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 						for (Category category : itemCategories) {
 
 							String hierName = category.getHierarchy().getName();
-							logger.info("hierName CollabItem11111>> " + hierName);
+							if (hierName.equals(Constants.PRODUCT_HIERARCHY)) {
 
-							if (hierName.equals("Product Hierarchy")) {
-								Object catCode = category.getAttributeValue("Product_h/category_code");
-								Object catName = category.getAttributeValue("Product_h/category_name");
+								Object catCode = category.getAttributeValue(Constants.CATEGORY_CODE);
+								Object catName = category.getAttributeValue(Constants.CATEGORY_NAME);
 
 								logger.info("catCode >> " + catCode);
 								logger.info("catName >> " + catName);
@@ -314,14 +383,12 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 								if (catCode != null) {
 
 									AttributeInstance ERPOperationalInst = item
-											.getAttributeInstance("Product_c/ERP Operational");
+											.getAttributeInstance(Constants.ERP_OPERATIONAL);
 
 									if (ERPOperationalInst != null) {
 
-										item.setAttributeValue("Product_c/ERP Operational/Category_code",
-												catCode.toString());
-										item.setAttributeValue("Product_c/ERP Operational/Category_name",
-												catName.toString());
+										item.setAttributeValue(Constants.ERP_CATEGORY_CODE, catCode.toString());
+										item.setAttributeValue(Constants.ERP_CATEGORY_NAME, catName.toString());
 
 										logger.info("Product Category values set");
 
@@ -330,9 +397,10 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 								}
 							}
 
-							if (hierName.equals("Brand Hierarchy")) {
-								Object catCode = category.getAttributeValue("Product_h/category_code");
-								Object catName = category.getAttributeValue("Product_h/category_name");
+							if (hierName.equals(Constants.BRAND_HIERARCHY)) {
+
+								Object catCode = category.getAttributeValue(Constants.CATEGORY_CODE);
+								Object catName = category.getAttributeValue(Constants.CATEGORY_NAME);
 
 								logger.info("catCode >> " + catCode);
 								logger.info("catName >> " + catName);
@@ -340,14 +408,12 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 								if (catCode != null) {
 
 									AttributeInstance ERPOperationalInst = item
-											.getAttributeInstance("Product_c/ERP Operational");
+											.getAttributeInstance(Constants.ERP_OPERATIONAL);
 
 									if (ERPOperationalInst != null) {
 
-										item.setAttributeValue("Product_c/ERP Operational/Brand_code",
-												catCode.toString());
-										item.setAttributeValue("Product_c/ERP Operational/Brand_name",
-												catName.toString());
+										item.setAttributeValue(Constants.BRAND_CODE, catCode.toString());
+										item.setAttributeValue(Constants.BRAND_NAME, catName.toString());
 
 										logger.info("Brand Category values set");
 
@@ -356,32 +422,37 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 								}
 							}
 
-							if (!(hierName.equals("Banner Hierarchy"))) {
+							// if (!(hierName.equals("Banner Hierarchy"))) {
+							if (!(hierName.equals(Constants.BANNER_HIERARCHY))) {
 
 								logger.info("Hierarchy name is not banner hier so map it");
 
-								Hierarchy bannerHierarchy = ctx.getHierarchyManager().getHierarchy("Banner Hierarchy");
+								Hierarchy bannerHierarchy = ctx.getHierarchyManager()
+										.getHierarchy(Constants.BANNER_HIERARCHY);
+
+								PIMCollection<Role> currentUserRoles = ctx.getCurrentUser().getRoles();
 								String currentUserName = ctx.getCurrentUser().getName();
 
-								logger.info("currentUserName >> " + currentUserName);
+								for (Role role : currentUserRoles) {
 
-								if (currentUserName.equals("BrandBuilder") || currentUserName.equals("Admin")) {
+									if ((role.getName().equals(Constants.CATEGORY_MANAGER))
+											|| (currentUserName.equals(user))) {
 
-									if (bannerHierarchy != null) {
+										if (bannerHierarchy != null) {
 
-										Category sinelcoCategory = bannerHierarchy.getCategoryByPrimaryKey("SPC");
+											Category sinelcoCategory = bannerHierarchy
+													.getCategoryByPrimaryKey(Constants.SPC);
+											try {
+												item.mapToCategory(sinelcoCategory);
+											} catch (PIMInvalidOperationException e) {
+												// TODO Auto-generated catch block
+												logger.info("Exception : " + e.getMessage());
+												e.printStackTrace();
+											}
 
-										logger.info("Map to Banner Hierarchy");
-										try {
-											item.mapToCategory(sinelcoCategory);
-										} catch (PIMInvalidOperationException e) {
-											// TODO Auto-generated catch block
-											logger.info("Exception : " + e.getMessage());
-											e.printStackTrace();
 										}
 
 									}
-
 								}
 							}
 
@@ -392,18 +463,18 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 					else {
 
 						// Map to Banner Hierarchy Sinelco when User is brandBuilder
-						Hierarchy bannerHierarchy = ctx.getHierarchyManager().getHierarchy("Banner Hierarchy");
+
+						Hierarchy bannerHierarchy = ctx.getHierarchyManager().getHierarchy(Constants.BANNER_HIERARCHY);
 						String currentUserName = ctx.getCurrentUser().getName();
 
 						logger.info("currentUserName >> " + currentUserName);
 
-						if (currentUserName.equals("BrandBuilder")) {
+						if (currentUserName.equals(Constants.BRANDBUILDER)) {
 
 							if (bannerHierarchy != null) {
 
-								Category sinelcoCategory = bannerHierarchy.getCategoryByPrimaryKey("SPC");
+								Category sinelcoCategory = bannerHierarchy.getCategoryByPrimaryKey(Constants.SPC);
 
-								logger.info("Map to Banner Hierarchy");
 								try {
 									item.mapToCategory(sinelcoCategory);
 								} catch (PIMInvalidOperationException e) {
@@ -419,14 +490,19 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 					}
 
 					// Map to Product Hierarchy based on Category code Attribute Value
-					Object catCode = item.getAttributeValue("Product_c/ERP Operational/Category_code");
+
+					Object catCode = item.getAttributeValue(Constants.ERP_CATEGORY_CODE);
 					logger.info("catCOd11e >> " + catCode);
 					if (catCode != null) {
-						Hierarchy productHierarchy = ctx.getHierarchyManager().getHierarchy("Product Hierarchy");
+
+						Hierarchy productHierarchy = ctx.getHierarchyManager()
+								.getHierarchy(Constants.PRODUCT_HIERARCHY);
 						Category productCategoryObj = productHierarchy.getCategoryByPrimaryKey(catCode.toString());
 
 						if (productCategoryObj != null) {
-							Object catName = productCategoryObj.getAttributeValue("Product_h/category_name");
+							// Object catName =
+							// productCategoryObj.getAttributeValue("Product_h/category_name");
+							Object catName = productCategoryObj.getAttributeValue(Constants.CATEGORY_NAME);
 
 							try {
 								item.mapToCategory(productCategoryObj);
@@ -435,18 +511,25 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 								e.printStackTrace();
 							}
 
-							Object itemCategoryName = item.getAttributeValue("Product_c/ERP Operational/Category_name");
+							// Object itemCategoryName = item.getAttributeValue("Product_c/ERP
+							// Operational/Category_name");
+							Object itemCategoryName = item.getAttributeValue(Constants.ERP_CATEGORY_NAME);
 							if (itemCategoryName == null) {
-								item.setAttributeValue("Product_c/ERP Operational/Category_name", catName);
+								// item.setAttributeValue("Product_c/ERP Operational/Category_name", catName);
+								item.setAttributeValue(Constants.ERP_CATEGORY_NAME, catName);
 							}
 						}
 					}
 
 					// Map to Brand Hierarchy based on brand code Attribute Value
-					Object brandCode = item.getAttributeValue("Product_c/ERP Operational/Brand_code");
+					// Object brandCode = item.getAttributeValue("Product_c/ERP
+					// Operational/Brand_code");
+					Object brandCode = item.getAttributeValue(Constants.BRAND_CODE);
 
 					if (brandCode != null) {
-						Hierarchy brandHierarchy = ctx.getHierarchyManager().getHierarchy("Brand Hierarchy");
+						// Hierarchy brandHierarchy = ctx.getHierarchyManager().getHierarchy("Brand
+						// Hierarchy");
+						Hierarchy brandHierarchy = ctx.getHierarchyManager().getHierarchy(Constants.BRAND_HIERARCHY);
 						Category brandCategoryObj = brandHierarchy.getCategoryByPrimaryKey(brandCode.toString());
 
 						if (brandCategoryObj != null) {
@@ -458,38 +541,58 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 								e.printStackTrace();
 							}
 
-							Object brandCatName = brandCategoryObj.getAttributeValue("Product_h/category_name");
-							Object itemBrandName = item.getAttributeValue("Product_c/ERP Operational/Brand_name");
+							// Object brandCatName =
+							// brandCategoryObj.getAttributeValue("Product_h/category_name");
+							// Object itemBrandName = item.getAttributeValue("Product_c/ERP
+							// Operational/Brand_name");
+
+							Object brandCatName = brandCategoryObj.getAttributeValue(Constants.CATEGORY_NAME);
+							Object itemBrandName = item.getAttributeValue(Constants.BRAND_NAME);
+
 							if (itemBrandName == null) {
-								item.setAttributeValue("Product_c/ERP Operational/Brand_name", brandCatName);
+								// item.setAttributeValue("Product_c/ERP Operational/Brand_name", brandCatName);
+								item.setAttributeValue(Constants.BRAND_NAME, brandCatName);
 							}
 						}
 					}
 
-					AttributeInstance barcodeInst = item.getAttributeInstance("Product_c/Barcodes");
+					// AttributeInstance barcodeInst =
+					// item.getAttributeInstance("Product_c/Barcodes");
+					AttributeInstance barcodeInst = item.getAttributeInstance(Constants.BARCODES);
 
 					if (barcodeInst != null) {
-						int barcodeSize = item.getAttributeInstance("Product_c/Barcodes").getChildren().size();
+						// int barcodeSize =
+						// item.getAttributeInstance("Product_c/Barcodes").getChildren().size();
+						int barcodeSize = item.getAttributeInstance(Constants.BARCODES).getChildren().size();
+
 						logger.info("barcodeSize : " + barcodeSize);
 
 						if (barcodeSize > 0) {
 
 							for (int i = 0; i < barcodeSize; i++) {
 
-								String attrPath = "Product_c/Barcodes#" + i + "/Pack_barcode_number";
+								// String attrPath = "Product_c/Barcodes#" + i + "/Pack_barcode_number";
+								String attrPath = Constants.BARCODES + "#" + i + "/Pack_barcode_number";
+								// String barcodeType = (String) item.getAttributeValue("Product_c/Barcodes#" +
+								// i + "/Pack_barcode_type");
 								String barcodeType = (String) item
-										.getAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_type");
+										.getAttributeValue(Constants.BARCODES + "#" + i + "/Pack_barcode_type");
 
 								logger.info("barcodeType : " + barcodeType);
 
+								// Object barcodeNumObj = item.getAttributeValue("Product_c/Barcodes#" + i +
+								// "/Pack_barcode_number");
 								Object barcodeNumObj = item
-										.getAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_number");
+										.getAttributeValue(Constants.BARCODES + "#" + i + "/Pack_barcode_number");
+
 								logger.info("barcodeNumObj : " + barcodeNumObj);
 								String barcodeNumber = "";
 
 								if (barcodeNumObj != null) {
+									// barcodeNumber = (String) item.getAttributeValue("Product_c/Barcodes#" + i +
+									// "/Pack_barcode_number");
 									barcodeNumber = (String) item
-											.getAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_number");
+											.getAttributeValue(Constants.BARCODES + "#" + i + "/Pack_barcode_number");
 
 									logger.info("barcodeNumber>> : " + barcodeNumber);
 									if (barcodeNumber.contains("E") || barcodeNumber.contains(".")) {
@@ -499,8 +602,12 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 										if (!barcodeNumber.equals(updatedBarcode)) {
 											barcodeNumber = updatedBarcode;
 
-											item.setAttributeValue("Product_c/Barcodes#" + i + "/Pack_barcode_number",
+											// item.setAttributeValue("Product_c/Barcodes#" + i +
+											// "/Pack_barcode_number",updatedBarcode);
+											item.setAttributeValue(
+													Constants.BARCODES + "#" + i + "/Pack_barcode_number",
 													updatedBarcode);
+
 										}
 									}
 
@@ -524,16 +631,16 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
 					}
 
-					if (!hierNames.contains("Brand Hierarchy")) {
-						arg0.addValidationError(item.getAttributeInstance("Product_c/Sys_PIM_item_ID"),
+					// if (!hierNames.contains("Brand Hierarchy")) {
+					if (!hierNames.contains(Constants.BRAND_HIERARCHY)) {
+						// arg0.addValidationError(item.getAttributeInstance("Product_c/Sys_PIM_item_ID"),
+						arg0.addValidationError(item.getAttributeInstance(Constants.SYSTEM_PIM_ID),
 								ValidationError.Type.VALIDATION_RULE, "Brand Hierarchy is not mapped to the Item");
 					}
 				}
 			}
-
-			validationsCollabItem(arg0, item);
 		}
-
+		validationsCollabItem(arg0, item);
 	}
 
 	private void validationsCollabItem(CollaborationItemPrePostProcessingFunctionArguments arg0,
@@ -545,33 +652,60 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
 				if (arg0.getCollaborationStep().getName().equalsIgnoreCase("01 Enrich Item Data")) {
 					// Item Type mandatory validations
-					Object itemTypeValue = item.getAttributeValue("Product_c/Type/Type_item_type");
+					// Object itemTypeValue =
+					// item.getAttributeValue("Product_c/Type/Type_item_type");
+					Object itemTypeValue = item.getAttributeValue(Constants.ITEM_TYPE);
 					logger.info("itemTypeValue >> " + itemTypeValue);
 
 					ArrayList<String> attrPaths = new ArrayList<String>();
 
-					attrPaths.add("Product_c/Packaging/Pack_inner_pack_quantity");
-					attrPaths.add("Product_c/Packaging/Pack_inner_pack_height/Value");
-					attrPaths.add("Product_c/Packaging/Pack_inner_pack_height/UOM");
-					attrPaths.add("Product_c/Packaging/Pack_inner_pack_width/Value");
-					attrPaths.add("Product_c/Packaging/Pack_inner_pack_width/UOM");
-					attrPaths.add("Product_c/Packaging/Pack_inner_pack_depth/Value");
-					attrPaths.add("Product_c/Packaging/Pack_inner_pack_depth/UOM");
-					attrPaths.add("Product_c/Packaging/Pack_inner_pack_weight/Value");
-					attrPaths.add("Product_c/Packaging/Pack_inner_pack_weight/UOM");
+					/*
+					 * attrPaths.add("Product_c/Packaging/Pack_inner_pack_quantity");
+					 * attrPaths.add("Product_c/Packaging/Pack_inner_pack_height/Value");
+					 * attrPaths.add("Product_c/Packaging/Pack_inner_pack_height/UOM");
+					 * attrPaths.add("Product_c/Packaging/Pack_inner_pack_width/Value");
+					 * attrPaths.add("Product_c/Packaging/Pack_inner_pack_width/UOM");
+					 * attrPaths.add("Product_c/Packaging/Pack_inner_pack_depth/Value");
+					 * attrPaths.add("Product_c/Packaging/Pack_inner_pack_depth/UOM");
+					 * attrPaths.add("Product_c/Packaging/Pack_inner_pack_weight/Value");
+					 * attrPaths.add("Product_c/Packaging/Pack_inner_pack_weight/UOM");
+					 * 
+					 * attrPaths.add("Product_c/Packaging/Pack_outer_pack_quantity");
+					 * attrPaths.add("Product_c/Packaging/Pack_outer_pack_height/Value");
+					 * attrPaths.add("Product_c/Packaging/Pack_outer_pack_height/UOM");
+					 * attrPaths.add("Product_c/Packaging/Pack_outer_pack_width/Value");
+					 * attrPaths.add("Product_c/Packaging/Pack_outer_pack_width/UOM");
+					 * attrPaths.add("Product_c/Packaging/Pack_outer_pack_depth/Value");
+					 * attrPaths.add("Product_c/Packaging/Pack_outer_pack_depth/UOM");
+					 * attrPaths.add("Product_c/Packaging/Pack_outer_pack_weight/Value");
+					 * attrPaths.add("Product_c/Packaging/Pack_outer_pack_weight/UOM");
+					 * 
+					 * attrPaths.add("Product_c/Regulatory and Legal/Country_of_origin");
+					 * attrPaths.add("Product_c/Regulatory and Legal/Country_of_manufacture");
+					 */
 
-					attrPaths.add("Product_c/Packaging/Pack_outer_pack_quantity");
-					attrPaths.add("Product_c/Packaging/Pack_outer_pack_height/Value");
-					attrPaths.add("Product_c/Packaging/Pack_outer_pack_height/UOM");
-					attrPaths.add("Product_c/Packaging/Pack_outer_pack_width/Value");
-					attrPaths.add("Product_c/Packaging/Pack_outer_pack_width/UOM");
-					attrPaths.add("Product_c/Packaging/Pack_outer_pack_depth/Value");
-					attrPaths.add("Product_c/Packaging/Pack_outer_pack_depth/UOM");
-					attrPaths.add("Product_c/Packaging/Pack_outer_pack_weight/Value");
-					attrPaths.add("Product_c/Packaging/Pack_outer_pack_weight/UOM");
+					attrPaths.add(Constants.PACKAGING_INNER_PACK_QTY);
+					attrPaths.add(Constants.PACKAGING_INNER_PACK_HEIGHT_VALUE);
+					attrPaths.add(Constants.PACKAGING_INNER_PACK_HEIGHT_UOM);
+					attrPaths.add(Constants.PACKAGING_INNER_PACK_WIDTH_VALUE);
+					attrPaths.add(Constants.PACKAGING_INNER_PACK_WIDTH_UOM);
+					attrPaths.add(Constants.PACKAGING_INNER_PACK_DEPTH_VALUE);
+					attrPaths.add(Constants.PACKAGING_INNER_PACK_DEPTH_UOM);
+					attrPaths.add(Constants.PACKAGING_INNER_PACK_WEIGHT_VALUE);
+					attrPaths.add(Constants.PACKAGING_INNER_PACK_WEIGHT_UOM);
 
-					attrPaths.add("Product_c/Regulatory and Legal/Country_of_origin");
-					attrPaths.add("Product_c/Regulatory and Legal/Country_of_manufacture");
+					attrPaths.add(Constants.PACKAGING_OUTER_PACK_QTY);
+					attrPaths.add(Constants.PACKAGING_OUTER_PACK_HEIGHT_VALUE);
+					attrPaths.add(Constants.PACKAGING_OUTER_PACK_HEIGHT_UOM);
+					attrPaths.add(Constants.PACKAGING_OUTER_PACK_WIDTH_VALUE);
+					attrPaths.add(Constants.PACKAGING_OUTER_PACK_WIDTH_UOM);
+					attrPaths.add(Constants.PACKAGING_OUTER_PACK_DEPTH_VALUE);
+					attrPaths.add(Constants.PACKAGING_OUTER_PACK_DEPTH_UOM);
+					attrPaths.add(Constants.PACKAGING_OUTER_PACK_WEIGHT_VALUE);
+					attrPaths.add(Constants.PACKAGING_OUTER_PACK_WEIGHT_UOM);
+
+					attrPaths.add(Constants.COUNTRY_OF_ORIGIN);
+					attrPaths.add(Constants.COUNTRY_OF_MANUFACTURE);
 
 					if (itemTypeValue != null) {
 						if (itemTypeValue.toString().equals("Item")) {
@@ -597,12 +731,18 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 					}
 
 					// Legal Regulatory Attribute Validations
+					// AttributeInstance legalAttributeInstance =
+					// item.getAttributeInstance("Product_c/Regulatory and
+					// Legal/Legal_classification");
 					AttributeInstance legalAttributeInstance = item
-							.getAttributeInstance("Product_c/Regulatory and Legal/Legal_classification");
+							.getAttributeInstance(Constants.LEGAL_CLASSIFICATION);
 
 					if (legalAttributeInstance != null) {
-						Object legalClassificationValue = item
-								.getAttributeValue("Product_c/Regulatory and Legal/Legal_classification");
+						// Object legalClassificationValue =
+						// item.getAttributeValue("Product_c/Regulatory and
+						// Legal/Legal_classification");
+						Object legalClassificationValue = item.getAttributeValue(Constants.LEGAL_CLASSIFICATION);
+
 						logger.info("legalClassificationValue >> " + legalClassificationValue);
 						if (legalClassificationValue != null && (legalClassificationValue.equals("Cosmetics leave on")
 								|| legalClassificationValue.equals("Cosmetics wash off")
@@ -665,11 +805,14 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 						}
 					}
 
-					AttributeInstance legalQAttrInstance = item
-							.getAttributeInstance("Product_c/Regulatory and Legal/QPBUNMLGR");
+					// AttributeInstance legalQAttrInstance =
+					// item.getAttributeInstance("Product_c/Regulatory and Legal/QPBUNMLGR");
+					AttributeInstance legalQAttrInstance = item.getAttributeInstance(Constants.QPBUNMLGR);
 
 					if (legalQAttrInstance != null) {
-						Object legalQAttrValue = item.getAttributeValue("Product_c/Regulatory and Legal/QPBUNMLGR");
+						// Object legalQAttrValue = item.getAttributeValue("Product_c/Regulatory and
+						// Legal/QPBUNMLGR");
+						Object legalQAttrValue = item.getAttributeValue(Constants.QPBUNMLGR);
 
 						if (legalQAttrValue != null && (legalQAttrValue.equals("g") || legalQAttrValue.equals("ml"))) {
 
@@ -689,8 +832,10 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 					// Packaging material validation
 
 					// Inner Packaging
+					// AttributeInstance innerPackInstance =
+					// item.getAttributeInstance("Product_c/Packaging/Pack_inner_packaging_material");
 					AttributeInstance innerPackInstance = item
-							.getAttributeInstance("Product_c/Packaging/Pack_inner_packaging_material");
+							.getAttributeInstance(Constants.PACKAGING_INNER_PACKAGING_MATERIAL);
 
 					if (innerPackInstance != null) {
 						logger.info("Inner Pack Instance not null");
@@ -724,7 +869,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
 					// Outer Packaging
 					AttributeInstance outerPackInstance = item
-							.getAttributeInstance("Product_c/Packaging/Pack_outer_packaging_material");
+							.getAttributeInstance(Constants.PACKAGING_OUTER_PACKAGING_MATERIAL);
 
 					if (outerPackInstance != null) {
 						logger.info("Inner Pack Instance not null");
@@ -766,20 +911,21 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 
 						if (seconSpec.getName().contains("Sinelco_ss")) {
 
-							AttributeInstance funcAttrInst = item.getAttributeInstance("Sinelco_ss/Functional");
+							AttributeInstance funcAttrInst = item.getAttributeInstance(Constants.FUNCTIONAL);
 
 							if (funcAttrInst != null) {
 								Object translationRequired = item
-										.getAttributeValue("Sinelco_ss/Functional/Func_modify_translation_required");
+										.getAttributeValue(Constants.FUNC_MODIFY_TRANSLATION_REQUIRED);
+
 								Object packagingRequired = item
-										.getAttributeValue("Sinelco_ss/Functional/Func_modify_packaging_required");
+										.getAttributeValue(Constants.FUNC_MODIFY_PACKAGING_REQUIRED);
 
 								if (translationRequired == null && packagingRequired == null) {
 									arg0.addValidationError(
-											item.getAttributeInstance(
-													"Sinelco_ss/Functional/Func_modify_translation_required"),
+											item.getAttributeInstance(Constants.FUNC_MODIFY_TRANSLATION_REQUIRED),
 											ValidationError.Type.VALIDATION_RULE,
 											"Translation and Packaging cannot be blank");
+
 									logger.info("Either Translation or Packaging should be selected");
 								}
 
@@ -788,59 +934,71 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 					}
 
 				}
-				
+
 				if (arg0.getCollaborationStep().getName().equalsIgnoreCase("04 Supply Chain review")) {
-						
+
 					String exitValue = arg0.getExitValueForItem();
-					logger.info("exitValue "+exitValue);
-					
-					if (exitValue!= null &&  exitValue.equalsIgnoreCase("Reject")) {
-						
-						Object scRejectComments = item.getAttributeValue("Product_c/Status Attributes/SC_Rejection_Comments");
-								
-						if(scRejectComments == null)
-						{
-						arg0.addValidationError(item.getAttributeInstance("Product_c/Status Attributes/SC_Rejection_Comments"),
-											ValidationError.Type.VALIDATION_RULE,"Rejection comment is mandatory when exit value is Reject");
-									logger.info("Either Translation or Packaging should be selected");
+					logger.info("exitValue " + exitValue);
+
+					if (exitValue != null && exitValue.equalsIgnoreCase("Reject")) {
+
+						// Object scRejectComments = item.getAttributeValue("Product_c/Status
+						// Attributes/SC_Rejection_Comments");
+						Object scRejectComments = item.getAttributeValue(Constants.IS_SC_REJECTION);
+
+						if (scRejectComments == null) {
+							// arg0.addValidationError(item.getAttributeInstance("Product_c/Status
+							// Attributes/SC_Rejection_Comments"),
+							arg0.addValidationError(item.getAttributeInstance(Constants.IS_SC_REJECTION),
+									ValidationError.Type.VALIDATION_RULE,
+									"Rejection comment is mandatory when exit value is Reject");
+							logger.info("Either Translation or Packaging should be selected");
 						}
 					}
 
 				}
-				
+
 				if (arg0.getCollaborationStep().getName().equalsIgnoreCase("05 Legal Review")) {
-					
+
 					String exitValue = arg0.getExitValueForItem();
-					logger.info("exitValue "+exitValue);
-					
-					if (exitValue != null &&  exitValue.equalsIgnoreCase("Reject")) {
-						
-						Object legalRejectComments = item.getAttributeValue("Product_c/Status Attributes/Legal_Rejection_Comments");
-								
-						if(legalRejectComments == null)
-						{
-						arg0.addValidationError(item.getAttributeInstance("Product_c/Status Attributes/Legal_Rejection_Comments"),
-											ValidationError.Type.VALIDATION_RULE,"Rejection comment is mandatory when exit value is Reject");
-									logger.info("Either Translation or Packaging should be selected");
+					logger.info("exitValue " + exitValue);
+
+					if (exitValue != null && exitValue.equalsIgnoreCase("Reject")) {
+
+						// Object legalRejectComments = item.getAttributeValue("Product_c/Status
+						// Attributes/Legal_Rejection_Comments");
+						Object legalRejectComments = item.getAttributeValue(Constants.IS_LEGAL_REJECTED);
+
+						if (legalRejectComments == null) {
+							// arg0.addValidationError(item.getAttributeInstance("Product_c/Status
+							// Attributes/Legal_Rejection_Comments"),
+							arg0.addValidationError(item.getAttributeInstance(Constants.IS_LEGAL_REJECTED),
+									ValidationError.Type.VALIDATION_RULE,
+									"Rejection comment is mandatory when exit value is Reject");
+							logger.info("Either Translation or Packaging should be selected");
 						}
 					}
 
 				}
-				
+
 				if (arg0.getCollaborationStep().getName().equalsIgnoreCase("06 Marketing Review")) {
-					
+
 					String exitValue = arg0.getExitValueForItem();
-					logger.info("exitValue "+exitValue);
-					
-					if (exitValue != null &&  exitValue.equalsIgnoreCase("Reject")) {
-						
-						Object eCOMRejectComments = item.getAttributeValue("Product_c/Status Attributes/ECOM_Rejection_Comments");
-								
-						if(eCOMRejectComments == null)
-						{
-						arg0.addValidationError(item.getAttributeInstance("Product_c/Status Attributes/ECOM_Rejection_Comments"),
-											ValidationError.Type.VALIDATION_RULE,"Rejection comment is mandatory when exit value is Reject");
-									logger.info("Either Translation or Packaging should be selected");
+					logger.info("exitValue " + exitValue);
+
+					if (exitValue != null && exitValue.equalsIgnoreCase("Reject")) {
+
+						// Object eCOMRejectComments = item.getAttributeValue("Product_c/Status
+						// Attributes/ECOM_Rejection_Comments");
+						Object eCOMRejectComments = item.getAttributeValue(Constants.ECOM_REJECT);
+
+						if (eCOMRejectComments == null) {
+							// arg0.addValidationError(item.getAttributeInstance("Product_c/Status
+							// Attributes/ECOM_Rejection_Comments"),
+							arg0.addValidationError(item.getAttributeInstance(Constants.ECOM_REJECT),
+									ValidationError.Type.VALIDATION_RULE,
+									"Rejection comment is mandatory when exit value is Reject");
+							logger.info("Either Translation or Packaging should be selected");
 						}
 					}
 
@@ -885,33 +1043,60 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 		if (item != null) {
 
 			// Item Type mandatory validations
-			Object itemTypeValue = item.getAttributeValue("Product_c/Type/Type_item_type");
+			// Object itemTypeValue =
+			// item.getAttributeValue("Product_c/Type/Type_item_type");
+			Object itemTypeValue = item.getAttributeValue(Constants.ITEM_TYPE);
 			logger.info("itemTypeValue >> " + itemTypeValue);
 
 			ArrayList<String> attrPaths = new ArrayList<String>();
 
-			attrPaths.add("Product_c/Packaging/Pack_inner_pack_quantity");
-			attrPaths.add("Product_c/Packaging/Pack_inner_pack_height/Value");
-			attrPaths.add("Product_c/Packaging/Pack_inner_pack_height/UOM");
-			attrPaths.add("Product_c/Packaging/Pack_inner_pack_width/Value");
-			attrPaths.add("Product_c/Packaging/Pack_inner_pack_width/UOM");
-			attrPaths.add("Product_c/Packaging/Pack_inner_pack_depth/Value");
-			attrPaths.add("Product_c/Packaging/Pack_inner_pack_depth/UOM");
-			attrPaths.add("Product_c/Packaging/Pack_inner_pack_weight/Value");
-			attrPaths.add("Product_c/Packaging/Pack_inner_pack_weight/UOM");
+			// attrPaths.add("Product_c/Packaging/Pack_inner_pack_quantity");
+			// attrPaths.add("Product_c/Packaging/Pack_inner_pack_height/Value");
+			// attrPaths.add("Product_c/Packaging/Pack_inner_pack_height/UOM");
+			// attrPaths.add("Product_c/Packaging/Pack_inner_pack_width/Value");
+			// attrPaths.add("Product_c/Packaging/Pack_inner_pack_width/UOM");
+			// attrPaths.add("Product_c/Packaging/Pack_inner_pack_depth/Value");
+			// attrPaths.add("Product_c/Packaging/Pack_inner_pack_depth/UOM");
+			// attrPaths.add("Product_c/Packaging/Pack_inner_pack_weight/Value");
+			// attrPaths.add("Product_c/Packaging/Pack_inner_pack_weight/UOM");
 
-			attrPaths.add("Product_c/Packaging/Pack_outer_pack_quantity");
-			attrPaths.add("Product_c/Packaging/Pack_outer_pack_height/Value");
-			attrPaths.add("Product_c/Packaging/Pack_outer_pack_height/UOM");
-			attrPaths.add("Product_c/Packaging/Pack_outer_pack_width/Value");
-			attrPaths.add("Product_c/Packaging/Pack_outer_pack_width/UOM");
-			attrPaths.add("Product_c/Packaging/Pack_outer_pack_depth/Value");
-			attrPaths.add("Product_c/Packaging/Pack_outer_pack_depth/UOM");
-			attrPaths.add("Product_c/Packaging/Pack_outer_pack_weight/Value");
-			attrPaths.add("Product_c/Packaging/Pack_outer_pack_weight/UOM");
+			attrPaths.add(Constants.PACKAGING_INNER_PACK_QTY);
+			attrPaths.add(Constants.PACKAGING_INNER_PACK_HEIGHT_VALUE);
+			attrPaths.add(Constants.PACKAGING_INNER_PACK_HEIGHT_UOM);
+			attrPaths.add(Constants.PACKAGING_INNER_PACK_WIDTH_VALUE);
+			attrPaths.add(Constants.PACKAGING_INNER_PACK_WIDTH_UOM);
+			attrPaths.add(Constants.PACKAGING_INNER_PACK_DEPTH_VALUE);
+			attrPaths.add(Constants.PACKAGING_INNER_PACK_DEPTH_UOM);
+			attrPaths.add(Constants.PACKAGING_INNER_PACK_WEIGHT_VALUE);
+			attrPaths.add(Constants.PACKAGING_INNER_PACK_WEIGHT_UOM);
 
-			attrPaths.add("Product_c/Regulatory and Legal/Country_of_origin");
-			attrPaths.add("Product_c/Regulatory and Legal/Country_of_manufacture");
+			/*
+			 * attrPaths.add("Product_c/Packaging/Pack_outer_pack_quantity");
+			 * attrPaths.add("Product_c/Packaging/Pack_outer_pack_height/Value");
+			 * attrPaths.add("Product_c/Packaging/Pack_outer_pack_height/UOM");
+			 * attrPaths.add("Product_c/Packaging/Pack_outer_pack_width/Value");
+			 * attrPaths.add("Product_c/Packaging/Pack_outer_pack_width/UOM");
+			 * attrPaths.add("Product_c/Packaging/Pack_outer_pack_depth/Value");
+			 * attrPaths.add("Product_c/Packaging/Pack_outer_pack_depth/UOM");
+			 * attrPaths.add("Product_c/Packaging/Pack_outer_pack_weight/Value");
+			 * attrPaths.add("Product_c/Packaging/Pack_outer_pack_weight/UOM");
+			 * 
+			 * attrPaths.add("Product_c/Regulatory and Legal/Country_of_origin");
+			 * attrPaths.add("Product_c/Regulatory and Legal/Country_of_manufacture");
+			 */
+
+			attrPaths.add(Constants.PACKAGING_OUTER_PACK_QTY);
+			attrPaths.add(Constants.PACKAGING_OUTER_PACK_HEIGHT_VALUE);
+			attrPaths.add(Constants.PACKAGING_OUTER_PACK_HEIGHT_UOM);
+			attrPaths.add(Constants.PACKAGING_OUTER_PACK_WIDTH_VALUE);
+			attrPaths.add(Constants.PACKAGING_OUTER_PACK_WIDTH_UOM);
+			attrPaths.add(Constants.PACKAGING_OUTER_PACK_DEPTH_VALUE);
+			attrPaths.add(Constants.PACKAGING_OUTER_PACK_DEPTH_UOM);
+			attrPaths.add(Constants.PACKAGING_OUTER_PACK_WEIGHT_VALUE);
+			attrPaths.add(Constants.PACKAGING_OUTER_PACK_WEIGHT_UOM);
+
+			attrPaths.add(Constants.COUNTRY_OF_ORIGIN);
+			attrPaths.add(Constants.COUNTRY_OF_MANUFACTURE);
 
 			if (itemTypeValue != null) {
 				if (itemTypeValue.toString().equals("Item")) {
@@ -936,12 +1121,17 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 			}
 
 			// Legal Regulatory Attribute Validations
-			AttributeInstance legalAttributeInstance = item
-					.getAttributeInstance("Product_c/Regulatory and Legal/Legal_classification");
+			// AttributeInstance legalAttributeInstance =
+			// item.getAttributeInstance("Product_c/Regulatory and
+			// Legal/Legal_classification");
+			AttributeInstance legalAttributeInstance = item.getAttributeInstance(Constants.LEGAL_CLASSIFICATION);
 
 			if (legalAttributeInstance != null) {
-				Object legalClassificationValue = item
-						.getAttributeValue("Product_c/Regulatory and Legal/Legal_classification");
+				// Object legalClassificationValue =
+				// item.getAttributeValue("Product_c/Regulatory and
+				// Legal/Legal_classification");
+				Object legalClassificationValue = item.getAttributeValue(Constants.LEGAL_CLASSIFICATION);
+
 				logger.info("legalClassificationValue >> " + legalClassificationValue);
 				if (legalClassificationValue != null && (legalClassificationValue.equals("Cosmetics leave on")
 						|| legalClassificationValue.equals("Cosmetics wash off")
@@ -1022,11 +1212,14 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 				}
 			}
 
-			AttributeInstance legalQAttrInstance = item
-					.getAttributeInstance("Product_c/Regulatory and Legal/QPBUNMLGR");
+			// AttributeInstance legalQAttrInstance =
+			// item.getAttributeInstance("Product_c/Regulatory and Legal/QPBUNMLGR");
+			AttributeInstance legalQAttrInstance = item.getAttributeInstance(Constants.QPBUNMLGR);
 
 			if (legalQAttrInstance != null) {
-				Object legalQAttrValue = item.getAttributeValue("Product_c/Regulatory and Legal/QPBUNMLGR");
+				// Object legalQAttrValue = item.getAttributeValue("Product_c/Regulatory and
+				// Legal/QPBUNMLGR");
+				Object legalQAttrValue = item.getAttributeValue(Constants.QPBUNMLGR);
 
 				if (legalQAttrValue != null && (legalQAttrValue.equals("g") || legalQAttrValue.equals("ml"))) {
 
@@ -1046,8 +1239,10 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 			// Packaging material validation
 
 			// Inner Packaging
+			// AttributeInstance innerPackInstance =
+			// item.getAttributeInstance("Product_c/Packaging/Pack_inner_packaging_material");
 			AttributeInstance innerPackInstance = item
-					.getAttributeInstance("Product_c/Packaging/Pack_inner_packaging_material");
+					.getAttributeInstance(Constants.PACKAGING_INNER_PACKAGING_MATERIAL);
 
 			if (innerPackInstance != null) {
 				logger.info("Inner Pack Instance not null");
@@ -1079,8 +1274,10 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 			}
 
 			// Outer Packaging
+			// AttributeInstance outerPackInstance =
+			// item.getAttributeInstance("Product_c/Packaging/Pack_outer_packaging_material");
 			AttributeInstance outerPackInstance = item
-					.getAttributeInstance("Product_c/Packaging/Pack_outer_packaging_material");
+					.getAttributeInstance(Constants.PACKAGING_OUTER_PACKAGING_MATERIAL);
 
 			if (outerPackInstance != null) {
 				logger.info("Inner Pack Instance not null");
