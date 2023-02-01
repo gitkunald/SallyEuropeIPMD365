@@ -75,9 +75,9 @@ public class MaintananceSuccessStep implements WorkflowStepFunction {
 		// TODO Auto-generated method stub
 		logger.info("Inside Out Func for Maintenance  ");
 		Context ctx = PIMContextFactory.getCurrentContext();
-		Catalog sallyCatalog = ctx.getCatalogManager().getCatalog("Sally Europe");
+		Catalog sallyCatalog = ctx.getCatalogManager().getCatalog(Constants.SALLY_EU);
 		PIMCollection<CollaborationItem> items = arg0.getItems();
-		LookupTable itmTypeLkpTable = ctx.getLookupTableManager().getLookupTable("AzureConstantsLookup");
+		LookupTable itmTypeLkpTable = ctx.getLookupTableManager().getLookupTable(Constants.AZURE_LOOKUPTABLE);
 		PIMCollection<LookupTableEntry> lkpEntries = itmTypeLkpTable.getLookupTableEntries();
 		String storageConnectionString = "";
 		String localFilePath = "";
@@ -91,6 +91,7 @@ public class MaintananceSuccessStep implements WorkflowStepFunction {
 		XSSFSheet sheet = null;
 		Document docstoreDoc = null;
 		StringWriter stringWriter = new StringWriter();
+		String dynamicExcelPath = null;
 		
 		try {			
 			XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();		
@@ -100,29 +101,29 @@ public class MaintananceSuccessStep implements WorkflowStepFunction {
 	
 			// Reading of attributes from reference file
 			DocstoreManager docstoreManager = ctx.getDocstoreManager();
-			// Directory directory = docstoreManager.getDirectory(Constants.REF_DOC_DIR);
-			Directory directory = docstoreManager.getDirectory("utils/MaintainItems/");
+			
+			Directory directory = docstoreManager.getDirectory(Constants.REF_DOC_DIR_MAINTANANCE);
 	
 			PIMCollection<com.ibm.pim.docstore.Document> documents = directory.getDocuments();
 				
 			for (Iterator<LookupTableEntry> iterator = lkpEntries.iterator(); iterator.hasNext();) {
 				LookupTableEntry lookupTableEntry = (LookupTableEntry) iterator.next();
-				if (lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/key").toString()
-						.equalsIgnoreCase("storageConnectionString")) {
-					storageConnectionString = lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/value")
+				if (lookupTableEntry.getAttributeValue(Constants.AZURE_KEY).toString()
+						.equalsIgnoreCase(Constants.STORAGE_CONNECTION)) {
+					storageConnectionString = lookupTableEntry.getAttributeValue(Constants.AZURE_VALUE)
 							.toString();
 				}
-				if (lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/key").toString()
-						.equalsIgnoreCase("OutboundLocalFilePath")) {
-					localFilePath = lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/value").toString();
+				if (lookupTableEntry.getAttributeValue(Constants.AZURE_KEY).toString()
+						.equalsIgnoreCase(Constants.OUTBOUND_FILEPATH)) {
+					localFilePath = lookupTableEntry.getAttributeValue(Constants.AZURE_VALUE).toString();
 				}
-				if (lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/key").toString()
-						.equalsIgnoreCase("fileShare")) {
-					fileShare = lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/value").toString();
+				if (lookupTableEntry.getAttributeValue(Constants.AZURE_KEY).toString()
+						.equalsIgnoreCase(Constants.FILE_SHARE)) {
+					fileShare = lookupTableEntry.getAttributeValue(Constants.AZURE_VALUE).toString();
 				}
-				if (lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/key").toString()
-						.equalsIgnoreCase("OutboundPublishWorkingDirectory")) {
-					outboundWorkingDirectory = lookupTableEntry.getAttributeValue("AzureConstantsLookupSpecs/value")
+				if (lookupTableEntry.getAttributeValue(Constants.AZURE_KEY).toString()
+						.equalsIgnoreCase(Constants.OUTBOUND_PUBLISH)) {
+					outboundWorkingDirectory = lookupTableEntry.getAttributeValue(Constants.AZURE_VALUE)
 							.toString();
 				}
 			}
@@ -150,7 +151,7 @@ public class MaintananceSuccessStep implements WorkflowStepFunction {
 				Map<String, String> newlyAddedInstanceMap = new HashMap<String, String>();
 				Map<String, Entry<String, String>> consolidatedListOfMofidifiedAttr = new HashMap<String, Entry<String, String>>();
 
-				logger.info(" ****************************************************************");
+				
 
 				AttributeOwner attOwner = item.getSourceItem().cloneAttributeOwner(true);
 				AttributeChanges attributeChanges = item.getAttributeChangesComparedTo(attOwner);
@@ -159,12 +160,11 @@ public class MaintananceSuccessStep implements WorkflowStepFunction {
 					String key = attributeChanges.getModifiedAttributesWithNewData().get(x).getPath();
 					String newData = attributeChanges.getModifiedAttributesWithNewData().get(x).getDisplayValue();
 					String oldData = attributeChanges.getModifiedAttributesWithOldData().get(x).getDisplayValue();
-					// logger.info("2 Modified list <<<<<<<< "+key+ " >>>>> Old Data >>>>
-					// "+oldData);
-					if (key.contains("Pack_barcode_number") || key.contains("Search_name")
-							|| key.contains("Sys_created_date") || key.contains("Sys_updated_date")
-							|| key.contains("Product_lifecycle_state") || key.contains("Sys_PIM_MDM_ID")) {
-						if (key.contains("Pack_barcode_number") && !oldData.equals(""))
+					
+						if (key.contains(Constants.PACK_BARCODE) || key.contains(Constants.SEARCH)
+							|| key.contains(Constants.CREATE) || key.contains(Constants.UPDATE)
+							|| key.contains(Constants.LifeCycle) || key.contains(Constants.SYS_PIMID)) {
+						if (key.contains(Constants.PACK_BARCODE) && !oldData.equals(""))
 							modifiedInstanceMap.put(key, newData);
 					} else {
 						modifiedInstanceMap.put(key, newData);
@@ -212,12 +212,25 @@ public class MaintananceSuccessStep implements WorkflowStepFunction {
 					logger.info("Modified Attribute :::::: " + entry.getKey() + " *** " + entry.getValue());
 					consolidatedMap.put(entry.getKey(), entry.getValue());
 				}
+				
+				LookupTable pimConfigLkpTable = ctx.getLookupTableManager().getLookupTable(Constants.PIM_CONFIGURATION);
+				PIMCollection<LookupTableEntry> pimConfigLkpEntries = pimConfigLkpTable.getLookupTableEntries();
+				for (Iterator<LookupTableEntry> fileItrPIM = pimConfigLkpEntries.iterator(); fileItrPIM.hasNext();) {
+					LookupTableEntry fileLookupTableEntry = (LookupTableEntry) fileItrPIM.next();
+					if (fileLookupTableEntry.getAttributeValue(Constants.FILEREADER_KEY).toString()
+							.equalsIgnoreCase(Constants.REF_DOC_DIR_MAINTANANCE)) {
+						dynamicExcelPath = fileLookupTableEntry.getAttributeValue(Constants.FILEREADER_VALUE).toString();
+					}
+				}
+				
+				
+				
 
 				// Starting the create xml
 				if (!documents.isEmpty() && documents.size() > 0) {
 					for (com.ibm.pim.docstore.Document document : documents) {
 						if (document != null && document.getName()
-								.equals("/utils/MaintainItems/Maintenance_Dynamic_Attributes.xlsx")) {
+								.equals(dynamicExcelPath)) {
 							String docName = document.getName();
 							String docPath = document.getPath();
 							String filePath = uploadFileInRealPath(document);
@@ -227,7 +240,7 @@ public class MaintananceSuccessStep implements WorkflowStepFunction {
 							sheet = workbook.getSheetAt(1);
 							createProductMaintenanceXML(ctx, sheet, xmlStreamWriter, item, consolidatedMap,deleteFlagValue);
 
-							logger.info("Closing the Product_c tag :::::: " + item.getPrimaryKey());
+							
 						}
 					}
 				}
@@ -253,7 +266,7 @@ public class MaintananceSuccessStep implements WorkflowStepFunction {
 				
 				
 				if (docstoreDoc == null) {					
-					docstoreDoc = ctx.getDocstoreManager().createAndPersistDocument("/outbound/ItemCreation/Working/"+fileName+ ".xml");
+					docstoreDoc = ctx.getDocstoreManager().createAndPersistDocument(Constants.FIRST_OUTBOUND+fileName+ ".xml");
 					docstoreDoc.setContent(xmlString);
 					logger.info("XML Saved");
 				}
@@ -289,7 +302,7 @@ public class MaintananceSuccessStep implements WorkflowStepFunction {
 			// logger.info("Cloud File Text : "+cloudFile.downloadText());
 			cloudFile.uploadFromFile(localFilePath + fileName + ".xml");
 			logger.info("Files uploaded successfully");
-			docstoreDoc.moveTo("/outbound/ItemPublish/Archive/" + fileName + ".xml");
+			docstoreDoc.moveTo(Constants.PUBLISH_ARCHIVE + fileName + ".xml");
 			logger.info("File archived successfully");
 			
 			xmlStreamWriter.flush();
@@ -310,8 +323,8 @@ public class MaintananceSuccessStep implements WorkflowStepFunction {
 			xmlStreamWriter.writeStartElement(Constants.PRODUCT);
 			// SETTING THE PIM ID AND CATEGORY INFO
 
-			xmlStreamWriter.writeStartElement("Sys_PIM_MDM_ID");
-			xmlStreamWriter.writeCharacters(item.getAttributeValue("Product_c/Sys_PIM_MDM_ID").toString());
+			xmlStreamWriter.writeStartElement(Constants.SYS_PIMID);
+			xmlStreamWriter.writeCharacters(item.getAttributeValue(Constants.SYS_PIM_MDMID).toString());
 			xmlStreamWriter.writeEndElement(); // end tag for MDM ID
 			Collection<Category> categories = item.getCategories();
 			xmlStreamWriter.writeStartElement(Constants.CATEGORY_INFO);
@@ -546,14 +559,14 @@ public class MaintananceSuccessStep implements WorkflowStepFunction {
 	       .format(DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss_SSS"));
 	}
 	private String uploadFileInRealPath(com.ibm.pim.docstore.Document document) {
-		System.out.println("Entered uploadFileInRealPath method111");
+		
 
-		String sSrcFileCopyLocation = "/public_html/tmp_files/";
+		String sSrcFileCopyLocation = Constants.FileCopyLocation;
 		com.ibm.pim.docstore.Document tmpDoc = document.copyTo(sSrcFileCopyLocation);
 		String tmpDocPath = tmpDoc.getPath();
 		String docRealPath = document.getRealPath();
 		logger.info("Document Real Path ::: " + docRealPath);
-		String sFileSystemRootPath = docRealPath.substring(0, docRealPath.indexOf("/utils/MaintainItems"));
+		String sFileSystemRootPath = docRealPath.substring(0, docRealPath.indexOf(Constants.REF_DOC_DIR_MAINTANANCE));
 		logger.info(sFileSystemRootPath);
 		// Dev env path
 		// String sFileSystemRootPath = "/opt/IBM/MDM";
@@ -563,10 +576,10 @@ public class MaintananceSuccessStep implements WorkflowStepFunction {
 		String sSourceFileName = tmpDocPath.substring(index + 1);
 		Company company = PIMContextFactory.getCurrentContext().getCurrentUser().getCompany();
 		String compName = company.getName();
-		String sSystemFilePath = sFileSystemRootPath + "/public_html/suppliers/" + compName + "/tmp_files/"
+		String sSystemFilePath = sFileSystemRootPath + Constants.SystemFilePath + compName + Constants.TempFilePath
 				+ sSourceFileName;
 
-		System.out.println("Exit uploadFileInRealPath method with fileSystemPath : " + sSystemFilePath);
+		
 		return sSystemFilePath;
 	}
 

@@ -2,6 +2,8 @@ package com.sally.pimphase1.reports;
 
 import java.io.File;
 import java.io.Writer;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -130,12 +132,12 @@ public class VendorUpdate implements ReportGenerateFunction {
 
 			Iterable<ListFileItem> listofFiles = workingDir.listFilesAndDirectories();
 
-			Set<String> successList = new LinkedHashSet<String>();
-			Set<String> errorList = new LinkedHashSet<String>();
-			boolean isSuccess = false;
-
 			CloudFile cloudFile = null;
 			for (ListFileItem cFileList : listofFiles) {
+				
+				Set<String> successList = new LinkedHashSet<String>();
+				Set<String> errorList = new LinkedHashSet<String>();
+				boolean isSuccess = false;
 
 				cloudFile = (CloudFile) cFileList;
 				logger.info("cloudFile : " + cloudFile);
@@ -143,7 +145,13 @@ public class VendorUpdate implements ReportGenerateFunction {
 
 				File fileFromCloud = FileUtils.copyInputStreamToFile(cloudFile.openRead(), cloudFile.getName());
 
-				Map<String, String> vendorFile = FileUtils.parseCSVFileforMap(fileFromCloud);
+				Map<String, String> vendorFile = null;
+
+				if (cloudFile.getName().contains(".csv")) {
+					vendorFile = FileUtils.parseCSVFileforMap(fileFromCloud);
+				} else if (cloudFile.getName().contains(".psv")) {
+					vendorFile = FileUtils.parsePSVFileforMap(fileFromCloud);
+				}
 				Set<String> mdmList = new HashSet();
 				Set<String> fileList = new HashSet();
 
@@ -328,7 +336,7 @@ public class VendorUpdate implements ReportGenerateFunction {
 						destinationFile.startCopy(cloudFile);
 
 						Document docstoreDoc = ctx.getDocstoreManager()
-								.createAndPersistDocument("/outbound/ItemCreation/Working/Success.csv");
+								.createAndPersistDocument(Constants.SUCCESS_PATH_VENDOR + getCurrentLocalDateTimeStamp());
 
 						String vendorIdsChanged = successList.toString().replace("[", "").replace("]", "");
 						docstoreDoc.setContent(vendorIdsChanged);
@@ -343,7 +351,7 @@ public class VendorUpdate implements ReportGenerateFunction {
 						destinationFile.startCopy(cloudFile);
 
 						Document docstoreDoc = ctx.getDocstoreManager()
-								.createAndPersistDocument("/outbound/ItemCreation/Working/Error.csv");
+								.createAndPersistDocument(Constants.ERROR_PATH_VENDOR + getCurrentLocalDateTimeStamp());
 
 						String vendorIdsChanged = errorList.toString().replace("[", "").replace("]", "");
 						docstoreDoc.setContent(vendorIdsChanged);
@@ -361,6 +369,10 @@ public class VendorUpdate implements ReportGenerateFunction {
 
 		}
 
+	}
+	
+	private static String getCurrentLocalDateTimeStamp() {
+		return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss_SSS"));
 	}
 
 }

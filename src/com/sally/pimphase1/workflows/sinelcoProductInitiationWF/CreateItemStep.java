@@ -185,7 +185,7 @@ public class CreateItemStep implements WorkflowStepFunction {
 		logger.info("Save the XML for Items");
 		if (docstoreDoc == null) {
 			docstoreDoc = ctx.getDocstoreManager()
-					.createAndPersistDocument("/outbound/ItemCreation/Working/" + item.getPrimaryKey() + ".xml");
+					.createAndPersistDocument(Constants.FIRST_OUTBOUND + item.getPrimaryKey() + ".xml");
 			docstoreDoc.setContent(xmlString);
 			logger.info("XML Saved");
 		}
@@ -221,7 +221,7 @@ public class CreateItemStep implements WorkflowStepFunction {
 			// logger.info("Cloud File Text : "+cloudFile.downloadText());
 			cloudFile.uploadFromFile(localFilePath + item.getPrimaryKey() + ".xml");
 			logger.info("File uploaded successfully");
-			docstoreDoc.moveTo("/outbound/ItemCreation/Archive/" + item.getPrimaryKey() + ".xml");
+			docstoreDoc.moveTo(Constants.ARCHIVE + item.getPrimaryKey() + ".xml");
 			logger.info("File archived successfully");
 
 		} catch (Exception e) {
@@ -457,9 +457,8 @@ public class CreateItemStep implements WorkflowStepFunction {
 	}
 
 	private String uploadFileInRealPath(com.ibm.pim.docstore.Document document) {
-		System.out.println("Entered uploadFileInRealPath method111");
 
-		String sSrcFileCopyLocation = "/public_html/tmp_files/";
+		String sSrcFileCopyLocation = Constants.FileCopyLocation;
 		com.ibm.pim.docstore.Document tmpDoc = document.copyTo(sSrcFileCopyLocation);
 		String tmpDocPath = tmpDoc.getPath();
 		String docRealPath = document.getRealPath();
@@ -474,10 +473,9 @@ public class CreateItemStep implements WorkflowStepFunction {
 		String sSourceFileName = tmpDocPath.substring(index + 1);
 		Company company = PIMContextFactory.getCurrentContext().getCurrentUser().getCompany();
 		String compName = company.getName();
-		String sSystemFilePath = sFileSystemRootPath + "/public_html/suppliers/" + compName + "/tmp_files/"
+		String sSystemFilePath = sFileSystemRootPath + Constants.SystemFilePath + compName + Constants.TempFilePath
 				+ sSourceFileName;
 
-		System.out.println("Exit uploadFileInRealPath method with fileSystemPath : " + sSystemFilePath);
 		return sSystemFilePath;
 	}
 

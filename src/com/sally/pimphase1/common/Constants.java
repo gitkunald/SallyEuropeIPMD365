@@ -16,12 +16,31 @@ public class Constants {
 	public static final String REF_DOC_DIR = "utils/CreateItems/";
 	public static final String REF_ATTRIBUTES_DOC = "/utils/CreateItems/DynamicAttributes.xlsx";
 	
+	public static final String REF_DOC_DIR_MAINTANANCE = "utils/MaintainItems/";
+	public static final String REF_ATTRIBUTES_DOC_MAINTANANCE = "/utils/MaintainItems/Maintenance_Dynamic_Attributes.xlsx";
 	
 	public static final String REF_DOC_DIR_NEW = "utils/ItemInitiation/";
 	public static final String REF_ATTRIBUTES_DOC_NEW = "/utils/ItemInitiation/ERP_id_Dynamic_Attributes.xlsx";
+	
 	public static final String REF_DOC_UPDATE = "utils/ItemUpdate/";
 	public static final String USER = "user1";
 	public static final String DELETE_FALG = "Delete_Flag";
+	
+	public static final String FIRST_OUTBOUND = "/outbound/ItemCreation/Working/";
+	public static final String ARCHIVE = "/outbound/ItemCreation/Archive/";
+	public static final String PUBLISH_ARCHIVE = "/outbound/ItemPublish/Archive/";
+	public static final String FileCopyLocation = "/public_html/tmp_files/";
+	public static final String SystemFilePath = "/public_html/suppliers/";
+	public static final String TempFilePath = "/tmp_files/";
+	
+	public static final String SUCCESS_PATH = "/outbound/Reports/Success/Success_";
+	public static final String ERROR_PATH = "/outbound/Reports/Error/Error_";
+	public static final String SUCCESS_PATH_VENDOR = "/outbound/Reports/Vendor/Success_";
+	public static final String ERROR_PATH_VENDOR = "/outbound/Reports/Vendor/Error_";
+	
+	
+	
+	
 	
 	//Catalog
 	public static final String SALLY_EU = "Sally Europe";
@@ -63,6 +82,17 @@ public class Constants {
 	public static final String VENDORNAME_LOOKUP = "Vendor Lookup Spec/name";
 	public static final String VENDOR_TYPE_LOOKUP = "Vendor Lookup Spec/type";
 	public static final String EXTERNAL = "External";
+	public static final String OUTBOUND_PUBLISH = "OutboundPublishWorkingDirectory";
+	
+	//Maintanace WF
+	public static final String PACK_BARCODE = "Pack_barcode_number";
+	public static final String SEARCH = "Search_name";
+	public static final String CREATE = "Sys_created_date";
+	public static final String UPDATE = "Sys_updated_date";
+	public static final String LifeCycle = "Product_lifecycle_state";
+	public static final String SYS_PIMID = "Sys_PIM_MDM_ID";
+	public static final String SYS_PIM_MDMID = "Product_c/Sys_PIM_MDM_ID";
+	
 	
 	
 	//Category Info

@@ -103,6 +103,68 @@ public class FileUtils {
 		return mapOfPimIDs;
 	}
 
+	public static Map<String, List<Entry>> parsePSVFile(File file) throws Exception {
+		Map<String, List<Entry>> mapOfPimIDs = new HashMap<>();
+		try {
+			FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);
+			String line = " ";
+			String[] tempArr;
+			int rowCnt = 0;
+			ArrayList<String> headerList = new ArrayList<>();
+			// Row level iteration
+
+			while ((line = br.readLine()) != null) {
+
+				tempArr = line.split("\\|");
+
+				// column level iteration
+				String pimId = "";
+				List<Entry> list = new ArrayList<>();
+				int i = 1;
+				int columnCnt = 0;
+				for (String tempStr : tempArr) {
+					Entry<String, String> attribute = null;
+					if (rowCnt == 0) {
+						headerList.add(tempStr);
+					}
+					if (columnCnt == 0 && rowCnt != 0) {
+						pimId = tempStr;
+					}
+
+					if (columnCnt != 0 && rowCnt != 0) {
+						attribute = new AbstractMap.SimpleEntry<String, String>(headerList.get(i), tempStr);
+						i++;
+					}
+
+					if (attribute != null)
+						list.add(attribute);
+					columnCnt++;
+
+				}
+
+				if (rowCnt != 0)
+					mapOfPimIDs.put(pimId, list);
+
+				rowCnt++;
+
+			}
+			br.close();
+
+			logger.info("Number of lines parsed : " + rowCnt + "for File : " + file);
+			logger.info("Returning Result : " + mapOfPimIDs);
+			System.out.println("Returning Result : " + mapOfPimIDs);
+
+		}
+
+		catch (Exception ex) {
+			ex.printStackTrace();
+			logger.error("Error while parsing the file ", ex);
+			throw new Exception("Error while parsing the file - " + file + " with an error " + ex);
+		}
+		return mapOfPimIDs;
+	}
+
 	public static Map<String, String> parseCSVFileforMap(File file) throws Exception {
 		Map<String, String> mapOfVendorIds = new HashMap<>();
 		try {
@@ -118,6 +180,62 @@ public class FileUtils {
 			while ((line = br.readLine()) != null) {
 
 				tempArr = line.split("\\,");
+
+				String key = "";
+				String val = "";
+
+				int i = 1;
+				int columnCnt = 0;
+				// column level iteration
+				for (String tempStr : tempArr) {
+
+					if (columnCnt == 0 && rowCnt != 0) {
+						key = tempStr;
+
+					} else if (columnCnt == 1 && rowCnt != 0) {
+						val = tempStr;
+					}
+
+					columnCnt++;
+
+				}
+
+				if (rowCnt != 0)
+					mapOfVendorIds.put(key, val);
+
+				rowCnt++;
+
+			}
+			br.close();
+
+			logger.info("Number of lines parsed : " + rowCnt + "for File : " + file);
+			logger.info("Returning Result : " + mapOfVendorIds);
+			System.out.println("Returning Result : " + mapOfVendorIds);
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			logger.error("Error while parsing the file ", ex);
+			throw new Exception("Error while parsing the file - " + file + " with an error " + ex);
+		}
+		return mapOfVendorIds;
+
+	}
+
+	public static Map<String, String> parsePSVFileforMap(File file) throws Exception {
+		Map<String, String> mapOfVendorIds = new HashMap<>();
+		try {
+
+			FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);
+			String line = " ";
+			String[] tempArr;
+			int rowCnt = 0;
+
+			// Row level iteration
+
+			while ((line = br.readLine()) != null) {
+
+				tempArr = line.split("\\|");
 
 				String key = "";
 				String val = "";
@@ -234,7 +352,7 @@ public class FileUtils {
 
 			String finalContentTobeSaved = sb.toString();
 
-			 FileWriter myWriter = new FileWriter(filePath);
+			FileWriter myWriter = new FileWriter(filePath);
 			myWriter.write(finalContentTobeSaved);
 			myWriter.close();
 		} catch (IOException e) {
@@ -242,23 +360,23 @@ public class FileUtils {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static String convertDocumentToString(Document doc) {
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer transformer;
-        try {
-            transformer = tf.newTransformer();
-            // below code to remove XML declaration
-            // transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            StringWriter writer = new StringWriter();
-            transformer.transform(new DOMSource(), new StreamResult(writer));
-            String output = writer.getBuffer().toString();
-            return output;
-        } catch (TransformerException e) {
-            e.printStackTrace();
-        }
-        
-        return null;
+		TransformerFactory tf = TransformerFactory.newInstance();
+		Transformer transformer;
+		try {
+			transformer = tf.newTransformer();
+			// below code to remove XML declaration
+			// transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+			StringWriter writer = new StringWriter();
+			transformer.transform(new DOMSource(), new StreamResult(writer));
+			String output = writer.getBuffer().toString();
+			return output;
+		} catch (TransformerException e) {
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 	public static File copyInputStreamToFile(InputStream inputStream, String fileName) throws IOException {
@@ -280,7 +398,7 @@ public class FileUtils {
 		// csv file to read
 		// File csvFile =
 		String vCSV = "C:\\Users\\mitadmin1\\Desktop\\Sally\\Vendors_2022-09-14T14_08_47Z.csv";
-		//FileUtils.parseCSVFileforMap(vCSV);
+		// FileUtils.parseCSVFileforMap(vCSV);
 
 		String xlsxFile = "C:\\Users\\mitadmin1\\Desktop\\Sally\\Attributes.xlsx";
 		// FileUtils.readXSLXfile(xlsxFile);

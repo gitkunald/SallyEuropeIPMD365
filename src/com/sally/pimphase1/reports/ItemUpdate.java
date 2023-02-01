@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -114,11 +116,12 @@ public class ItemUpdate implements ReportGenerateFunction {
 
 			Iterable<ListFileItem> listofFiles = workingDir.listFilesAndDirectories();
 
-			Set<String> successList = new LinkedHashSet<String>();
-			Set<String> errorList = new LinkedHashSet<String>();
-
 			CloudFile cloudFile = null;
 			for (ListFileItem cFileList : listofFiles) {
+
+				Set<String> successList = new LinkedHashSet<String>();
+				Set<String> errorList = new LinkedHashSet<String>();
+				Set<String> pimIDExists = new LinkedHashSet<String>();
 
 				cloudFile = (CloudFile) cFileList;
 				logger.info("cloudFile : " + cloudFile);
@@ -154,7 +157,15 @@ public class ItemUpdate implements ReportGenerateFunction {
 					}
 				}
 
-				Map<String, List<Entry>> fileData = FileUtils.parseCSVFile(fileFromCloud);
+				;
+
+				Map<String, List<Entry>> fileData = null;
+
+				if (cloudFile.getName().contains(".csv")) {
+					fileData = FileUtils.parseCSVFile(fileFromCloud);
+				} else if (cloudFile.getName().contains(".psv")) {
+					fileData = FileUtils.parsePSVFile(fileFromCloud);
+				}
 
 				List<String> attributesList = FileUtils.readXSLXfile(xlsxFile);
 
@@ -163,89 +174,95 @@ public class ItemUpdate implements ReportGenerateFunction {
 					for (Entry<String, List<Entry>> entry : fileData.entrySet()) {
 
 						String pimId = entry.getKey();
+						if (sallyCatalog.containsItem(pimId)) {
 
-						List<Entry> attPathAndvalue = entry.getValue();
+							List<Entry> attPathAndvalue = entry.getValue();
 
-						for (Entry<String, String> attrDetails : attPathAndvalue) {
+							for (Entry<String, String> attrDetails : attPathAndvalue) {
 
-							String attribute = attrDetails.getKey();
-							String value = attrDetails.getValue();
-							String vendorIdPath = Constants.PRIMARY_VENDOR_ID;
+								String attribute = attrDetails.getKey();
+								String value = attrDetails.getValue();
+								String vendorIdPath = Constants.PRIMARY_VENDOR_ID;
 
-							if (path.contains(attribute)) {
+								if (path.contains(attribute)) {
 
-								logger.info("path : " + path);
-								// Got matching
+									logger.info("path : " + path);
+									// Got matching
 
-								Item item = sallyCatalog.getItemByPrimaryKey(pimId);
-								boolean isCheckedout = item.isCheckedOut();
-								boolean isSuccess = false;
-								if (isCheckedout) {
+									Item item = sallyCatalog.getItemByPrimaryKey(pimId);
+									boolean isCheckedout = item.isCheckedOut();
+									boolean isSuccess = false;
+									if (isCheckedout) {
 
-									Collection<CollaborationArea> colAreas = item.getCollaborationAreas();
+										Collection<CollaborationArea> colAreas = item.getCollaborationAreas();
 
-									for (CollaborationArea col : colAreas) {
+										for (CollaborationArea col : colAreas) {
 
-										CollaborationItem colAreaItem = item
-												.getCheckedOutItem((ItemCollaborationArea) col);
+											CollaborationItem colAreaItem = item
+													.getCheckedOutItem((ItemCollaborationArea) col);
 
-										String valueOfAttrCol = colAreaItem.getAttributeValue(path) != null
-												? colAreaItem.getAttributeValue(path).toString()
+											String valueOfAttrCol = colAreaItem.getAttributeValue(path) != null
+													? colAreaItem.getAttributeValue(path).toString()
+													: "";
+
+											if (path.contains(Constants.P_VENDOR_NAME)) {
+
+												colAreaItem.setAttributeValue(vendorIdPath, value);
+												// colAreaItem.save();
+
+											} else {
+												colAreaItem.setAttributeValue(path, value);
+
+											}
+
+											colAreaItem.save();
+
+											valueOfAttrCol = colAreaItem.getAttributeValue(path) != null
+													? colAreaItem.getAttributeValue(path).toString()
+													: "";
+											isSuccess = true;
+										}
+
+									} else {
+
+										String valueOfAttr = item.getAttributeValue(path) != null
+												? item.getAttributeValue(path).toString()
 												: "";
 
 										if (path.contains(Constants.P_VENDOR_NAME)) {
 
-											colAreaItem.setAttributeValue(vendorIdPath, value);
-											// colAreaItem.save();
-
-										} else {
-											colAreaItem.setAttributeValue(path, value);
-
+											item.setAttributeValue(vendorIdPath, value);
+											item.save();
 										}
 
-										colAreaItem.save();
+										else {
+											item.setAttributeValue(path, value);
+											item.save();
+										}
 
-										valueOfAttrCol = colAreaItem.getAttributeValue(path) != null
-												? colAreaItem.getAttributeValue(path).toString()
+										valueOfAttr = item.getAttributeValue(path) != null
+												? item.getAttributeValue(path).toString()
 												: "";
 										isSuccess = true;
+
 									}
 
-								} else {
+									if (isSuccess) {
+										// success
+										successList.add(pimId);
 
-									String valueOfAttr = item.getAttributeValue(path) != null
-											? item.getAttributeValue(path).toString()
-											: "";
+									} else {
+										errorList.add(pimId);
 
-									if (path.contains(Constants.P_VENDOR_NAME)) {
-
-										item.setAttributeValue(vendorIdPath, value);
-										item.save();
 									}
-
-									else {
-										item.setAttributeValue(path, value);
-										item.save();
-									}
-
-									valueOfAttr = item.getAttributeValue(path) != null
-											? item.getAttributeValue(path).toString()
-											: "";
-									isSuccess = true;
-
-								}
-
-								if (isSuccess) {
-									// success
-									successList.add(pimId);
-
-								} else {
-									errorList.add(pimId);
 
 								}
 
 							}
+						}
 
+						else {
+							pimIDExists.add(pimId);
 						}
 
 					}
@@ -254,29 +271,45 @@ public class ItemUpdate implements ReportGenerateFunction {
 				logger.info("success list : " + successList);
 				logger.info("error list : " + errorList);
 
+				logger.info("pimIDExists list : " + pimIDExists);
+
 				if (!successList.isEmpty()) {
 					CloudFileDirectory archievDir = rootDir.getDirectoryReference(outboundWorkingDirectory);
 					CloudFile destinationFile = archievDir.getFileReference(cloudFile.getName());
 					destinationFile.startCopy(cloudFile);
 
 					Document docstoreDoc = ctx.getDocstoreManager()
-							.createAndPersistDocument("/outbound/ItemCreation/Working/Success.csv");
-
-					String pimIdsChanged = successList.toString().replace("[", "").replace("]", "");
+							.createAndPersistDocument(Constants.SUCCESS_PATH + getCurrentLocalDateTimeStamp() + ".csv");
+					String pimIdsChanged = "Proccessed PIM_IDs " + ","
+							+ successList.toString().replace("[", "").replace("]", "");
 					docstoreDoc.setContent(pimIdsChanged);
-
-				} else if (!errorList.isEmpty()) {
+				}
+				if (!errorList.isEmpty()) {
 
 					CloudFileDirectory errorDir = rootDir.getDirectoryReference(outboundError);
 					CloudFile destinationFile = errorDir.getFileReference(cloudFile.getName());
 					destinationFile.startCopy(cloudFile);
 
 					Document docstoreDoc = ctx.getDocstoreManager()
-							.createAndPersistDocument("/outbound/ItemCreation/Working/Error.csv");
+							.createAndPersistDocument(Constants.ERROR_PATH + getCurrentLocalDateTimeStamp() + ".csv");
 
-					String pimIdsChanged = errorList.toString().replace("[", "").replace("]", "");
+					String pimIdsChanged = "UnProccessed PIM_IDs " + ","
+							+ errorList.toString().replace("[", "").replace("]", "");
 					docstoreDoc.setContent(pimIdsChanged);
 
+				} // file for loop
+
+				if (!pimIDExists.isEmpty()) {
+					logger.info("entered pimidexists");
+					CloudFileDirectory errorDir = rootDir.getDirectoryReference(outboundError);
+					CloudFile destinationFile = errorDir.getFileReference(cloudFile.getName());
+					destinationFile.startCopy(cloudFile);
+
+					Document docstoreDoc = ctx.getDocstoreManager()
+							.createAndPersistDocument(Constants.ERROR_PATH + getCurrentLocalDateTimeStamp() + ".csv");
+					String pimIdsChanged = "The provided PIM_ID is not available in the SallyCatalog" + ","
+							+ pimIDExists.toString().replace("[", "").replace("]", "");
+					docstoreDoc.setContent(pimIdsChanged);
 				}
 
 				cloudFile.delete();
@@ -290,10 +323,13 @@ public class ItemUpdate implements ReportGenerateFunction {
 
 	}
 
-	private String uploadFileInRealPath(com.ibm.pim.docstore.Document document) {
-		System.out.println("Entered uploadFileInRealPath method111");
+	private static String getCurrentLocalDateTimeStamp() {
+		return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss_SSS"));
+	}
 
-		String sSrcFileCopyLocation = "/public_html/tmp_files/";
+	private String uploadFileInRealPath(com.ibm.pim.docstore.Document document) {
+
+		String sSrcFileCopyLocation = Constants.FileCopyLocation;
 		com.ibm.pim.docstore.Document tmpDoc = document.copyTo(sSrcFileCopyLocation);
 		String tmpDocPath = tmpDoc.getPath();
 		String docRealPath = document.getRealPath();
@@ -308,10 +344,9 @@ public class ItemUpdate implements ReportGenerateFunction {
 		String sSourceFileName = tmpDocPath.substring(index + 1);
 		Company company = PIMContextFactory.getCurrentContext().getCurrentUser().getCompany();
 		String compName = company.getName();
-		String sSystemFilePath = sFileSystemRootPath + "/public_html/suppliers/" + compName + "/tmp_files/"
+		String sSystemFilePath = sFileSystemRootPath + Constants.SystemFilePath + compName + Constants.TempFilePath
 				+ sSourceFileName;
 
-		System.out.println("Exit uploadFileInRealPath method with fileSystemPath : " + sSystemFilePath);
 		return sSystemFilePath;
 	}
 
