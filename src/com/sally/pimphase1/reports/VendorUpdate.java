@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +24,7 @@ import com.ibm.pim.catalog.Catalog;
 import com.ibm.pim.catalog.item.Item;
 import com.ibm.pim.collaboration.CollaborationArea;
 import com.ibm.pim.collaboration.CollaborationItem;
+import com.ibm.pim.collaboration.CollaborationStep;
 import com.ibm.pim.collaboration.ItemCollaborationArea;
 import com.ibm.pim.collection.PIMCollection;
 import com.ibm.pim.context.Context;
@@ -58,26 +60,9 @@ public class VendorUpdate implements ReportGenerateFunction {
 			DocstoreManager docstoreManager = ctx.getDocstoreManager();
 
 			LookupTable vendorLkpTable = ctx.getLookupTableManager().getLookupTable(Constants.VENDOR_LOOKUPTABLE);
-			PIMCollection<LookupTableEntry> vndrlkpEntries = vendorLkpTable.getLookupTableEntries();
 
-			LookupTableEntry vndrlookupTableEntry = null;
-			String lookupKey = null;
-			String lookupVal = null;
-			Map<String, String> vendorLookupMap = new HashMap<String, String>();
-			for (Iterator<LookupTableEntry> iterator = vndrlkpEntries.iterator(); iterator.hasNext();) {
-
-				vndrlookupTableEntry = (LookupTableEntry) iterator.next();
-
-				lookupKey = vndrlookupTableEntry.getKey().toString();
-
-				lookupVal = vndrlookupTableEntry.getValues().toString();
-
-				lookupVal = lookupVal.contains(",") ? lookupVal.substring(1, lookupVal.lastIndexOf(",")) : lookupVal;
-				vendorLookupMap.put(lookupVal, lookupKey);
-
-			}
-
-			// logger.info("lookupMap : "+ vendorLookupMap);
+			// PIMCollection<LookupTableEntry> vndrlkpEntries =
+			// vendorLkpTable.getLookupTableEntries();
 
 			LookupTable itmTypeLkpTable = ctx.getLookupTableManager().getLookupTable(Constants.AZURE_LOOKUPTABLE);
 			PIMCollection<LookupTableEntry> lkpEntries = itmTypeLkpTable.getLookupTableEntries();
@@ -134,7 +119,7 @@ public class VendorUpdate implements ReportGenerateFunction {
 
 			CloudFile cloudFile = null;
 			for (ListFileItem cFileList : listofFiles) {
-				
+
 				Set<String> successList = new LinkedHashSet<String>();
 				Set<String> errorList = new LinkedHashSet<String>();
 				boolean isSuccess = false;
@@ -152,217 +137,128 @@ public class VendorUpdate implements ReportGenerateFunction {
 				} else if (cloudFile.getName().contains(".psv")) {
 					vendorFile = FileUtils.parsePSVFileforMap(fileFromCloud);
 				}
-				Set<String> mdmList = new HashSet();
-				Set<String> fileList = new HashSet();
+			
+				for (Map.Entry<String, String> fileEntry : vendorFile.entrySet()) {
+					String fileKey = fileEntry.getKey();
+					String vendorVal = vendorFile.get(fileKey);
 
-				if (vendorLookupMap != null && (!vendorLookupMap.isEmpty()) && vendorFile != null
-						&& (!vendorFile.isEmpty())) {
-					for (Map.Entry<String, String> entry : vendorLookupMap.entrySet()) {
+					if (!fileKey.trim().isEmpty() && fileKey != null) {
 
-						String lukupKey = entry.getKey();
-						String lukupVal = entry.getValue();
-						mdmList.add(lukupKey);
+						LookupTableEntry lkpentry = vendorLkpTable.getLookupTableEntry(fileKey);
+						logger.info("lkpentry : " + lkpentry);
+						if (lkpentry != null) {
+	                        	String mdmVendorName = lkpentry.getAttributeValue(Constants.VENDORNAME_LOOKUP) != null? lkpentry.getAttributeValue(Constants.VENDORNAME_LOOKUP).toString(): "";
+								if (!(mdmVendorName.equals(vendorVal))) {
+								   lkpentry.setAttributeValue(Constants.VENDORNAME_LOOKUP, vendorVal);
+								   lkpentry.save();
 
-						for (Map.Entry<String, String> fileEntry : vendorFile.entrySet()) {
-							String fileKey = fileEntry.getKey();
-							String fileVal = fileEntry.getValue();
+								// update related items with new lookup values
+								String stepName = null;
+								PIMCollection<Item> items = sallyCatalog.getItems();
 
-							fileList.add(fileKey);
-							if (lukupKey.equals(fileKey)) {
+								for (Item item : items) {
+									String vendorIdPath = Constants.PRIMARY_VENDOR_ID;
+									boolean isCheckedout = item.isCheckedOut();
+									if (isCheckedout) {
 
-								String mdmVal = vendorLookupMap.get(lukupKey);
-								String vendorVal = vendorFile.get(fileKey);
+										Collection<CollaborationArea> colAreas = item.getCollaborationAreas();
 
-								if (mdmVal.equals(vendorVal)) {
-									// no action
-								}
+										for (CollaborationArea col : colAreas) {
+											CollaborationItem colAreaItem = item
+													.getCheckedOutItem((ItemCollaborationArea) col);
+											List<CollaborationStep> wfSteps = colAreaItem.getSteps();
+											for (CollaborationStep step : wfSteps) {
+												stepName = step.getName();
+											}
+											if (!stepName.equals("FIXIT")) {
 
-								else {
-									// update file value in mdm
-									// also update the related items
-									logger.info("fileKey : " + fileKey);
-
-									for (Iterator<LookupTableEntry> iterator = vndrlkpEntries.iterator(); iterator
-											.hasNext();) {
-										LookupTableEntry vndrlookupTableEntry1 = iterator.next();
-
-										String vendorId = (vndrlookupTableEntry1
-												.getAttributeValue(Constants.VENDORID_LOOKUP)) != null
-														? (vndrlookupTableEntry1
-																.getAttributeValue(Constants.VENDORID_LOOKUP)
-																.toString())
-														: "";
-										if (vendorId.equalsIgnoreCase(fileKey)) {
-
-											vndrlookupTableEntry1.setAttributeValue(Constants.VENDORNAME_LOOKUP,
-													vendorVal);
-											vndrlookupTableEntry1.save();
-										}
-
+												String itemVendorIdValue = colAreaItem.getAttributeValue(vendorIdPath) != null? colAreaItem.getAttributeValue(vendorIdPath).toString(): "";
+												if (itemVendorIdValue.equals(fileKey)) {
+													colAreaItem.save();
+													isSuccess = true;
+												}
+						                   }
+                               			}
 									}
 
-									// Update the lookup table values in items
-									PIMCollection<Item> items = sallyCatalog.getItems();
-
-									for (Item item : items) {
-										String vendorIdPath = Constants.PRIMARY_VENDOR_ID;
-										boolean isCheckedout = item.isCheckedOut();
-										if (isCheckedout) {
-
-											Collection<CollaborationArea> colAreas = item.getCollaborationAreas();
-
-											for (CollaborationArea col : colAreas) {
-												CollaborationItem colAreaItem = item
-														.getCheckedOutItem((ItemCollaborationArea) col);
-
-												String itemVendorIdValue = colAreaItem
-														.getAttributeValue(vendorIdPath) != null
-																? colAreaItem.getAttributeValue(vendorIdPath).toString()
-																: "";
-
-												if (itemVendorIdValue != "" && itemVendorIdValue != null
-														&& (!itemVendorIdValue.isEmpty())) {
-													LookupTable vendorLkp = ctx.getLookupTableManager()
-															.getLookupTable(Constants.VENDOR_LOOKUPTABLE);
-
-													if (vendorLkp != null) {
-														String vendorID = vendorLkp
-																.getLookupEntryValues(itemVendorIdValue).get(0) != null
-																		? vendorLkp
-																				.getLookupEntryValues(itemVendorIdValue)
-																				.get(0).toString()
-																		: "";
-
-														if (vendorID.equals(fileKey)) {
-
-															colAreaItem.save();
-														}
-
-														successList.add(fileKey);
-														errorList.add(fileKey);
-													}
-
-												}
-
-											}
+									else {
+										String itemVendorIdValue = item.getAttributeValue(vendorIdPath) != null
+												? item.getAttributeValue(vendorIdPath).toString()
+												: "";
+										if (itemVendorIdValue.equals(fileKey)) {
+											item.save();
+											isSuccess = true;
 										}
-
-										else {
-											String itemVendorIdValue = item.getAttributeValue(vendorIdPath) != null
-													? item.getAttributeValue(vendorIdPath).toString()
-													: "";
-
-											if (itemVendorIdValue != "" && itemVendorIdValue != null
-													&& (!itemVendorIdValue.isEmpty())) {
-												LookupTable vendorLkp = ctx.getLookupTableManager()
-														.getLookupTable(Constants.VENDOR_LOOKUPTABLE);
-
-												if (vendorLkp != null) {
-													String vendorID = vendorLkp.getLookupEntryValues(itemVendorIdValue)
-															.get(0) != null
-																	? vendorLkp.getLookupEntryValues(itemVendorIdValue)
-																			.get(0).toString()
-																	: "";
-
-													if (vendorID.equals(fileKey)) {
-
-														item.save();
-													}
-
-													successList.add(fileKey);
-													errorList.add(fileKey);
-												}
-
-											}
-										}
-									}
-
-									isSuccess = true;
+						            }
 								}
-
 							}
 						}
-					}
-				}
-				logger.info("mdmList " + mdmList);
-				logger.info("fileList " + fileList);
 
-				if (!(mdmList.containsAll(fileList))) {
-
-					logger.info("ENTERED HERE");
-
-					Map<String, String> lookupnewValues = new HashMap<String, String>();
-					fileList.removeAll(mdmList);
-
-					Set<String> listOfVendoreTobeAdded = fileList;
-					logger.info("listOfVendoreTobeAdded" + listOfVendoreTobeAdded);
-
-					for (String vendorIdval : listOfVendoreTobeAdded) {
-
-						logger.info("vendorFile.keySet()" + vendorFile.keySet());
-						logger.info("FLAG VALUE" + vendorFile.containsKey(vendorIdval));
-						if (vendorFile.containsKey(vendorIdval)) {
-							String vendorName = vendorFile.get(vendorIdval);
-							lookupnewValues.put(vendorIdval, vendorName);
-							for (Map.Entry<String, String> lookupEntry : lookupnewValues.entrySet()) {
-								String vendorIdtobeAdded = lookupEntry.getKey();
-								String vendorNametobeAdded = lookupEntry.getValue();
-
-								LookupTableEntry entryLkup = vendorLkpTable.createEntry();
-								entryLkup.setAttributeValue(Constants.VENDORNAME_LOOKUP, vendorNametobeAdded);
-								entryLkup.setAttributeValue(Constants.VENDORID_LOOKUP, vendorIdtobeAdded);
-								entryLkup.setAttributeValue(Constants.VENDOR_TYPE_LOOKUP, Constants.EXTERNAL);
-								entryLkup.save();
-								vendorLkpTable.save();
-								successList.add(vendorIdtobeAdded);
-								errorList.add(vendorIdtobeAdded);
-								isSuccess = true;
-							}
+						else {
+							LookupTableEntry entryLkup = vendorLkpTable.createEntry();
+							entryLkup.setAttributeValue(Constants.VENDORNAME_LOOKUP, vendorVal);
+							entryLkup.setAttributeValue(Constants.VENDORID_LOOKUP, fileKey);
+							entryLkup.setAttributeValue(Constants.VENDOR_TYPE_LOOKUP, Constants.EXTERNAL);
+							entryLkup.save();
+							vendorLkpTable.save();
+							isSuccess = true;
 
 						}
+					}
+					if (isSuccess) {
+						// success
+						successList.add(fileKey);
+
+					} else {
+						errorList.add(fileKey);
 
 					}
-				} else {
-					logger.info("No new values found");
 				}
 
-				if (isSuccess) {
-					// success
-					logger.info("successList" + successList);
+				if (!successList.isEmpty()) {
+					CloudFileDirectory archievDir = rootDir.getDirectoryReference(outboundWorkingDirectory);
+					CloudFile destinationFile = archievDir.getFileReference(cloudFile.getName());
+					destinationFile.startCopy(cloudFile);
 
-					if (!successList.isEmpty()) {
-						CloudFileDirectory archievDir = rootDir.getDirectoryReference(outboundWorkingDirectory);
-						CloudFile destinationFile = archievDir.getFileReference(cloudFile.getName());
-						destinationFile.startCopy(cloudFile);
+					Document docstoreDoc = ctx.getDocstoreManager().createAndPersistDocument(
+							Constants.SUCCESS_PATH_VENDOR + getCurrentLocalDateTimeStamp() + ".csv");
 
-						Document docstoreDoc = ctx.getDocstoreManager()
-								.createAndPersistDocument(Constants.SUCCESS_PATH_VENDOR + getCurrentLocalDateTimeStamp());
-
-						String vendorIdsChanged = successList.toString().replace("[", "").replace("]", "");
-						docstoreDoc.setContent(vendorIdsChanged);
+					StringBuilder sb = new StringBuilder();
+					for (String vendorIDs : successList) {
+						sb.append("Proccessed Vendor_IDs ");
+						sb.append(",");
+						sb.append(vendorIDs);
+						sb.append("\n");
 					}
 
-				} else {
+					String docstoreData = sb.toString();
+					docstoreDoc.setContent(docstoreData);
 
-					if (!errorList.isEmpty()) {
+				} else if (!errorList.isEmpty()) {
 
-						CloudFileDirectory errorDir = rootDir.getDirectoryReference(outboundError);
-						CloudFile destinationFile = errorDir.getFileReference(cloudFile.getName());
-						destinationFile.startCopy(cloudFile);
+					CloudFileDirectory errorDir = rootDir.getDirectoryReference(outboundError);
+					CloudFile destinationFile = errorDir.getFileReference(cloudFile.getName());
+					destinationFile.startCopy(cloudFile);
 
-						Document docstoreDoc = ctx.getDocstoreManager()
-								.createAndPersistDocument(Constants.ERROR_PATH_VENDOR + getCurrentLocalDateTimeStamp());
+					Document docstoreDoc = ctx.getDocstoreManager().createAndPersistDocument(
+							Constants.ERROR_PATH_VENDOR + getCurrentLocalDateTimeStamp() + ".csv");
 
-						String vendorIdsChanged = errorList.toString().replace("[", "").replace("]", "");
-						docstoreDoc.setContent(vendorIdsChanged);
-
+					StringBuilder sb = new StringBuilder();
+					for (String vendorIDs : errorList) {
+						sb.append("UnProccessed Vendor_IDs or Items if they are in FIXIT step ");
+						sb.append(",");
+						sb.append(vendorIDs);
+						sb.append("\n");
 					}
+
+					String docstoreData = sb.toString();
+					docstoreDoc.setContent(docstoreData);
 
 				}
 
 				cloudFile.delete();
-			} // END OF FOR
 
+			}
 		} catch (Exception e) {
 			logger.info("Main Exception : " + e.getMessage());
 			e.printStackTrace();
@@ -370,7 +266,7 @@ public class VendorUpdate implements ReportGenerateFunction {
 		}
 
 	}
-	
+
 	private static String getCurrentLocalDateTimeStamp() {
 		return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss_SSS"));
 	}

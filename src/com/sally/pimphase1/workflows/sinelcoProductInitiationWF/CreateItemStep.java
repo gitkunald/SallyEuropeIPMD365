@@ -273,10 +273,16 @@ public class CreateItemStep implements WorkflowStepFunction {
 					if (occurrance.equals(Constants.GS)) {
 
 						xmlStreamWriter.writeStartElement(grouping);
-					} else if (occurrance.equals(Constants.S) && grouping.equals(Constants.Attribute)) {
-
-						String attribute = attributesPath.substring(attributesPath.lastIndexOf("/") + 1,
-								attributesPath.length());
+					} else if (occurrance.equals(Constants.S)) {
+						
+						String attribute = "";
+						if(grouping.equals("Attribute"))
+							attribute = attributesPath.substring(attributesPath.lastIndexOf("/") + 1,attributesPath.length());
+						
+						else 
+							attribute = grouping;
+						
+								
 						xmlStreamWriter.writeStartElement(attribute);
 						AttributeInstance attrInst = item.getAttributeInstance(attributesPath);
 
@@ -294,27 +300,10 @@ public class CreateItemStep implements WorkflowStepFunction {
 											: dateFormatting(item.getAttributeValue(attributesPath)).toString()));
 								}
 							} else {
-
-								if (attributesPath.contains(Constants.P_VENDOR_ID)) {
-
-									String pVendorID = item.getAttributeValue(attributesPath) == null ? ""
-											: item.getAttributeValue(attributesPath).toString();
-
-									if (pVendorID != "") {
-
-										LookupTable vendorLkp = ctx.getLookupTableManager()
-												.getLookupTable(Constants.VENDOR_LOOKUPTABLE);
-										String vendorID = (String) vendorLkp.getLookupEntryValues(pVendorID).get(0);
-
-										xmlStreamWriter.writeCharacters(vendorID);
-									}
-
-								} else {
 									xmlStreamWriter
 											.writeCharacters(((item.getAttributeValue(attributesPath) == null) ? ""
 													: item.getAttributeValue(attributesPath).toString()));
 								}
-							}
 						}
 
 						xmlStreamWriter.writeEndElement(); // end tag for attribute
@@ -432,6 +421,7 @@ public class CreateItemStep implements WorkflowStepFunction {
 
 						xmlStreamWriter.writeEndElement(); // end tag for grouping
 					}
+					/*
 					if (row == 1) {
 						Collection<Category> categories = item.getCategories();
 						xmlStreamWriter.writeStartElement(Constants.CATEGORY_INFO);
@@ -447,6 +437,7 @@ public class CreateItemStep implements WorkflowStepFunction {
 						}
 						xmlStreamWriter.writeEndElement();// Category_info End
 					}
+					*/
 				}
 			}
 		} catch (Exception e) {

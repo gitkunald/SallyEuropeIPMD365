@@ -71,6 +71,7 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 		String localFilePath = "";
 		String fileShare = "";
 		String outboundWorkingDirectory = "";
+		String dynamicExcelPath = null;
 
 		for (Iterator<LookupTableEntry> iterator = lkpEntries.iterator(); iterator.hasNext();) {
 			LookupTableEntry lookupTableEntry = (LookupTableEntry) iterator.next();
@@ -109,13 +110,23 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 			}
 		}
 
+		LookupTable pimConfigLkpTable = ctx.getLookupTableManager().getLookupTable(Constants.PIM_CONFIGURATION);
+		PIMCollection<LookupTableEntry> pimConfigLkpEntries = pimConfigLkpTable.getLookupTableEntries();
+		for (Iterator<LookupTableEntry> fileItrPIM = pimConfigLkpEntries.iterator(); fileItrPIM.hasNext();) {
+			LookupTableEntry fileLookupTableEntry = (LookupTableEntry) fileItrPIM.next();
+			if (fileLookupTableEntry.getAttributeValue(Constants.FILEREADER_KEY).toString()
+					.equalsIgnoreCase(Constants.REF_DOC_DIR)) {
+				dynamicExcelPath = fileLookupTableEntry.getAttributeValue(Constants.FILEREADER_VALUE).toString();
+			}
+		}
+
 		for (CollaborationItem item : items) {
 			try {
 				StringWriter stringWriter = new StringWriter();
 				XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
 				Document doc = null;
 				publishXML(ctx, vendorLkpKeyValues, sallyCatalog, stringWriter, xmlOutputFactory, item, doc,
-						storageConnectionString, localFilePath, fileShare, outboundWorkingDirectory);
+						storageConnectionString, localFilePath, fileShare, outboundWorkingDirectory, dynamicExcelPath);
 				stringWriter.flush();
 				stringWriter.close();
 
@@ -171,8 +182,8 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 
 	private void publishXML(Context ctx, Map<String, String> vendorLkpKeyValues, Catalog sallyCatalog,
 			StringWriter stringWriter, XMLOutputFactory xmlOutputFactory, CollaborationItem item, Document xmlDoc,
-			String storageConnectionString, String localFilePath, String fileShare, String outboundWorkingDirectory)
-			throws XMLStreamException, PIMSearchException, IOException {
+			String storageConnectionString, String localFilePath, String fileShare, String outboundWorkingDirectory,
+			String dynamicExcelPath) throws XMLStreamException, PIMSearchException, IOException {
 
 		XMLStreamWriter xmlStreamWriter = xmlOutputFactory.createXMLStreamWriter(stringWriter);
 		FileInputStream stream = null;
@@ -193,7 +204,7 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 
 			if (!documents.isEmpty() && documents.size() > 0) {
 				for (com.ibm.pim.docstore.Document document : documents) {
-					if (document != null && document.getName().equals(Constants.REF_ATTRIBUTES_DOC)) {
+					if (document != null && document.getName().equals(dynamicExcelPath)) {
 						String docName = document.getName();
 						logger.info("Document Name ::: " + docName);
 						String docPath = document.getPath();
@@ -353,27 +364,12 @@ public class GoldSealReviewStep implements WorkflowStepFunction {
 															.toString()));
 								} else {
 									xmlStreamWriter.writeCharacters(((item.getAttributeValue(attributesPath) == null)
-											? ""
-											: dateFormatting(item.getAttributeValue(attributesPath)).toString()));
+											? "": dateFormatting(item.getAttributeValue(attributesPath)).toString()));
 								}
 							} else {
-								if (attributesPath.contains("Primary_vendor_ID")) {
-
-									String pVendorID = item.getAttributeValue(attributesPath) == null ? ""
-											: item.getAttributeValue(attributesPath).toString();
-									if (pVendorID != "") {
-
-										LookupTable vendorLkp = ctx.getLookupTableManager()
-												.getLookupTable("Vendor Lookup Table");
-										String vendorID = (String) vendorLkp.getLookupEntryValues(pVendorID).get(0);
-
-										xmlStreamWriter.writeCharacters(vendorID);
-									}
-								} else {
-									xmlStreamWriter
-											.writeCharacters(((item.getAttributeValue(attributesPath) == null) ? ""
+								
+									xmlStreamWriter.writeCharacters(((item.getAttributeValue(attributesPath) == null) ? ""
 													: item.getAttributeValue(attributesPath).toString()));
-								}
 							}
 						}
 						xmlStreamWriter.writeEndElement(); // end tag for attribute

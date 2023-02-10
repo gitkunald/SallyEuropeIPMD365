@@ -25,6 +25,7 @@ import com.ibm.pim.catalog.Catalog;
 import com.ibm.pim.catalog.item.Item;
 import com.ibm.pim.collaboration.CollaborationArea;
 import com.ibm.pim.collaboration.CollaborationItem;
+import com.ibm.pim.collaboration.CollaborationStep;
 import com.ibm.pim.collaboration.ItemCollaborationArea;
 import com.ibm.pim.collection.PIMCollection;
 import com.ibm.pim.common.PIMObject;
@@ -56,7 +57,7 @@ public class ItemUpdate implements ReportGenerateFunction {
 	public void reportGenerate(ReportGenerateFunctionArguments arg0) {
 		// TODO Auto-generated method stub
 		try {
-			logger.info("Inside report genaration");
+			logger.info("Inside report genaration***");
 			Context ctx = PIMContextFactory.getCurrentContext();
 			Catalog sallyCatalog = ctx.getCatalogManager().getCatalog(Constants.SALLY_EU);
 			DocstoreManager docstoreManager = ctx.getDocstoreManager();
@@ -174,95 +175,93 @@ public class ItemUpdate implements ReportGenerateFunction {
 					for (Entry<String, List<Entry>> entry : fileData.entrySet()) {
 
 						String pimId = entry.getKey();
-						if (sallyCatalog.containsItem(pimId)) {
 
-							List<Entry> attPathAndvalue = entry.getValue();
+						if (!pimId.trim().isEmpty() && pimId != null) {
 
-							for (Entry<String, String> attrDetails : attPathAndvalue) {
+							if (sallyCatalog.containsItem(pimId)) {
 
-								String attribute = attrDetails.getKey();
-								String value = attrDetails.getValue();
-								String vendorIdPath = Constants.PRIMARY_VENDOR_ID;
+								List<Entry> attPathAndvalue = entry.getValue();
 
-								if (path.contains(attribute)) {
+								for (Entry<String, String> attrDetails : attPathAndvalue) {
 
-									logger.info("path : " + path);
-									// Got matching
+									String attribute = attrDetails.getKey();
+									String value = attrDetails.getValue();
+									String vendorIdPath = Constants.PRIMARY_VENDOR_ID;
 
-									Item item = sallyCatalog.getItemByPrimaryKey(pimId);
-									boolean isCheckedout = item.isCheckedOut();
-									boolean isSuccess = false;
-									if (isCheckedout) {
+									if (path.contains(attribute)) {
 
-										Collection<CollaborationArea> colAreas = item.getCollaborationAreas();
+										logger.info("path : " + path);
+										// Got matching
 
-										for (CollaborationArea col : colAreas) {
+										Item item = sallyCatalog.getItemByPrimaryKey(pimId);
+										boolean isCheckedout = item.isCheckedOut();
+										boolean isSuccess = false;
+										String stepName = null;
 
-											CollaborationItem colAreaItem = item
-													.getCheckedOutItem((ItemCollaborationArea) col);
+										if (isCheckedout) {
 
-											String valueOfAttrCol = colAreaItem.getAttributeValue(path) != null
-													? colAreaItem.getAttributeValue(path).toString()
-													: "";
+											Collection<CollaborationArea> colAreas = item.getCollaborationAreas();
 
-											if (path.contains(Constants.P_VENDOR_NAME)) {
+											for (CollaborationArea col : colAreas) {
 
-												colAreaItem.setAttributeValue(vendorIdPath, value);
-												// colAreaItem.save();
+												CollaborationItem colAreaItem = item
+														.getCheckedOutItem((ItemCollaborationArea) col);
+												List<CollaborationStep> wfSteps = colAreaItem.getSteps();
+												for (CollaborationStep step : wfSteps) {
+													logger.info("stepName : " + step.getName());
+													stepName = step.getName();
+												}
+												if (!stepName.equals("FIXIT")) {
 
-											} else {
-												colAreaItem.setAttributeValue(path, value);
+													String valueOfAttrCol = colAreaItem.getAttributeValue(path) != null
+															? colAreaItem.getAttributeValue(path).toString(): "";
+															
+                                                  			colAreaItem.setAttributeValue(path, value);
 
+													          colAreaItem.save();
+
+													valueOfAttrCol = colAreaItem.getAttributeValue(path) != null
+															? colAreaItem.getAttributeValue(path).toString(): "";
+															
+													isSuccess = true;
+												}
 											}
 
-											colAreaItem.save();
+										} else {
 
-											valueOfAttrCol = colAreaItem.getAttributeValue(path) != null
-													? colAreaItem.getAttributeValue(path).toString()
-													: "";
+											String valueOfAttr = item.getAttributeValue(path) != null
+													? item.getAttributeValue(path).toString(): "";
+													
+                                        
+												item.setAttributeValue(path, value);
+												item.save();
+										    	valueOfAttr = item.getAttributeValue(path) != null
+													? item.getAttributeValue(path).toString(): "";
+													
 											isSuccess = true;
+
 										}
 
-									} else {
+										if (isSuccess) {
+											// success
+											successList.add(pimId);
 
-										String valueOfAttr = item.getAttributeValue(path) != null
-												? item.getAttributeValue(path).toString()
-												: "";
+										} else {
+											errorList.add(pimId);
 
-										if (path.contains(Constants.P_VENDOR_NAME)) {
-
-											item.setAttributeValue(vendorIdPath, value);
-											item.save();
 										}
-
-										else {
-											item.setAttributeValue(path, value);
-											item.save();
-										}
-
-										valueOfAttr = item.getAttributeValue(path) != null
-												? item.getAttributeValue(path).toString()
-												: "";
-										isSuccess = true;
-
-									}
-
-									if (isSuccess) {
-										// success
-										successList.add(pimId);
-
-									} else {
-										errorList.add(pimId);
 
 									}
 
 								}
-
 							}
-						}
 
-						else {
-							pimIDExists.add(pimId);
+							else {
+								pimIDExists.add(pimId);
+							}
+						} else {
+
+							logger.info("PIM id is empty");
 						}
 
 					}
@@ -274,15 +273,25 @@ public class ItemUpdate implements ReportGenerateFunction {
 				logger.info("pimIDExists list : " + pimIDExists);
 
 				if (!successList.isEmpty()) {
+
 					CloudFileDirectory archievDir = rootDir.getDirectoryReference(outboundWorkingDirectory);
 					CloudFile destinationFile = archievDir.getFileReference(cloudFile.getName());
 					destinationFile.startCopy(cloudFile);
 
 					Document docstoreDoc = ctx.getDocstoreManager()
 							.createAndPersistDocument(Constants.SUCCESS_PATH + getCurrentLocalDateTimeStamp() + ".csv");
-					String pimIdsChanged = "Proccessed PIM_IDs " + ","
-							+ successList.toString().replace("[", "").replace("]", "");
-					docstoreDoc.setContent(pimIdsChanged);
+
+					StringBuilder sb = new StringBuilder();
+					for (String pimIDs : successList) {
+						sb.append("Proccessed PIM_IDs ");
+						sb.append(",");
+						sb.append(pimIDs);
+						sb.append("\n");
+					}
+
+					String docstoreData = sb.toString();
+					docstoreDoc.setContent(docstoreData);
+
 				}
 				if (!errorList.isEmpty()) {
 
@@ -293,13 +302,21 @@ public class ItemUpdate implements ReportGenerateFunction {
 					Document docstoreDoc = ctx.getDocstoreManager()
 							.createAndPersistDocument(Constants.ERROR_PATH + getCurrentLocalDateTimeStamp() + ".csv");
 
-					String pimIdsChanged = "UnProccessed PIM_IDs " + ","
-							+ errorList.toString().replace("[", "").replace("]", "");
-					docstoreDoc.setContent(pimIdsChanged);
+					StringBuilder sb = new StringBuilder();
+					for (String pimIDs : errorList) {
+						sb.append("UnProccessed PIM_IDs ");
+						sb.append(",");
+						sb.append(pimIDs);
+						sb.append("\n");
+					}
+
+					String docstoreData = sb.toString();
+					docstoreDoc.setContent(docstoreData);
 
 				} // file for loop
 
 				if (!pimIDExists.isEmpty()) {
+
 					logger.info("entered pimidexists");
 					CloudFileDirectory errorDir = rootDir.getDirectoryReference(outboundError);
 					CloudFile destinationFile = errorDir.getFileReference(cloudFile.getName());
@@ -307,9 +324,18 @@ public class ItemUpdate implements ReportGenerateFunction {
 
 					Document docstoreDoc = ctx.getDocstoreManager()
 							.createAndPersistDocument(Constants.ERROR_PATH + getCurrentLocalDateTimeStamp() + ".csv");
-					String pimIdsChanged = "The provided PIM_ID is not available in the SallyCatalog" + ","
-							+ pimIDExists.toString().replace("[", "").replace("]", "");
-					docstoreDoc.setContent(pimIdsChanged);
+
+					StringBuilder sb = new StringBuilder();
+					for (String pimIDs : pimIDExists) {
+						sb.append("The provided PIM_ID is not available in the SallyCatalog ");
+						sb.append(",");
+						sb.append(pimIDs);
+						sb.append("\n");
+					}
+
+					String docstoreData = sb.toString();
+					docstoreDoc.setContent(docstoreData);
+
 				}
 
 				cloudFile.delete();

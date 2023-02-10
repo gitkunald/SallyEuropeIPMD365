@@ -443,25 +443,10 @@ public class MaintananceSuccessStep implements WorkflowStepFunction {
 							if (entry.getValue().toString().contains("Delete")&& deleteFlagValue.equalsIgnoreCase("Y"))
 								xmlStreamWriter.writeAttribute("Action", "Delete");
 							
-							if(attribute.equals("Primary_vendor_ID")){
-								logger.info("Attribute..Primary_vendor_Name"+item.getAttributeValue(attributesPath).toString());
-								
-								String pVendorID=item.getAttributeValue(attributesPath) == null ? "": item.getAttributeValue(attributesPath).toString();
-								if(pVendorID !=""){
-									
-									LookupTable vendorLkp = ctx.getLookupTableManager().getLookupTable("Vendor Lookup Table");
-									String vendorID=(String) vendorLkp.getLookupEntryValues(pVendorID).get(0);
-									logger.info("Attribute..Primary_vendor_ID"+vendorID);
-									xmlStreamWriter.writeCharacters(vendorID);
-								}										
-							}
-							else {
-								xmlStreamWriter.writeCharacters(entry.getValue().toString()
+					      	xmlStreamWriter.writeCharacters(entry.getValue().toString()
 										.substring(entry.getValue().toString().indexOf("=") + 1));
-							}
-
 							
-							xmlStreamWriter.writeEndElement(); // end tag for attribute
+	                       xmlStreamWriter.writeEndElement(); // end tag for attribute
 							logger.info("Matched Attribute: " + attribute + " :: Matched Grouping :: " + grouping);
 
 							// CLOSING THE SUBGROUP
