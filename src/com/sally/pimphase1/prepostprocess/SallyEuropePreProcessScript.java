@@ -1020,7 +1020,16 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 				if (barcode.length() != 8) { // check to see if the input is 13 digits
 					arg0.addValidationError(collabItem.getAttributeInstance(collabItemPath),
 							ValidationError.Type.VALIDATION_RULE, "Barcode length should be 8 digits as per EAN8");
-
+              	}
+				else {
+				int checkDigit = checkSumEAN8(barcode); // pass that input to the checkSum function
+				Integer checkDigitInteger = new Integer(checkDigit);
+				String result = checkDigitInteger.toString();
+				if (result.charAt(0) != barcode.charAt(7)) {
+					arg0.addValidationError(collabItem.getAttributeInstance(collabItemPath),
+							ValidationError.Type.VALIDATION_RULE,
+							"Check digit is not correct as per EAN8 protocls. The check digit should be " + result);
+				    }
 				}
 			}
 
@@ -1028,15 +1037,67 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 				if (barcode.length() != 13) { // check to see if the input is 13 digits
 					arg0.addValidationError(collabItem.getAttributeInstance(collabItemPath),
 							ValidationError.Type.VALIDATION_RULE, "Barcode length should be 13 digits as per EAN13");
-
+		        }
+				else { 
+				int checkDigit = checkSumEAN13(barcode); // pass that input to the checkSum function
+				Integer checkDigitInteger = new Integer(checkDigit);
+				String result = checkDigitInteger.toString();
+				if (result.charAt(0) != barcode.charAt(12)) {
+					arg0.addValidationError(collabItem.getAttributeInstance(collabItemPath),
+							ValidationError.Type.VALIDATION_RULE,
+							"Check digit is not correct as per EAN13 protocls. The check digit should be " + result);
+				    }
 				}
-
-			}
+		    }
 		}
 
 		logger.info("*** End of function of validateCheckDigitOfBarcodes ***");
 
 	}
+	
+	
+	public static int checkSumEAN8(String code) {
+		logger.info("*** Start of function of checkSumEAN8 ***");
+		int sum1 = (int) code.charAt(1) + (int) code.charAt(3) + (int) code.charAt(5);
+		int sum2 = 3 * ((int) code.charAt(0) + (int) code.charAt(2) + (int) code.charAt(4) + (int) code.charAt(6));
+
+		int checksum_value = sum1 + sum2;
+
+		int checksum_digit = 10 - (checksum_value % 10);
+		if (checksum_digit == 10)
+			checksum_digit = 0;
+
+		logger.info("*** End of function of checkSumEAN8 ***");
+		return checksum_digit;
+	}
+
+	public static int checkSumEAN13(String Input) {
+		int evens = 0; // initialize evens variable
+		int odds = 0; // initialize odds variable
+		int checkSum = 0; // initialize the checkSum
+		for (int i = 0; i < 12; i++) {// fixed because it is fixed in practices but you can use length() insted
+			int digit = Integer.parseInt(Input.substring(i, i + 1));
+			if (i % 2 == 0) {
+				evens += digit;// then add it to the evens
+			} else {
+				odds += digit; // else add it to the odds
+			}
+		}
+		odds = odds * 3; // multiply odds by three
+		int total = odds + evens; // sum odds and evens
+		if (total % 10 == 0) { // if total is divisible by ten, special case
+			checkSum = 0;// checksum is zero
+		} else { // total is not divisible by ten
+			checkSum = 10 - (total % 10); // subtract the ones digit from 10 to find the checksum
+		}
+		return checkSum;
+	}
+
+	
+	
+	
+	
+	
 
 	private void validationsCtgItem(ItemPrePostProcessingFunctionArguments arg0, BaseItem item) {
 
