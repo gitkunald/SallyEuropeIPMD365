@@ -224,9 +224,9 @@ public class FileUtils {
 	public static Map<String, String> parsePSVFileforMap(File file) throws Exception {
 		Map<String, String> mapOfVendorIds = new HashMap<>();
 		try {
-
-			FileReader fr = new FileReader(file);
-			BufferedReader br = new BufferedReader(fr);
+			
+	   BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+			
 			String line = " ";
 			String[] tempArr;
 			int rowCnt = 0;
