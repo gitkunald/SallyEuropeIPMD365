@@ -155,7 +155,7 @@ public class SallyEuropePreProcessScript implements PrePostProcessingFunction {
 								// item.setAttributeValue("Product_c/ERP Operational/Brand_code",
 								// catCode.toString());
 								// item.setAttributeValue("Product_c/ERP Operational/Brand_name",
-								 catName.toString());
+								// catName.toString());
 								item.setAttributeValue(Constants.BRAND_CODE, catCode.toString());
 								item.setAttributeValue(Constants.BRAND_NAME, catName.toString());
 
